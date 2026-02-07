@@ -1,0 +1,48 @@
+{
+  "name": "js-boilerplate",
+  "version": "1.0.0",
+  "description": "Website boilerplate với HTML, CSS, Bootstrap và API calls",
+  "main": "index.js",
+  "scripts": {
+    "dev": "http-server src -p 3000 -o",
+    "start": "npm run dev",
+    "config": "node scripts/generate-config.js",
+    "prestart": "npm run config",
+    "lint": "eslint src --ext .js",
+    "lint:fix": "eslint src --ext .js --fix",
+    "format": "prettier --write \"src/**/*.{js,html,css,json}\"",
+    "format:check": "prettier --check \"src/**/*.{js,html,css,json}\"",
+    "check": "npm run lint && npm run format:check",
+    "lint:commit": "commitlint --edit",
+    "prepare": "husky install"
+  },
+  "keywords": [
+    "html",
+    "css",
+    "bootstrap",
+    "axios",
+    "fetch"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "bootstrap": "^5.3.2",
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^18.6.0",
+    "@commitlint/config-conventional": "^18.6.0",
+    "dotenv": "^16.6.1",
+    "eslint": "^8.57.0",
+    "http-server": "^14.1.1",
+    "husky": "^8.0.3",
+    "prettier": "^3.2.5"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}

@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Generated files
+src/js/config.js
+
+# Config files
+*.config.js
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.local
+

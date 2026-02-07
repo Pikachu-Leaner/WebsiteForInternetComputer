@@ -1,0 +1,50 @@
+stages:
+  - lint
+  - deploy
+
+cache:
+  paths:
+    - node_modules/
+
+before_script:
+  - npm ci
+
+lint:js:
+  stage: lint
+  image: node:18
+  script:
+    - npm run lint
+  only:
+    - merge_requests
+    - main
+    - develop
+
+lint:format:
+  stage: lint
+  image: node:18
+  script:
+    - npm run format:check
+  only:
+    - merge_requests
+    - main
+    - develop
+
+lint:commit:
+  stage: lint
+  image: node:18
+  script:
+    - npm run lint:commit || true
+  only:
+    - merge_requests
+    - main
+    - develop
+  allow_failure: true
+
+deploy:
+  stage: deploy
+  image: node:18
+  script:
+    - echo "Deployment placeholder"
+  only:
+    - main
+  when: manual
