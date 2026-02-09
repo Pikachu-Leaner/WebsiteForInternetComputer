@@ -43,10 +43,9 @@ form.addEventListener('submit', async (e) => {
           sessionStorage.setItem('accessToken', userData.access_token);
           sessionStorage.setItem('refreshToken', userData.refresh_token);
           // Redirect to home page after successful login
-          window.location.href = '../pages/home.html';
+          window.location.href = '../pages/index.html';
         }
       }
-
     } else {
       // Handle login errors ( Backend already validation these all so no need to make 1, use the server validation messages)
       const serverMessage = data.message;

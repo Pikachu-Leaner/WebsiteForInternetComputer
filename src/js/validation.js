@@ -11,18 +11,14 @@ function setupPasswordToggle(inputFieldId) {
   const inputField = document.getElementById(inputFieldId);
 
   // Guard clause: ensure element exists to prevent errors
-  if (!inputField)
-  {
+  if (!inputField) {
     return;
   }
-
 
   const toggleIcon = inputField.parentElement.querySelector('i');
-  if (!toggleIcon)
-  {
+  if (!toggleIcon) {
     return;
   }
-
 
   toggleIcon.addEventListener('click', function () {
     // 1. Toggle the type attribute
@@ -41,11 +37,11 @@ function showToast(message, type = 'success') {
 
   // Create the individual toast box
   const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    // The icon get from emoji menu from windows ( Win + '.')
-    // How to use:
-    // 1. Use win + . to open emoji menu ( must have the cursor on the place you want to put in)
-    // 2. Search for the emoji you want and click to insert
+  toast.className = `toast toast-${type}`;
+  // The icon get from emoji menu from windows ( Win + '.')
+  // How to use:
+  // 1. Use win + . to open emoji menu ( must have the cursor on the place you want to put in)
+  // 2. Search for the emoji you want and click to insert
   toast.innerHTML = `
         <div class="toast-icon">${type === 'success' ? '✅' : '❎'}</div>
         <div class="toast-message">${message}</div>
@@ -88,7 +84,8 @@ function validateForm(data) {
 
   // 2. Check Password
   if (!REGEX_PASSWORD.test(data.password)) {
-    errors.password = 'Password: 8-20 chars, 1 Capital & 1 Special char & 1 Number & 1 normal required ';
+    errors.password =
+      'Password: 8-20 chars, 1 Capital & 1 Special char & 1 Number & 1 normal required ';
     isValid = false;
   }
 

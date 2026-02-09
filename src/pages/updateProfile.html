@@ -102,86 +102,126 @@
         </nav>
     </section>
 
-    <!-- Profile Section -->
-    <section class="profileSection container my-5">
+    <!-- Update profile  -->
+    <section>
+        <div class="container-xl px-4 mt-4">
+            <!-- Account page navigation-->
+            <nav class="nav nav-borders">
+                <a class="nav-link active ms-0" href="../pages/profile.html" target="__blank">Profile</a>
+                <a class="nav-link" href="" target="__blank">Sth 1</a>
+                <a class="nav-link" href="" target="__blank">Sth 2</a>
+                <a class="nav-link" href="" target="__blank">Sth 3</a>
+            </nav>
+            <hr class="mt-0 mb-4">
+            <div class="row">
+                <div class="col-xl-4">
+                    <!-- Profile picture card-->
+                    <div class="card mb-4 mb-xl-0">
+                        <div class="card-header">Profile Picture</div>
+                        <div class="card-body text-center">
+                            <!-- Profile picture image-->
+                            <div class="avatarContainer1 mb-3">
+                                <img src="data:image/png;base64,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"
+                                    alt="Profile avatar">
+                            </div>
+                            <!-- Profile picture help block-->
+                            <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+                            <!-- Profile picture upload button-->
+                            <button class="btn btn-primary" type="button">Upload new image</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-8">
+                    <!-- Account details card-->
+                    <div class="card mb-4">
+                        <div class="card-header">Account Details</div>
+                        <div class="card-body">
+                            <form class="updateProfileForm">
+                                <!-- Form Group (username)-->
+                                <div class="mb-3">
+                                    <label class="small mb-1" for="inputUsername">Username</label>
+                                    <input class="form-control" id="inputUsername" type="text"
+                                        placeholder="Enter your username" value="username">
+                                </div>
+                                <!-- Form Row-->
+                                <div class="row  mb-3">
+                                    <!-- Form Group (first name)-->
+                                    <div class="col-md-6">
+                                        <label class="small mb-1" for="inputFirstName">First name</label>
+                                        <input class="form-control" id="inputFirstName" type="text"
+                                            placeholder="Enter your first name" value="Valerie">
+                                    </div>
+                                    <!-- Form Group (last name)-->
+                                    <div class="col-md-6">
+                                        <label class="small mb-1" for="inputLastName">Last name</label>
+                                        <input class="form-control" id="inputLastName" type="text"
+                                            placeholder="Enter your last name" value="Luna">
+                                    </div>
+                                </div>
+                                <!-- Form Row -->
+                                <div class="row  mb-3">
+                                    <!-- Form Group (gender)-->
+                                    <div class="col-md-12">
+                                        <div class="row  mb-3">
+                                            <div class="col-md-3">
+                                                <label class="small mb-1 d-block">Gender</label>
+                                                <div class="d-flex gap-3 align-items-center" style="height: 38px;">
+                                                    <div class="form-check mb-0">
+                                                        <input class="form-check-input" type="radio" name="gender"
+                                                            id="male">
+                                                        <label class="form-check-label" for="male">Male</label>
+                                                    </div>
+                                                    <div class="form-check mb-0">
+                                                        <input class="form-check-input" type="radio" name="gender"
+                                                            id="female">
+                                                        <label class="form-check-label" for="female">Female</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Form Group (location)-->
+                                            <div class="col-md-9">
+                                                <label class="small mb-1" for="inputLocation">Location</label>
+                                                <input class="form-control" id="inputLocation" type="text"
+                                                    placeholder="Enter your location" value="San Francisco, CA">
+                                            </div>
+                                        </div>
+                                    </div>
 
-        <div class="titleWrapper mb-5">
-            <h3 class="profileTitle d-inline-block px-4 py-2 rounded">Profile</h3>
-        </div>
-
-        <div class="row mb-5">
-            <div class="col-md-3 text-center mb-4 mb-md-0 d-flex align-items-center justify-content-center">
-                <div class="avatarContainer">
-                    <img src="data:image/png;base64,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"
-                        alt="Profile avatar">
+                                    <!-- Form Group (email address)-->
+                                    <div class="mb-3">
+                                        <label class="small mb-1" for="inputEmailAddress">Email address</label>
+                                        <input class="form-control" id="inputEmailAddress" type="email"
+                                            placeholder="Enter your email address" value="name@example.com">
+                                    </div>
+                                    <!-- Form Row-->
+                                    <div class="col-md-12">
+                                        <div class="row mb-3">
+                                            <!-- Form Group (phone number)-->
+                                            <div class="col-md-6">
+                                                <label class="small mb-1" for="inputPhone">Phone number</label>
+                                                <input class="form-control" id="inputPhone" type="tel"
+                                                    placeholder="Enter your phone number" value="555-123-4567">
+                                            </div>
+                                            <!-- Form Group (birthday)-->
+                                            <div class="col-md-6">
+                                                <label class="small mb-1" for="inputBirthday">Birthday</label>
+                                                <input class="form-control" id="inputBirthday" type="text"
+                                                    name="birthday" placeholder="Enter your birthday"
+                                                    value="06/10/1988">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Save changes button-->
+                                    <button class="btn btn-primary mt-2" type="button">Save changes</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="col-md-9">
-                <form class="profileForm row g-4">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="register-input" id="email" placeholder="email" readonly>
-                            <div class="validation-register" id="email_error"></div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Phone</label>
-                            <input type="text" class="register-input" id="phone" placeholder="phone" readonly>
-                            <div class="validation-register" id="phone_error"></div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Username</label>
-                            <input type="text" class="register-input" id="name" placeholder="name" readonly>
-                            <div class="validation-register" id="name_error"></div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="address" class="form-label">Address</label>
-                            <input type="text" class="register-input" id="address" placeholder="address" readonly>
-                            <div class="validation-register" id="address_error"></div>
-                        </div>
-
-                        <div class="mb-2 d-flex align-items-center mt-3">
-                            <label class="form-label me-4 mb-0">Gender</label>
-
-                            <div class="gender-group">
-                                <div class="gender-option">
-                                    <input type="radio" name="gender" id="male" class="gender-radio-input"
-                                        onclick="return false;">
-                                    <label for="male" class="gender-label">
-                                        <span class="gender-custom-icon"></span>
-                                        <span>Male</span>
-                                    </label>
-                                </div>
-
-                                <div class="gender-option">
-                                    <input type="radio" name="gender" id="female" class="gender-radio-input"
-                                        onclick="return false;">
-                                    <label for="female" class="gender-label">
-                                        <span class="gender-custom-icon"></span>
-                                        <span>Female</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="ms-5">
-                                <button type="submit" class="btn-purple">Update</button>
-                            </div>
-                        </div>
-
-
-                    </div>
-            </div>
-            </form>
         </div>
-        </div>
-
-        <hr class="sectionDivider my-5">
-
     </section>
+
+
 
     <!-- Footer -->
     <footer class="text-black text-center ">
