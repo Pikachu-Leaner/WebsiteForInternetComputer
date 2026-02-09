@@ -1226,4 +1226,47 @@ button:disabled {
   font-weight: 700 !important;
   font-size: 20px !important;
 }
+
+.updateProfileSection {
+  .nav-borders {
+    background: linear-gradient(90deg, #d53369 0%, #2563eb 100%) !important;
+    border: none;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    height: 50px;
+  }
+
+  .nav-borders .nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .menu-nav .nav-link:hover {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+  }
+
+  .menu-nav .nav-link.active {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.25) !important;
+    font-weight: 600;
+  }
+
+  .card-header {
+    background:
+      linear-gradient(0deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)),
+      linear-gradient(90deg, #d53369 0%, #2563eb 100%) !important;
+    color: #333333 !important;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  }
+
+  .btn-save-changes {
+    margin-left: 40px;
+    width: 90%;
+  }
+}
+
 /*# sourceMappingURL=style.css.map */
