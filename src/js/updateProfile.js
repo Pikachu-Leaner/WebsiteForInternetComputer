@@ -9,8 +9,27 @@ document.addEventListener('DOMContentLoaded', () => {
   // State input here for easy access
   const inputs = profileForm.querySelectorAll('input');
 
-  // state a value for edit mode to track
+  // state values for edit mode to track
   let isEditMode = false;
+  let originalFormData = null;
+
+  const getFormDataSnapshot = () => {
+    const data = {};
+    inputs.forEach((input) => {
+      if (input.type === 'radio') {
+        if (input.checked) data[input.name] = input.value;
+      } else {
+        data[input.id] = input.value;
+      }
+    });
+    return JSON.stringify(data);
+  };
+
+  window.addEventListener('beforeunload', (e) => {
+    if (isEditMode && originalFormData !== getFormDataSnapshot()) {
+      e.preventDefault();
+    }
+  });
 
   /**
    * Function to switch between Read-only and Edit modes
