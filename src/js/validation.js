@@ -4,9 +4,9 @@ const REGEX_PASSWORD =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,20}$/;
 const REGEX_PHONE = /^[0-9]{10,11}$/;
 const REGEX_NAME =
-  /^[a-zA-Z0-9._ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵýỷỹ\s]+$/;
-  const REGEX_USERNAME = /^[a-zA-Z0-9_]{3,20}$/; 
-const REGEX_BIRTHDAY = /^\d{4}-\d{2}-\d{2}$|^\d{2}\/\d{2}\/\d{4}$/; 
+  /^[a-zA-Z0-9._ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵýỷỹ\s]{8,50}$/;
+const REGEX_USERNAME = /^[a-zA-Z0-9_]{3,20}$/;
+const REGEX_BIRTHDAY = /^\d{4}-\d{2}-\d{2}$|^\d{2}\/\d{2}\/\d{4}$/;
 
 // Show password toggle function
 function setupPasswordToggle(inputFieldId) {
@@ -130,56 +130,56 @@ function validateForm(data) {
  * @param {Object} data - Contains username, firstName, lastName, gender, location, email, phone, birthday
  */
 function validateProfile(data) {
-    const errors = {};
-    let isValid = true;
+  const errors = {};
+  let isValid = true;
 
-    // 1. Username
-    if (!REGEX_USERNAME.test(data.username)) {
-        errors.username = "Username must be 3-20 characters (letters, numbers, underscores)";
-        isValid = false;
-    }
+  // 1. Username
+  if (!REGEX_USERNAME.test(data.username)) {
+    errors.username = 'Username must be 3-20 characters (letters, numbers, underscores)';
+    isValid = false;
+  }
 
-    // 2. Names (First and Last)
-    if (!REGEX_NAME.test(data.firstName)) {
-        errors.firstName = "First name should only contain letters";
-        isValid = false;
-    }
-    if (!REGEX_NAME.test(data.lastName)) {
-        errors.lastName = "Last name should only contain letters";
-        isValid = false;
-    }
+  // 2. Names (First and Last)
+  if (!REGEX_NAME.test(data.firstName)) {
+    errors.firstName = 'First name should only contain letters';
+    isValid = false;
+  }
+  if (!REGEX_NAME.test(data.lastName)) {
+    errors.lastName = 'Last name should only contain letters';
+    isValid = false;
+  }
 
-    // 3. Gender
-    if (data.gender === null || data.gender === undefined) {
-        errors.gender = "Please select a gender";
-        isValid = false;
-    }
+  // 3. Gender
+  if (data.gender === null || data.gender === undefined) {
+    errors.gender = 'Please select a gender';
+    isValid = false;
+  }
 
-    // 4. Location
-    if (!data.location || data.location.trim().length < 2) {
-        errors.location = "Please enter a valid location";
-        isValid = false;
-    }
+  // 4. Location
+  if (!data.location || data.location.trim().length < 2) {
+    errors.location = 'Please enter a valid location';
+    isValid = false;
+  }
 
-    // 5. Email
-    if (!REGEX_EMAIL.test(data.email)) {
-        errors.email = "Invalid Gmail format (requires 1 capital letter)";
-        isValid = false;
-    }
+  // 5. Email
+  if (!REGEX_EMAIL.test(data.email)) {
+    errors.email = 'Invalid Gmail format (requires 1 capital letter)';
+    isValid = false;
+  }
 
-    // 6. Phone
-    if (!REGEX_PHONE.test(data.phone)) {
-        errors.phone = "Phone number must be 10-11 digits";
-        isValid = false;
-    }
+  // 6. Phone
+  if (!REGEX_PHONE.test(data.phone)) {
+    errors.phone = 'Phone number must be 10-11 digits';
+    isValid = false;
+  }
 
-    // 7. Birthday
-    if (!REGEX_BIRTHDAY.test(data.birthday)) {
-        errors.birthday = "Please use a valid date format (YYYY-MM-DD)";
-        isValid = false;
-    }
+  // 7. Birthday
+  if (!REGEX_BIRTHDAY.test(data.birthday)) {
+    errors.birthday = 'Please use a valid date format (YYYY-MM-DD)';
+    isValid = false;
+  }
 
-    return { isValid, errors };
+  return { isValid, errors };
 }
 
 // Export the validateForm function

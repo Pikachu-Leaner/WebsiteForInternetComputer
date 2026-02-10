@@ -29,20 +29,60 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
+    // Toggle character counters visibility ( .char-counter elements )
+    const counters = document.querySelectorAll('.char-counter');
+    counters.forEach((counter) => {
+      counter.classList.toggle('d-none', status);
+    });
+
     if (status) {
       // View mode ( when first load the page or after saving changes)
       toggleBtn.innerText = 'Update profile';
       toggleBtn.classList.replace('btn-success', 'btn-primary');
-      uploadBtn.classList.add('d-none'); 
+      uploadBtn.classList.add('d-none');
     } else {
       // Edit mode ( after clicking the update profile button)
       toggleBtn.innerText = 'Save changes';
       toggleBtn.classList.replace('btn-primary', 'btn-success');
-      uploadBtn.classList.remove('d-none'); 
+      uploadBtn.classList.remove('d-none');
     }
   };
 
   setViewMode(true);
+
+  const setupCharCounter = (inputId, maxLength) => {
+    const inputElem = document.getElementById(inputId);
+    if (!inputElem) return;
+
+    // Create counter UI element
+    const counterDiv = document.createElement('div');
+    counterDiv.className = 'char-counter text-end small text-muted mt-1 d-none';
+    counterDiv.innerHTML = `<span id="${inputId}-count">0</span>/${maxLength}`;
+    inputElem.parentNode.appendChild(counterDiv);
+
+    const counterSpan = document.getElementById(`${inputId}-count`);
+
+    // Real-time input listener
+    inputElem.addEventListener('input', () => {
+      const currentLength = inputElem.value.length;
+      counterSpan.innerText = currentLength;
+
+      // Visual threshold warning at 80%
+      if (currentLength >= maxLength * 0.8) {
+        counterSpan.classList.add('text-danger');
+      } else {
+        counterSpan.classList.remove('text-danger');
+      }
+    });
+  };
+
+  // Set up number of charater allow counters for specific fields
+  setupCharCounter('inputUsername', 20);
+  setupCharCounter('inputLocation', 100);
+  setupCharCounter('inputFirstName', 10);
+  setupCharCounter('inputLastName', 10);
+  setupCharCounter('inputPhone', 11);
+  setupCharCounter('inputBirthday', 10);
 
   // Edit update profile/save changes button
   toggleBtn.addEventListener('click', () => {
