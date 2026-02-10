@@ -1,48 +1,90 @@
+import { validateProfile, showToast } from '../js/validation.js';
+
 document.addEventListener('DOMContentLoaded', () => {
+  // Select UI Elements ( buttons, form, inputs)
   const toggleBtn = document.getElementById('btnToggleProfile');
   const uploadBtn = document.getElementById('btnUploadImage');
-  const form = document.querySelector('.updateProfileForm');
-  const inputs = form.querySelectorAll('input');
+  const profileForm = document.querySelector('.updateProfileForm');
 
-  // State variable to track if we are in "Edit Mode"
+  // State input here for easy access
+  const inputs = profileForm.querySelectorAll('input');
+
+  // state a value for edit mode to track
   let isEditMode = false;
 
-  // 1. Initial Setup: Read-only mode
-  const setReadOnly = (status) => {
+  /**
+   * Function to switch between Read-only and Edit modes
+   * @param {boolean} status - true to enable Read-only, false to enable Editing
+   */
+  const setViewMode = (status) => {
     isEditMode = !status;
 
     inputs.forEach((input) => {
+      // Read-only for text inputs
       input.readOnly = status;
-      // For radio buttons, we use disabled because readOnly doesn't apply
-      if (input.type === 'radio') {
+
+      // Disable radio buttons since they don't have readOnly property - they are not text inputs duh
+      if (input.type === 'radio' || input.tagName === 'SELECT') {
         input.disabled = status;
       }
     });
 
     if (status) {
-      // VIEW MODE
+      // View mode ( when first load the page or after saving changes)
       toggleBtn.innerText = 'Update profile';
-      uploadBtn.classList.add('d-none'); // Hide upload button
+      toggleBtn.classList.replace('btn-success', 'btn-primary');
+      uploadBtn.classList.add('d-none'); 
     } else {
-      // EDIT MODE
+      // Edit mode ( after clicking the update profile button)
       toggleBtn.innerText = 'Save changes';
-      uploadBtn.classList.remove('d-none'); // Show upload button
+      toggleBtn.classList.replace('btn-primary', 'btn-success');
+      uploadBtn.classList.remove('d-none'); 
     }
   };
 
-  // Run on page load
-  setReadOnly(true);
+  setViewMode(true);
 
-  // 2. Toggle Functionality
+  // Edit update profile/save changes button
   toggleBtn.addEventListener('click', () => {
     if (!isEditMode) {
-      // Switch to Edit Mode
-      setReadOnly(false);
+      // Entering Edit Mode
+      setViewMode(false);
+      showToast('You can now edit your profile', 'success');
     } else {
-      // Switch back to View Mode (after saving)
-      console.log('Saving changes...');
-      // Here you would typically call your API to save data
-      setReadOnly(true);
+      //Attempting to Save Changes
+      handleProfileUpdate();
     }
   });
+
+  function handleProfileUpdate() {
+    // Collect data from the UI
+    const profileData = {
+      username: document.getElementById('inputUsername').value,
+      firstName: document.getElementById('inputFirstName').value,
+      lastName: document.getElementById('inputLastName').value,
+      gender: document.querySelector('input[name="gender"]:checked')?.id || null,
+      location: document.getElementById('inputLocation').value,
+      email: document.getElementById('inputEmailAddress').value,
+      phone: document.getElementById('inputPhone').value,
+      birthday: document.getElementById('inputBirthday').value,
+    };
+
+    const validation = validateProfile(profileData);
+
+    if (!validation.isValid) {
+      // Show  errors that have been founded
+      const firstErrorKey = Object.keys(validation.errors)[0];
+      const errorMessage = validation.errors[firstErrorKey];
+
+      showToast(errorMessage, 'error');
+
+      const errorInput = document.querySelector(`[id*="${firstErrorKey}"]`);
+      if (errorInput) errorInput.focus();
+    } else {
+      showToast('Profile updated successfully!', 'success');
+
+      // Switch back to Read-only mode
+      setViewMode(true);
+    }
+  }
 });
