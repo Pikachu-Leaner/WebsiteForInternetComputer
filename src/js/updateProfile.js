@@ -1,8 +1,16 @@
 // Self-noted: There is currently no birtday data in the API to test so ask the backend to add this feature in later.
 // Accidentally make the birtday input fiel + validation so. For now, it will stay there after backend add it in
-// Ask to add the data name to sbe 'Birthday'.
+// Ask to add the data name to sbe 'birthday'.
 
 import { validateProfile, showToast } from '../js/validation.js';
+
+// To kick back to login back when unable to get access token ( Not login  )
+// Manual deletes the token in the session storage
+// Have to refresh the page to active this
+if (!sessionStorage.getItem('accessToken')) {
+  alert('Your session has been expired or not log in! Pls login again to use this feature.');
+  window.location.href = '../pages/login.html';
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   // To kick back to login back when unable to get access token ( Not login  )
@@ -38,10 +46,18 @@ document.addEventListener('DOMContentLoaded', () => {
   let originalFormData = null;
   let finalCompressedFile = null;
 
+  // force to set character counters to input fields at start
+  const updateAllCounters = () => {
+    inputs.forEach((input) => {
+      input.dispatchEvent(new Event('input'));
+    });
+  };
+
   // Get the old profile data from the backend API and populate the form
   const getProfile = async () => {
     const accessToken = sessionStorage.getItem('accessToken');
     const loadingOverlay = document.getElementById('loading-overlay');
+
     try {
       if (loadingOverlay) loadingOverlay.classList.remove('d-none');
 
@@ -65,8 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Check and map the data to the input fields
       if (inputUsername) inputUsername.value = userData?.username || '';
-      if (inputFirstName) inputFirstName.value = userData?.firstName || '';
-      if (inputLastName) inputLastName.value = userData?.lastName || '';
+      if (inputFirstName) inputFirstName.value = userData?.first_name || '';
+      if (inputLastName) inputLastName.value = userData?.last_name || '';
       if (inputEmail) inputEmail.value = userData?.email || '';
       if (inputPhone) inputPhone.value = userData?.phone || '';
       if (inputBirthday) inputBirthday.value = userData?.birthday || '';
@@ -75,13 +91,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (inputLocation) inputLocation.value = userData.address || '';
 
       // Check and map the data to the radio buttons
-      if (userData.gender) {
-        // Convert API value to lowercase to match with HTML ID ( since well id is "male" and the API result is "Male", same with female)
-        const genderId = userData.gender.toLowerCase();
-        const genderRadio = document.getElementById(genderId);
-        if (genderRadio) {
-          genderRadio.checked = true;
-        }
+      if (userData.gender === true) {
+        const maleRadio = document.getElementById('male');
+        if (maleRadio) maleRadio.checked = true;
+      } else if (userData.gender === false) {
+        const femaleRadio = document.getElementById('female');
+        if (femaleRadio) femaleRadio.checked = true;
       }
 
       // Check and map the data to the profile image area
@@ -96,6 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       originalFormData = getFormDataSnapshot();
+      updateAllCounters();
     } catch (error) {
       console.error('Get Profile Error:', error);
       showToast(error.message, 'error');
@@ -302,6 +318,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!finalCompressedFile) {
         showToast('Please select an image first.', 'error');
         return;
+      } else {
+        showToast('Uploading image...', 'success');
       }
 
       // Prepare FormData
@@ -398,35 +416,95 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function handleProfileUpdate() {
+  // Send the updated profile data to the backend API
+  const handleProfileUpdate = async () => {
     // Collect data from the UI
-    const profileData = {
-      username: document.getElementById('inputUsername').value,
+    const genderInput = document.querySelector('input[name="gender"]:checked');
+    let genderBoolean = null;
+
+    if (genderInput) {
+      genderBoolean = genderInput.id === 'male' ? true : false;
+    }
+
+    // Prepare the data to send to the backend
+    const validationData = {
+      // username: document.getElementById('inputUsername').value,
       firstName: document.getElementById('inputFirstName').value,
       lastName: document.getElementById('inputLastName').value,
-      gender: document.querySelector('input[name="gender"]:checked')?.id || null,
+      gender: genderBoolean,
       location: document.getElementById('inputLocation').value,
       email: document.getElementById('inputEmailAddress').value,
       phone: document.getElementById('inputPhone').value,
-      birthday: document.getElementById('inputBirthday').value,
+      // birthday: document.getElementById('inputBirthday').value,
     };
 
-    const validation = validateProfile(profileData);
+    // Prepare the object for the API (Backend typically uses 'address' instead of 'location')
+    const apiPayload = {
+      // username: inputUsername,
+      first_name: inputFirstName,
+      last_name: inputLastName,
+      email: inputEmail,
+      phone: inputPhone,
+      // birthday: inputBirthday,
+      gender: genderBoolean,
+      address: inputLocation,
+      cover_photo: inputLocation,
+    };
+
+    // validation before send to backend
+    const validation = validateProfile(validationData);
 
     if (!validation.isValid) {
-      // Show  errors that have been founded
       const firstErrorKey = Object.keys(validation.errors)[0];
-      const errorMessage = validation.errors[firstErrorKey];
+      showToast(validation.errors[firstErrorKey], 'error');
 
-      showToast(errorMessage, 'error');
-
-      const errorInput = document.querySelector(`[id*="${firstErrorKey}"]`);
+      // Focus error inputs based on the first error key ( since the key is the same as the input id, we can use it to find the input to focus )
+      const errorFieldId =
+        firstErrorKey === 'address'
+          ? 'inputLocation'
+          : `input${firstErrorKey.charAt(0).toUpperCase() + firstErrorKey.slice(1)}`;
+      const errorInput = document.getElementById(errorFieldId);
       if (errorInput) errorInput.focus();
-    } else {
+
+      return;
+    }
+
+    // Send to Backend
+    const accessToken = sessionStorage.getItem('accessToken');
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    try {
+      if (loadingOverlay) loadingOverlay.classList.remove('d-none');
+
+      const response = await fetch('https://shoes-mall.onrender.com/api/v1/users/@me/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(apiPayload),
+      });
+
+      const result = await response.json();
+      // For debugging purposes
+      console.log('API Response Object:', result);
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Failed to update profile');
+      }
+
       showToast('Profile updated successfully!', 'success');
 
-      // Switch back to Read-only mode
+      // Update the "original" state of snapshot so the browser doesn't warn about unsaved changes
+      originalFormData = getFormDataSnapshot();
+
+      // Switch back to Read-only mode after successful update
       setViewMode(true);
+    } catch (error) {
+      console.error(error);
+      showToast(error.message, 'error');
+    } finally {
+      if (loadingOverlay) loadingOverlay.classList.add('d-none');
     }
-  }
+  };
 });

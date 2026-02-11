@@ -4,7 +4,7 @@ const REGEX_PASSWORD =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,20}$/;
 const REGEX_PHONE = /^[0-9]{10,11}$/;
 const REGEX_NAME =
-  /^[a-zA-Z0-9._ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵýỷỹ\s]{8,50}$/;
+  /^[a-zA-Z0-9._ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵýỷỹ\s]{5,10}$/;
 const REGEX_USERNAME = /^[a-zA-Z0-9_]{3,20}$/;
 const REGEX_BIRTHDAY = /^\d{4}-\d{2}-\d{2}$|^\d{2}\/\d{2}\/\d{4}$/;
 
@@ -140,11 +140,18 @@ function validateProfile(data) {
   }
 
   // 2. Names (First and Last)
-  if (!REGEX_NAME.test(data.firstName)) {
+  if (data.firstName.trim().length < 2) {
+    errors.firstName = 'First name must be at least 2 letters'; 
+    isValid = false;
+  } else if (!REGEX_NAME.test(data.firstName)) {
     errors.firstName = 'First name should only contain letters';
     isValid = false;
   }
-  if (!REGEX_NAME.test(data.lastName)) {
+
+  if (data.lastName.trim().length < 2) {
+    errors.lastName = 'Last name must be at least 2 letters';
+    isValid = false;
+  } else if (!REGEX_NAME.test(data.lastName)) {
     errors.lastName = 'Last name should only contain letters';
     isValid = false;
   }
@@ -173,11 +180,13 @@ function validateProfile(data) {
     isValid = false;
   }
 
-  // 7. Birthday
+  // Disable for now since no data in the backend
+  /* 7. Birthday
   if (!REGEX_BIRTHDAY.test(data.birthday)) {
     errors.birthday = 'Please use a valid date format (YYYY-MM-DD)';
     isValid = false;
   }
+  */
 
   return { isValid, errors };
 }
