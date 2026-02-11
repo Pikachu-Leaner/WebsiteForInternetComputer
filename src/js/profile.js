@@ -134,6 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
 if (profileForm) {
   profileForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    showToast('Update feature is under construction!', 'error');
+    window.location.href = '../pages/updateProfile.html';
   });
 }

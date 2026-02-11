@@ -1,6 +1,13 @@
 import { validateProfile, showToast } from '../js/validation.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+  // To kick back to login back when unable to get access token ( Not login  )
+  // Manual deletes the token in the session storage
+  // Have to refresh the page to active this
+  if (!sessionStorage.getItem('accessToken')) {
+    alert('Your session has been expired or not log in! Pls login again to use this feature.');
+    window.location.href = '../pages/login.html';
+  }
   // Select UI Elements ( buttons, form, inputs)
   const toggleBtn = document.getElementById('btnToggleProfile');
   const uploadBtn = document.getElementById('btnUploadImage');
@@ -193,6 +200,72 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (error) {
         console.error(error);
         showToast('Error processing image.', 'error');
+      }
+    });
+  }
+
+  // Upload image function button
+  if (uploadBtn) {
+    uploadBtn.addEventListener('click', async () => {
+      const accessToken = sessionStorage.getItem('accessToken');
+
+      // This also like the same logic at the start but not when refrsh but for when click the button then it kick user back  to login page
+      if (!accessToken) {
+        alert('Your session has been expired or not log in! Pls login again to use this feature.');
+        window.location.href = '../pages/login.html';
+        return;
+      }
+
+      // Validation
+      if (!finalCompressedFile) {
+        showToast('Please select an image first.', 'error');
+        return;
+      }
+
+      // Prepare FormData
+      const formData = new FormData();
+      formData.append('image', finalCompressedFile);
+
+      // Show Loading Overlay
+      //if (loadingOverlay) loadingOverlay.classList.remove('d-none');
+
+      try {
+        //Send POST request to the backend API
+        const response = await fetch('https://shoes-mall.onrender.com/api/v1/users/@me/avatar', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: formData,
+        });
+
+        // Parse JSON result immediately to get the server message
+        const result = await response.json();
+        //For debugging purposes
+        console.log('API Response Object:', result);
+
+        // Error Handling
+        if (!response.ok) {
+          const serverErrorMessage = result.message || result.error || response.statusText;
+          throw new Error(serverErrorMessage);
+        }
+
+        // Success Handling
+        showToast(result.message || 'Avatar uploaded successfully!', 'success');
+
+        // Cleanup
+        finalCompressedFile = null;
+        if (avatarInput) avatarInput.value = '';
+
+        // Small delay before reload so user can read the success toast
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      } catch (error) {
+        showToast(error.message || 'Failed to upload image. Please try again.', 'error');
+      } finally {
+        // Hide Loading Overlay
+        // (loadingOverlay) loadingOverlay.classList.add('d-none');
       }
     });
   }
