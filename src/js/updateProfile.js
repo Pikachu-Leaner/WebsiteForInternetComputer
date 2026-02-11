@@ -524,8 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
           // Switch back to Read-only mode after successful update
           setViewMode(true);
 
-          // Move back to profile page after successful update
-          window.location.href = '../pages/profile.html';
+
         } catch (error) {
           showToast(error.message, 'error');
         } finally {
