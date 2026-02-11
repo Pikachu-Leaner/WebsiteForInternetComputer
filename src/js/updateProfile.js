@@ -6,6 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const uploadBtn = document.getElementById('btnUploadImage');
   const profileForm = document.querySelector('.updateProfileForm');
 
+  const avatarInput = document.getElementById('avatarInput');
+  const profileImage = document.getElementById('profileImage');
+  const uploadIcon = document.querySelector('.edit-avatar-icon');
+
   // State input here for easy access
   const inputs = profileForm.querySelectorAll('input');
 
@@ -58,16 +62,59 @@ document.addEventListener('DOMContentLoaded', () => {
       // View mode ( when first load the page or after saving changes)
       toggleBtn.innerText = 'Update profile';
       toggleBtn.classList.replace('btn-success', 'btn-primary');
-      uploadBtn.classList.add('d-none');
+      if (uploadBtn) uploadBtn.classList.add('d-none');
+      if (uploadIcon) uploadIcon.classList.add('d-none');
     } else {
       // Edit mode ( after clicking the update profile button)
       toggleBtn.innerText = 'Save changes';
-      toggleBtn.classList.replace('btn-primary', 'btn-success');
-      uploadBtn.classList.remove('d-none');
+      toggleBtn.classList.replace('btn-primary', 'btn-success', 'avatar-icon');
+      if (uploadBtn) uploadBtn.classList.remove('d-none');
+      if (uploadIcon) uploadIcon.classList.remove('d-none');
     }
   };
 
   setViewMode(true);
+
+  const triggerFileSelect = () => {
+    if (avatarInput) {
+      avatarInput.click();
+    } else {
+      showToast('Avatar input element not found!');
+    }
+  };
+
+  //  Pen icon
+  if (uploadIcon) {
+    uploadIcon.addEventListener('click', triggerFileSelect);
+  }
+
+  // Handle File Selection & Preview
+  if (avatarInput) {
+    avatarInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+
+      if (file) {
+        // Validation: Check file size (5MB)
+        const maxSize = 5 * 1024 * 1024;
+
+        if (file.size > maxSize) {
+          showToast('File is too large! Please select an image under 5MB.', 'error');
+          avatarInput.value = ''; // Reset input
+          return;
+        }
+
+        // Preview Logic
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          if (profileImage) {
+            profileImage.src = e.target.result;
+            showToast('Image selected. Click "Save changes" to finalize.', 'info');
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
 
   const setupCharCounter = (inputId, maxLength) => {
     const inputElem = document.getElementById(inputId);
