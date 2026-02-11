@@ -141,7 +141,7 @@ function validateProfile(data) {
 
   // 2. Names (First and Last)
   if (data.firstName.trim().length < 2) {
-    errors.firstName = 'First name must be at least 2 letters'; 
+    errors.firstName = 'First name must be at least 2 letters';
     isValid = false;
   } else if (!REGEX_NAME.test(data.firstName)) {
     errors.firstName = 'First name should only contain letters';
@@ -221,7 +221,7 @@ function confirmUpdateAction(onConfirm, onDiscard) {
   const confirmBtn = document.getElementById('btnConfirmSave');
   const cancelBtn = document.getElementById('btnCancelSave');
   // @ts-ignore
-  const modal = new bootstrap.Modal(modalEl);
+  const modal = new bootstrap.Modal(modalEl); // eslint-disable-line no-undef
 
   // Clean all the previous event listeners by cloning and replacing nodes
   const newConfirm = confirmBtn.cloneNode(true);
@@ -231,15 +231,19 @@ function confirmUpdateAction(onConfirm, onDiscard) {
   cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
 
   // On Confirm
-  newConfirm.addEventListener('click', function () {
+  newConfirm.addEventListener('click', () => {
     modal.hide();
-    if (onConfirm) onConfirm(); // Run the save function
+    if (onConfirm) {
+      onConfirm();
+    } // Run the save function
   });
 
   // On Cancel/Discard
-  newCancel.addEventListener('click', function () {
+  newCancel.addEventListener('click', () => {
     modal.hide();
-    if (onDiscard) onDiscard(); // Run the revert function
+    if (onDiscard) {
+      onDiscard();
+    } // Run the revert function
   });
 
   // 5. Show the modal

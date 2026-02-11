@@ -15,7 +15,9 @@ const authLinkHide3 = document.getElementById('auth-links-menu-drop-down');
 
 // Function to show/hide loading overlay
 function toggleLoading(isLoading) {
-  if (!loadingOverlay) return;
+  if (!loadingOverlay) {
+    return;
+  }
 
   if (isLoading) {
     loadingOverlay.classList.remove('d-none');
@@ -28,11 +30,13 @@ function toggleLoading(isLoading) {
 
 // Kick back the a href link on nav
 function handleAuthRouting(accessToken) {
-  if (!authContainer) return;
+  if (!authContainer) {
+    return;
+  }
 
   if (!accessToken) {
     // Not log in
-    authContainer.innerHTML = ` `;
+    authContainer.innerHTML = ' ';
     authLinkHide3.classList.toggle('hide-link');
   } else {
     // Log in
@@ -100,19 +104,33 @@ async function getProfile() {
 }
 
 function populateForm(data) {
-  if (!data) return;
+  if (!data) {
+    return;
+  }
 
   // Handle user data fields
-  if (data.email) emailInput.value = data.email;
-  if (data.username) nameInput.value = data.username;
-  if (data.phone) phoneInput.value = data.phone;
-  if (data.address) addressInput.value = data.address;
+  if (data.email) {
+    emailInput.value = data.email;
+  }
+  if (data.username) {
+    nameInput.value = data.username;
+  }
+  if (data.phone) {
+    phoneInput.value = data.phone;
+  }
+  if (data.address) {
+    addressInput.value = data.address;
+  }
 
   // Handle Gender
   if (data.gender === true || data.gender === 'male' || data.gender === 'Male') {
-    if (maleRadio) maleRadio.checked = true;
+    if (maleRadio) {
+      maleRadio.checked = true;
+    }
   } else {
-    if (femaleRadio) femaleRadio.checked = true;
+    if (femaleRadio) {
+      femaleRadio.checked = true;
+    }
   }
 
   // Handle Avatar ( if have )

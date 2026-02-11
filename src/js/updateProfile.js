@@ -8,7 +8,7 @@ import { validateProfile, showToast, confirmUpdateAction } from '../js/validatio
 // Manual deletes the token in the session storage
 // Have to refresh the page to active this
 if (!sessionStorage.getItem('accessToken')) {
-  alert('Your session has been expired or not log in! Pls login again to use this feature.');
+  alert('Your session has been expired or not log in! Pls login again to use this feature.'); // eslint-disable-line no-alert
   window.location.href = '../pages/login.html';
 }
 
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Manual deletes the token in the session storage
   // Have to refresh the page to active this
   if (!sessionStorage.getItem('accessToken')) {
-    alert('Your session has been expired or not log in! Pls login again to use this feature.');
+    alert('Your session has been expired or not log in! Pls login again to use this feature.'); // eslint-disable-line no-alert
     window.location.href = '../pages/login.html';
   }
   // Select UI Elements ( buttons, form, inputs)
@@ -60,7 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingOverlay = document.getElementById('loading-overlay');
 
     try {
-      if (loadingOverlay) loadingOverlay.classList.remove('d-none');
+      if (loadingOverlay) {
+        loadingOverlay.classList.remove('d-none');
+      }
 
       const response = await fetch('https://shoes-mall.onrender.com/api/v1/users/@me/profile', {
         method: 'GET',
@@ -83,23 +85,41 @@ document.addEventListener('DOMContentLoaded', () => {
       currentAvatarUrl = userData?.avatar || '';
 
       // Check and map the data to the input fields
-      if (inputUsername) inputUsername.value = userData?.username || '';
-      if (inputFirstName) inputFirstName.value = userData?.first_name || '';
-      if (inputLastName) inputLastName.value = userData?.last_name || '';
-      if (inputEmail) inputEmail.value = userData?.email || '';
-      if (inputPhone) inputPhone.value = userData?.phone || '';
-      if (inputBirthday) inputBirthday.value = userData?.birthday || '';
+      if (inputUsername) {
+        inputUsername.value = userData?.username || '';
+      }
+      if (inputFirstName) {
+        inputFirstName.value = userData?.first_name || '';
+      }
+      if (inputLastName) {
+        inputLastName.value = userData?.last_name || '';
+      }
+      if (inputEmail) {
+        inputEmail.value = userData?.email || '';
+      }
+      if (inputPhone) {
+        inputPhone.value = userData?.phone || '';
+      }
+      if (inputBirthday) {
+        inputBirthday.value = userData?.birthday || '';
+      }
 
       // Move the address from API to inputLocation
-      if (inputLocation) inputLocation.value = userData.address || '';
+      if (inputLocation) {
+        inputLocation.value = userData.address || '';
+      }
 
       // Check and map the data to the radio buttons
       if (userData.gender === true) {
         const maleRadio = document.getElementById('male');
-        if (maleRadio) maleRadio.checked = true;
+        if (maleRadio) {
+          maleRadio.checked = true;
+        }
       } else if (userData.gender === false) {
         const femaleRadio = document.getElementById('female');
-        if (femaleRadio) femaleRadio.checked = true;
+        if (femaleRadio) {
+          femaleRadio.checked = true;
+        }
       }
 
       // Check and map the data to the profile image area
@@ -119,7 +139,9 @@ document.addEventListener('DOMContentLoaded', () => {
       showToast(error.message, 'error');
     } finally {
       // Hide loading overlay
-      if (loadingOverlay) loadingOverlay.classList.add('d-none');
+      if (loadingOverlay) {
+        loadingOverlay.classList.add('d-none');
+      }
     }
   };
   // Use the function to get and populate the form when first load the page
@@ -129,7 +151,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = {};
     inputs.forEach((input) => {
       if (input.type === 'radio') {
-        if (input.checked) data[input.name] = input.value;
+        if (input.checked) {
+          data[input.name] = input.value;
+        }
       } else {
         data[input.id] = input.value;
       }
@@ -170,14 +194,22 @@ document.addEventListener('DOMContentLoaded', () => {
       // View mode ( when first load the page or after saving changes)
       toggleBtn.innerText = 'Update profile';
       toggleBtn.classList.replace('btn-success', 'btn-primary');
-      if (uploadBtn) uploadBtn.classList.add('d-none');
-      if (uploadIcon) uploadIcon.classList.add('d-none');
+      if (uploadBtn) {
+        uploadBtn.classList.add('d-none');
+      }
+      if (uploadIcon) {
+        uploadIcon.classList.add('d-none');
+      }
     } else {
       // Edit mode ( after clicking the update profile button)
       toggleBtn.innerText = 'Save changes';
       toggleBtn.classList.replace('btn-primary', 'btn-success', 'avatar-icon');
-      if (uploadBtn) uploadBtn.classList.remove('d-none');
-      if (uploadIcon) uploadIcon.classList.remove('d-none');
+      if (uploadBtn) {
+        uploadBtn.classList.remove('d-none');
+      }
+      if (uploadIcon) {
+        uploadIcon.classList.remove('d-none');
+      }
     }
   };
 
@@ -230,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
               }
             },
             'image/jpeg',
-            quality
+            quality,
           );
         };
 
@@ -257,7 +289,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (avatarInput) {
     avatarInput.addEventListener('change', async (event) => {
       const file = event.target.files[0];
-      if (!file) return;
+      if (!file) {
+        return;
+      }
 
       // Img validation
       const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
@@ -311,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // This also like the same logic at the start but not when refrsh but for when click the button then it kick user back  to login page
       if (!accessToken) {
-        alert('Your session has been expired or not log in! Pls login again to use this feature.');
+        alert('Your session has been expired or not log in! Pls login again to use this feature.'); // eslint-disable-line no-alert
         window.location.href = '../pages/login.html';
         return;
       }
@@ -320,9 +354,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!finalCompressedFile) {
         showToast('Please select an image first.', 'error');
         return;
-      } else {
-        showToast('Uploading image...', 'success');
       }
+      showToast('Uploading image...', 'success');
 
       // Prepare FormData
       const formData = new FormData();
@@ -358,7 +391,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Cleanup
         finalCompressedFile = null;
-        if (avatarInput) avatarInput.value = '';
+        if (avatarInput) {
+          avatarInput.value = '';
+        }
 
         // make the promise to wait until the getProfile function is done before switch back to edit-mode
         await getProfile();
@@ -374,14 +409,16 @@ document.addEventListener('DOMContentLoaded', () => {
       } finally {
         // Hide Loading Overlay
         uploadBtn.disabled = false;
-        loadingOverlay.classList.add('d-none');
+        //loadingOverlay.classList.add('d-none');
       }
     });
   }
 
   const setupCharCounter = (inputId, maxLength) => {
     const inputElem = document.getElementById(inputId);
-    if (!inputElem) return;
+    if (!inputElem) {
+      return;
+    }
 
     // Create counter UI element
     const counterDiv = document.createElement('div');
@@ -476,7 +513,9 @@ document.addEventListener('DOMContentLoaded', () => {
           ? 'inputLocation'
           : `input${firstErrorKey.charAt(0).toUpperCase() + firstErrorKey.slice(1)}`;
       const errorInput = document.getElementById(errorFieldId);
-      if (errorInput) errorInput.focus();
+      if (errorInput) {
+        errorInput.focus();
+      }
 
       return;
     }
@@ -489,7 +528,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const originalBtnText = 'Save changes';
 
         try {
-          if (loadingOverlay) loadingOverlay.classList.remove('d-none');
+          if (loadingOverlay) {
+            loadingOverlay.classList.remove('d-none');
+          }
           toggleBtn.disabled = true;
           toggleBtn.innerText = 'Saving...';
           inputs.forEach((input) => (input.disabled = true));
@@ -524,11 +565,14 @@ document.addEventListener('DOMContentLoaded', () => {
           // Switch back to Read-only mode after successful update
           setViewMode(true);
 
-
+          // Move back to profile page after successful update
+          window.location.href = '../pages/profile.html';
         } catch (error) {
           showToast(error.message, 'error');
         } finally {
-          if (loadingOverlay) loadingOverlay.classList.add('d-none');
+          if (loadingOverlay) {
+            loadingOverlay.classList.add('d-none');
+          }
           toggleBtn.disabled = false;
           if (isEditMode) {
             toggleBtn.innerText = originalBtnText;
@@ -540,7 +584,7 @@ document.addEventListener('DOMContentLoaded', () => {
         getProfile();
         setViewMode(false);
         showToast('Changes discarded ! You can try to update again if you want.', 'info');
-      }
+      },
     );
   };
 });

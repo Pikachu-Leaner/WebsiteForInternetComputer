@@ -1,4 +1,4 @@
-import { validateForm, showToast, setupPasswordToggle } from '../js/validation.js';
+import { setupPasswordToggle } from '../js/validation.js';
 
 // Setup password visibility toggles
 setupPasswordToggle('password');
@@ -63,7 +63,7 @@ form.addEventListener('submit', async (e) => {
     setError(email, 'Server connection failed.');
   } finally {
     loginBtn.disabled = false;
-    loginBtn.innerText = originalBtnText;
+    //loginBtn.innerText = originalBtnText;
   }
 });
 

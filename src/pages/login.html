@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -106,93 +106,123 @@
 
     <!-- Login form -->
     <div id="error" class="login-form-container">
-        <form id="login" method="get" action="/">
-            <div class="mb-4 pb-1">
-                <label for="exampleInputEmail1" class="form-label">Email</label>
-                <input type="email" class="form-control" id="emailLogin" aria-describedby="emailHelp"
-                    placeholder="Email">
-                <div id="emailResponse" class="error"></div>
-            </div>
-            <div class="mb-4 pb-1">
-                <label for="exampleInputPassword1" class="form-label">Password</label>
+      <form id="login" method="get" action="/">
+        <div class="mb-4 pb-1">
+          <label for="exampleInputEmail1" class="form-label">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            id="emailLogin"
+            aria-describedby="emailHelp"
+            placeholder="Email"
+          />
+          <div id="emailResponse" class="error"></div>
+        </div>
+        <div class="mb-4 pb-1">
+          <label for="exampleInputPassword1" class="form-label">Password</label>
 
-                <div class="input-group">
-                    <input type="password" class="form-control custom-password-input border-end-0" id="password"
-                        placeholder="Password">
+          <div class="input-group">
+            <input
+              type="password"
+              class="form-control custom-password-input border-end-0"
+              id="password"
+              placeholder="Password"
+            />
 
-                    <span class="input-group-text custom-password-input border-start-0" id="password-toggle">
-                        <i class="fa fa-eye"></i>
-                    </span>
+            <span
+              class="input-group-text custom-password-input border-start-0"
+              id="password-toggle"
+            >
+              <i class="fa fa-eye"></i>
+            </span>
+          </div>
+          <div id="passwordResponse" class="error"></div>
+        </div>
 
-                </div>
-                <div id="passwordResponse" class="error"></div>
+        <!-- Login with usser and password or register -->
+        <div class="mb-2 form-check">
+          <a href="../pages/register.html" class="register-link">Register now ?</a>
+          <button class="btn rounded-pill btn-login" id="btn-Login" type="submit">Login</button>
+        </div>
 
-            </div>
-
-            <!-- Login with usser and password or register -->
-            <div class="mb-2 form-check">
-                <a href="../pages/register.html" class="register-link">Register now ?</a>
-                <button class="btn rounded-pill btn-login" id="btn-Login" type="submit">Login</button>
-            </div>
-
-            <!-- Login with facebook -->
-            <div class="container mb-5 login-with-facebook">
-                <button
-                    class="btn btn-facebook rounded-pill py-2 text-center d-flex justify-content-center align-items-center">
-                    <i class="fab fa-facebook icon-facebook "></i>
-                    <span class="fs-5 fw-normal facebook-login-title">Continue with Facebook</span>
-                </button>
-            </div>
-        </form>
+        <!-- Login with facebook -->
+        <div class="container mb-5 login-with-facebook">
+          <button
+            class="btn btn-facebook rounded-pill py-2 text-center d-flex justify-content-center align-items-center"
+          >
+            <i class="fab fa-facebook icon-facebook"></i>
+            <span class="fs-5 fw-normal facebook-login-title">Continue with Facebook</span>
+          </button>
+        </div>
+      </form>
     </div>
 
     <!-- Footer -->
-    <footer class="text-black text-center ">
-        <div class="container">
-            <!-- text-start to set all the words to the left ( or the at the start ) -->
-            <div class="row text-start">
-                <!-- Footer area content 1 -->
-                <div class="col-md-4 border-md-end mb-4 mb-md-0 ps-md-5">
-                    <h5 class="fw-bold text-uppercase mb-3">Get Help</h5>
-                    <ul class="list-unstyled fw-bold">
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-dark footer-link">Home</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-dark footer-link">Nike</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-dark footer-link">Adidas</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-dark footer-link">Contact</a></li>
-                    </ul>
-                </div>
+    <footer class="text-black text-center">
+      <div class="container">
+        <!-- text-start to set all the words to the left ( or the at the start ) -->
+        <div class="row text-start">
+          <!-- Footer area content 1 -->
+          <div class="col-md-4 border-md-end mb-4 mb-md-0 ps-md-5">
+            <h5 class="fw-bold text-uppercase mb-3">Get Help</h5>
+            <ul class="list-unstyled fw-bold">
+              <li class="mb-2">
+                <a href="#" class="text-decoration-none text-dark footer-link">Home</a>
+              </li>
+              <li class="mb-2">
+                <a href="#" class="text-decoration-none text-dark footer-link">Nike</a>
+              </li>
+              <li class="mb-2">
+                <a href="#" class="text-decoration-none text-dark footer-link">Adidas</a>
+              </li>
+              <li class="mb-2">
+                <a href="#" class="text-decoration-none text-dark footer-link">Contact</a>
+              </li>
+            </ul>
+          </div>
 
-                <!-- Footer area content 2 -->
-                <div class="col-md-4 border-md-end mb-4 mb-md-0 ps-md-5">
-                    <h5 class="fw-bold text-uppercase mb-3">Support</h5>
-                    <ul class="list-unstyled fw-bold ">
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-dark footer-link">About</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-dark footer-link">Contact</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-dark footer-link">Help</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-dark footer-link">Phone</a></li>
-                    </ul>
-                </div>
+          <!-- Footer area content 2 -->
+          <div class="col-md-4 border-md-end mb-4 mb-md-0 ps-md-5">
+            <h5 class="fw-bold text-uppercase mb-3">Support</h5>
+            <ul class="list-unstyled fw-bold">
+              <li class="mb-2">
+                <a href="#" class="text-decoration-none text-dark footer-link">About</a>
+              </li>
+              <li class="mb-2">
+                <a href="#" class="text-decoration-none text-dark footer-link">Contact</a>
+              </li>
+              <li class="mb-2">
+                <a href="#" class="text-decoration-none text-dark footer-link">Help</a>
+              </li>
+              <li class="mb-2">
+                <a href="#" class="text-decoration-none text-dark footer-link">Phone</a>
+              </li>
+            </ul>
+          </div>
 
-                <!-- Footer area content 3 -->
-                <div class="col-md-4 ps-md-5">
-                    <h5 class="fw-bold text-uppercase mb-3">Register</h5>
-                    <ul class="list-unstyled fw-bold">
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-dark footer-link">register</a>
-                        </li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-dark footer-link">login</a></li>
-                    </ul>
-                </div>
-            </div>
+          <!-- Footer area content 3 -->
+          <div class="col-md-4 ps-md-5">
+            <h5 class="fw-bold text-uppercase mb-3">Register</h5>
+            <ul class="list-unstyled fw-bold">
+              <li class="mb-2">
+                <a href="#" class="text-decoration-none text-dark footer-link">register</a>
+              </li>
+              <li class="mb-2">
+                <a href="#" class="text-decoration-none text-dark footer-link">login</a>
+              </li>
+            </ul>
+          </div>
         </div>
+      </div>
 
-        <!-- Credit -->
-        <section class="credit-Section mt-3">
-            <div class="text-center p-3 credit-info">
-                <p class="mb-0 text-dark">
-                    © 2022 Cybersoft All Rights Reserved | Design Theme by Trương Tấn Khải.
-                </p>
-            </div>
-        </section>
+      <!-- Credit -->
+      <section class="credit-Section mt-3">
+        <div class="text-center p-3 credit-info">
+          <p class="mb-0 text-dark">
+            © 2022 Cybersoft All Rights Reserved | Design Theme by Trương Tấn Khải.
+          </p>
+        </div>
+      </section>
     </footer>
 
     <!-- boostrap script-->
@@ -203,5 +233,5 @@
 
     <!-- My script -->
     <script type="module" src="../js/login.js"></script>
-</body>
+  </body>
 </html>
