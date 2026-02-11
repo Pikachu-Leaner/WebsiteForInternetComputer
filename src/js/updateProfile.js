@@ -1,3 +1,7 @@
+// Self-noted: There is currently no birtday data in the API to test so ask the backend to add this feature in later.
+// Accidentally make the birtday input fiel + validation so. For now, it will stay there after backend add it in
+// Ask to add the data name to sbe 'Birthday'.
+
 import { validateProfile, showToast } from '../js/validation.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -17,6 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const profileImage = document.getElementById('profileImage');
   const uploadIcon = document.querySelector('.edit-avatar-icon');
 
+  // Input field elements
+  const inputUsername = document.getElementById('inputUsername');
+  const inputFirstName = document.getElementById('inputFirstName');
+  const inputLastName = document.getElementById('inputLastName');
+  const inputLocation = document.getElementById('inputLocation');
+  const inputEmail = document.getElementById('inputEmailAddress');
+  const inputPhone = document.getElementById('inputPhone');
+  const inputBirthday = document.getElementById('inputBirthday');
+
   // State input here for easy access
   const inputs = profileForm.querySelectorAll('input');
 
@@ -24,6 +37,75 @@ document.addEventListener('DOMContentLoaded', () => {
   let isEditMode = false;
   let originalFormData = null;
   let finalCompressedFile = null;
+
+  // Get the old profile data from the backend API and populate the form
+  const getProfile = async () => {
+    const accessToken = sessionStorage.getItem('accessToken');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    try {
+      if (loadingOverlay) loadingOverlay.classList.remove('d-none');
+
+      const response = await fetch('https://shoes-mall.onrender.com/api/v1/users/@me/profile', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const result = await response.json();
+      //For debugging purposes
+      console.log('API Response Object:', result);
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Failed to fetch profile data');
+      }
+
+      const userData = result.data || result;
+
+      // Check and map the data to the input fields
+      if (inputUsername) inputUsername.value = userData?.username || '';
+      if (inputFirstName) inputFirstName.value = userData?.firstName || '';
+      if (inputLastName) inputLastName.value = userData?.lastName || '';
+      if (inputEmail) inputEmail.value = userData?.email || '';
+      if (inputPhone) inputPhone.value = userData?.phone || '';
+      if (inputBirthday) inputBirthday.value = userData?.birthday || '';
+
+      // Move the address from API to inputLocation
+      if (inputLocation) inputLocation.value = userData.address || '';
+
+      // Check and map the data to the radio buttons
+      if (userData.gender) {
+        // Convert API value to lowercase to match with HTML ID ( since well id is "male" and the API result is "Male", same with female)
+        const genderId = userData.gender.toLowerCase();
+        const genderRadio = document.getElementById(genderId);
+        if (genderRadio) {
+          genderRadio.checked = true;
+        }
+      }
+
+      // Check and map the data to the profile image area
+      if (userData.avatar && profileImage) {
+        profileImage.src = userData.avatar;
+
+        // Force the img data get from api to fit the currnent profile image circle
+        profileImage.style.width = '225px';
+        profileImage.style.height = '225px';
+        profileImage.style.borderRadius = '50%';
+        profileImage.style.objectFit = 'cover';
+      }
+
+      originalFormData = getFormDataSnapshot();
+    } catch (error) {
+      console.error('Get Profile Error:', error);
+      showToast(error.message, 'error');
+    } finally {
+      // Hide loading overlay
+      if (loadingOverlay) loadingOverlay.classList.add('d-none');
+    }
+  };
+  // Use the function to get and populate the form when first load the page
+  getProfile();
 
   const getFormDataSnapshot = () => {
     const data = {};
