@@ -305,7 +305,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Upload image function button
   if (uploadBtn) {
-    uploadBtn.addEventListener('click', async () => {
+    uploadBtn.addEventListener('click', async (event) => {
+      event.preventDefault();
       const accessToken = sessionStorage.getItem('accessToken');
 
       // This also like the same logic at the start but not when refrsh but for when click the button then it kick user back  to login page
@@ -331,6 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
       //if (loadingOverlay) loadingOverlay.classList.remove('d-none');
 
       try {
+        uploadBtn.disabled = true;
         //Send POST request to the backend API
         const response = await fetch('https://shoes-mall.onrender.com/api/v1/users/@me/avatar', {
           method: 'POST',
@@ -358,15 +360,21 @@ document.addEventListener('DOMContentLoaded', () => {
         finalCompressedFile = null;
         if (avatarInput) avatarInput.value = '';
 
+        // make the promise to wait until the getProfile function is done before switch back to edit-mode
+        await getProfile();
+        originalFormData = getFormDataSnapshot();
+        setViewMode(false);
+
         // Small delay before reload so user can read the success toast
         setTimeout(() => {
-          window.location.reload();
+          // remove window.location.reload() since it got conflict with the setViewmode(false) [ since reload = set theViewmode back to it orignal state which is true ! ]
         }, 1500);
       } catch (error) {
         showToast(error.message || 'Failed to upload image. Please try again.', 'error');
       } finally {
         // Hide Loading Overlay
-        // (loadingOverlay) loadingOverlay.classList.add('d-none');
+        uploadBtn.disabled = false;
+        loadingOverlay.classList.add('d-none');
       }
     });
   }
@@ -515,6 +523,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // Switch back to Read-only mode after successful update
           setViewMode(true);
+
+
         } catch (error) {
           showToast(error.message, 'error');
         } finally {
