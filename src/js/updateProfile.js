@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // state values for edit mode to track
   let isEditMode = false;
   let originalFormData = null;
+  let finalCompressedFile = null;
 
   const getFormDataSnapshot = () => {
     const data = {};
@@ -75,6 +76,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
   setViewMode(true);
 
+  /**
+   * Compresses and resizes an image file.
+   * @param {File} file - The original image file.
+   * @param {number} maxWidth - Maximum width for the image.
+   * @param {number} quality - JPEG quality (0.0 to 1.0).
+   * @returns {Promise<{blob: Blob, dataUrl: string}>}
+   */
+  const optimizeImage = (file, maxWidth = 800, quality = 0.7) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+
+        img.onload = () => {
+          // Calculate new dimensions while maintaining aspect ratio ( to fit the profile image )
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+
+          // Create canvas for compression
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Get compressed Data URL (for preview)
+          const dataUrl = canvas.toDataURL('image/jpeg', quality);
+
+          // Get compressed Blob (for upload)
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                resolve({ blob, dataUrl });
+              } else {
+                reject(new Error('Image compression failed'));
+              }
+            },
+            'image/jpeg',
+            quality
+          );
+        };
+
+        img.onerror = (err) => reject(err);
+      };
+      reader.onerror = (err) => reject(err);
+    });
+  };
+
   const triggerFileSelect = () => {
     if (avatarInput) {
       avatarInput.click();
@@ -90,28 +148,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle File Selection & Preview
   if (avatarInput) {
-    avatarInput.addEventListener('change', (event) => {
+    avatarInput.addEventListener('change', async (event) => {
       const file = event.target.files[0];
+      if (!file) return;
 
-      if (file) {
-        // Validation: Check file size (5MB)
-        const maxSize = 5 * 1024 * 1024;
+      // Img validation
+      const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      const maxSize = 5 * 1024 * 1024; // 5MB
 
-        if (file.size > maxSize) {
-          showToast('File is too large! Please select an image under 5MB.', 'error');
-          avatarInput.value = ''; // Reset input
-          return;
+      if (!validTypes.includes(file.type)) {
+        showToast('Only JPG and PNG files are allowed.', 'error');
+        avatarInput.value = '';
+        return;
+      }
+
+      if (file.size > maxSize) {
+        showToast('File is too large! Please select an image under 5MB.', 'error');
+        avatarInput.value = '';
+        return;
+      }
+
+      try {
+        showToast('Optimizing image...', 'info');
+
+        // Compress and resize the image file
+        const { blob, dataUrl } = await optimizeImage(file, 800, 0.7);
+
+        // Force the image that recently change to fit 225x225 to fit the profile image cicrle
+        if (profileImage) {
+          profileImage.src = dataUrl;
+          profileImage.style.width = '225px';
+          profileImage.style.height = '225px';
+          profileImage.style.borderRadius = '50%';
+          profileImage.style.objectFit = 'cover';
         }
 
-        // Preview Logic
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          if (profileImage) {
-            profileImage.src = e.target.result;
-            showToast('Image selected. Click "Save changes" to finalize.', 'info');
-          }
-        };
-        reader.readAsDataURL(file);
+        // Store for upload
+        finalCompressedFile = new File([blob], file.name, {
+          type: 'image/jpeg',
+          lastModified: Date.now(),
+        });
+
+        showToast('Image ready. Click "Upload new image" to finalize.', 'success');
+      } catch (error) {
+        console.error(error);
+        showToast('Error processing image.', 'error');
       }
     });
   }
