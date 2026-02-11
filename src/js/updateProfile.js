@@ -2,7 +2,7 @@
 // Accidentally make the birtday input fiel + validation so. For now, it will stay there after backend add it in
 // Ask to add the data name to sbe 'birthday'.
 
-import { validateProfile, showToast } from '../js/validation.js';
+import { validateProfile, showToast, confirmUpdateAction } from '../js/validation.js';
 
 // To kick back to login back when unable to get access token ( Not login  )
 // Manual deletes the token in the session storage
@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const avatarInput = document.getElementById('avatarInput');
   const profileImage = document.getElementById('profileImage');
   const uploadIcon = document.querySelector('.edit-avatar-icon');
+  let currentAvatarUrl = '';
 
   // Input field elements
   const inputUsername = document.getElementById('inputUsername');
@@ -79,6 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const userData = result.data || result;
 
+      currentAvatarUrl = userData?.avatar || '';
+
       // Check and map the data to the input fields
       if (inputUsername) inputUsername.value = userData?.username || '';
       if (inputFirstName) inputFirstName.value = userData?.first_name || '';
@@ -113,7 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
       originalFormData = getFormDataSnapshot();
       updateAllCounters();
     } catch (error) {
-      console.error('Get Profile Error:', error);
       showToast(error.message, 'error');
     } finally {
       // Hide loading overlay
@@ -296,7 +298,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         showToast('Image ready. Click "Upload new image" to finalize.', 'success');
       } catch (error) {
-        console.error(error);
         showToast('Error processing image.', 'error');
       }
     });
@@ -433,22 +434,25 @@ document.addEventListener('DOMContentLoaded', () => {
       lastName: document.getElementById('inputLastName').value,
       gender: genderBoolean,
       location: document.getElementById('inputLocation').value,
-      email: document.getElementById('inputEmailAddress').value,
-      phone: document.getElementById('inputPhone').value,
+      email: document.getElementById('inputEmailAddress').value.trim(),
+      phone: document.getElementById('inputPhone').value.trim(),
       // birthday: document.getElementById('inputBirthday').value,
+      avatar: currentAvatarUrl,
+      cover_photo: currentAvatarUrl,
     };
 
     // Prepare the object for the API (Backend typically uses 'address' instead of 'location')
     const apiPayload = {
       // username: inputUsername,
-      first_name: inputFirstName,
-      last_name: inputLastName,
-      email: inputEmail,
-      phone: inputPhone,
+      first_name: validationData.firstName,
+      last_name: validationData.lastName,
+      email: validationData.email,
+      phone: validationData.phone,
       // birthday: inputBirthday,
       gender: genderBoolean,
-      address: inputLocation,
-      cover_photo: inputLocation,
+      address: validationData.location,
+      avatar: currentAvatarUrl,
+      cover_photo: currentAvatarUrl,
     };
 
     // validation before send to backend
@@ -468,43 +472,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
       return;
     }
-
     // Send to Backend
-    const accessToken = sessionStorage.getItem('accessToken');
-    const loadingOverlay = document.getElementById('loading-overlay');
+    confirmUpdateAction(
+      // Clicked Confirm
+      async () => {
+        const accessToken = sessionStorage.getItem('accessToken');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const originalBtnText = 'Save changes';
 
-    try {
-      if (loadingOverlay) loadingOverlay.classList.remove('d-none');
+        try {
+          if (loadingOverlay) loadingOverlay.classList.remove('d-none');
+          toggleBtn.disabled = true;
+          toggleBtn.innerText = 'Saving...';
+          inputs.forEach((input) => (input.disabled = true));
 
-      const response = await fetch('https://shoes-mall.onrender.com/api/v1/users/@me/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(apiPayload),
-      });
+          const response = await fetch('https://shoes-mall.onrender.com/api/v1/users/@me/profile', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify(apiPayload),
+          });
 
-      const result = await response.json();
-      // For debugging purposes
-      console.log('API Response Object:', result);
+          const result = await response.json();
+          // For debugging purposes
+          console.log('API Response Object:', result);
 
-      if (!response.ok) {
-        throw new Error(result.message || 'Failed to update profile');
+          if (!response.ok) {
+            toggleBtn.disabled = false;
+            toggleBtn.innerText = 'Save Changes';
+            inputs.forEach((input) => (input.disabled = false));
+            throw new Error(result.message || 'Failed to update profile');
+          } else {
+            toggleBtn.disabled = false;
+            toggleBtn.innerText = 'Save Changes';
+            inputs.forEach((input) => (input.disabled = false));
+            showToast('Profile updated successfully!', 'success');
+          }
+          // Update the "original" state of snapshot so the browser doesn't warn about unsaved changes
+          originalFormData = getFormDataSnapshot();
+
+          // Switch back to Read-only mode after successful update
+          setViewMode(true);
+        } catch (error) {
+          showToast(error.message, 'error');
+        } finally {
+          if (loadingOverlay) loadingOverlay.classList.add('d-none');
+          toggleBtn.disabled = false;
+          if (isEditMode) {
+            toggleBtn.innerText = originalBtnText;
+          }
+        }
+      },
+
+      () => {
+        getProfile();
+        setViewMode(false);
+        showToast('Changes discarded ! You can try to update again if you want.', 'info');
       }
-
-      showToast('Profile updated successfully!', 'success');
-
-      // Update the "original" state of snapshot so the browser doesn't warn about unsaved changes
-      originalFormData = getFormDataSnapshot();
-
-      // Switch back to Read-only mode after successful update
-      setViewMode(true);
-    } catch (error) {
-      console.error(error);
-      showToast(error.message, 'error');
-    } finally {
-      if (loadingOverlay) loadingOverlay.classList.add('d-none');
-    }
+    );
   };
 });

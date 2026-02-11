@@ -2,11 +2,11 @@
 const REGEX_EMAIL = /^(?=.*[A-Z])[a-zA-Z0-9!#$%&'*+\-/=?^_`{|}~.]+@gmail\.com$/;
 const REGEX_PASSWORD =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,20}$/;
-const REGEX_PHONE = /^[0-9]{10,11}$/;
+const REGEX_PHONE = /^[0-9]{9,11}$/;
 const REGEX_NAME =
   /^[a-zA-Z0-9._ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵýỷỹ\s]{5,10}$/;
 const REGEX_USERNAME = /^[a-zA-Z0-9_]{3,20}$/;
-const REGEX_BIRTHDAY = /^\d{4}-\d{2}-\d{2}$|^\d{2}\/\d{2}\/\d{4}$/;
+//const REGEX_BIRTHDAY = /^\d{4}-\d{2}-\d{2}$|^\d{2}\/\d{2}\/\d{4}$/;
 
 // Show password toggle function
 function setupPasswordToggle(inputFieldId) {
@@ -176,7 +176,7 @@ function validateProfile(data) {
 
   // 6. Phone
   if (!REGEX_PHONE.test(data.phone)) {
-    errors.phone = 'Phone number must be 10-11 digits';
+    errors.phone = 'Phone number must be 9-11 digits';
     isValid = false;
   }
 
@@ -191,5 +191,60 @@ function validateProfile(data) {
   return { isValid, errors };
 }
 
+// Setup discard changes modal area
+function confirmUpdateAction(onConfirm, onDiscard) {
+  // Create Modal area HTML if it doesn't exist
+  if (!document.getElementById('saveModal')) {
+    const modalHTML = `
+        <div class="modal fade" id="saveModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm Update</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Do you want to save these changes to your profile?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="btnCancelSave" data-bs-dismiss="modal">Cancel & Discard</button>
+                        <button type="button" class="btn btn-primary" id="btnConfirmSave">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+  }
+
+  // Get Elements
+  const modalEl = document.getElementById('saveModal');
+  const confirmBtn = document.getElementById('btnConfirmSave');
+  const cancelBtn = document.getElementById('btnCancelSave');
+  // @ts-ignore
+  const modal = new bootstrap.Modal(modalEl);
+
+  // Clean all the previous event listeners by cloning and replacing nodes
+  const newConfirm = confirmBtn.cloneNode(true);
+  confirmBtn.parentNode.replaceChild(newConfirm, confirmBtn);
+
+  const newCancel = cancelBtn.cloneNode(true);
+  cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
+
+  // On Confirm
+  newConfirm.addEventListener('click', function () {
+    modal.hide();
+    if (onConfirm) onConfirm(); // Run the save function
+  });
+
+  // On Cancel/Discard
+  newCancel.addEventListener('click', function () {
+    modal.hide();
+    if (onDiscard) onDiscard(); // Run the revert function
+  });
+
+  // 5. Show the modal
+  modal.show();
+}
+
 // Export the validateForm function
-export { validateForm, showToast, setupPasswordToggle, validateProfile };
+export { validateForm, showToast, setupPasswordToggle, validateProfile, confirmUpdateAction };
