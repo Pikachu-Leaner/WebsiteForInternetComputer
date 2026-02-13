@@ -4,7 +4,7 @@ import { changePasswordValidation, showToast, setupPasswordToggle } from './vali
 // Manual deletes the token in the session storage
 // Have to refresh the page to active this
 if (!sessionStorage.getItem('accessToken')) {
-  alert('Your session has been expired or not log in! Pls login again to use this feature.');
+  alert('Your session has been expired or not log in! Pls login again to use this feature.'); // eslint-disable-line no-alert
   window.location.href = '../pages/login.html';
 }
 
@@ -18,7 +18,9 @@ const loadingOverlay = document.getElementById('loading-overlay');
 
 // Function to show/hide loading overlay
 function toggleLoading(isLoading) {
-  if (!loadingOverlay) return;
+  if (!loadingOverlay) {
+    return;
+  }
 
   const formElements = passwordForm.querySelectorAll('input, button');
 
@@ -34,7 +36,7 @@ function toggleLoading(isLoading) {
   }
 }
 
-passwordForm.addEventListener('submit', async function (e) {
+passwordForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   // Collect the data from the inputs
@@ -45,9 +47,9 @@ passwordForm.addEventListener('submit', async function (e) {
 
   // This also like the same logic at the start but not when refrsh but for when click the button then it kick user back  to login page
   if (!accessToken) {
-    alert('Your session has been expired or not log in! Pls login again to use this feature.');
+    alert('Your session has been expired or not log in! Pls login again to use this feature.'); // eslint-disable-line no-alert
     window.location.href = '../pages/login.html';
-    return; 
+    return;
   }
 
   // Run the validation function
@@ -57,15 +59,20 @@ passwordForm.addEventListener('submit', async function (e) {
   document.querySelectorAll('.error').forEach((div) => (div.innerText = ''));
 
   if (!isValid) {
-    if (errors.oldPassword) document.getElementById('oldPassError').innerText = errors.oldPassword;
-    if (errors.newPassword) document.getElementById('newPassError').innerText = errors.newPassword;
-    if (errors.confirmNewPassword)
+    if (errors.oldPassword) {
+      document.getElementById('oldPassError').innerText = errors.oldPassword;
+    }
+    if (errors.newPassword) {
+      document.getElementById('newPassError').innerText = errors.newPassword;
+    }
+    if (errors.confirmNewPassword) {
       document.getElementById('confirmPassError').innerText = errors.confirmNewPassword;
+    }
   }
 
   // Comfirmation warning befire changing the password
-  const userConfirmed = confirm(
-    'Are you sure you want to change your password? Pls double check again if you are unsure !'
+  const userConfirmed = confirm( // eslint-disable-line no-alert
+    'Are you sure you want to change your password? Pls double check again if you are unsure !',
   );
 
   if (!userConfirmed) {
@@ -116,7 +123,7 @@ passwordForm.addEventListener('submit', async function (e) {
     // Expired token respone ( situation send to the Api server when access token expired )
     // However the case for no login ( have access token in the session storage already been deal with in the profle.js with when no access token not show the link to click change password.)
     else if (response.status === 401) {
-      alert('Your session has expired. Please log in again.');
+      alert('Your session has expired. Please log in again.'); // eslint-disable-line no-alert
 
       // Clear the old tokens ( access/refresh ) in the session storage before kick back to login page
       sessionStorage.removeItem('accessToken');
@@ -152,11 +159,21 @@ newPassInput.addEventListener('input', () => {
   let score = 0;
 
   // Logic criteria
-  if (val.length >= 8) score++;
-  if (/[A-Z]/.test(val)) score++;
-  if (/[a-z]/.test(val)) score++;
-  if (/\d/.test(val)) score++;
-  if (/[!@#$%^&*(),.?":{}|<>]/.test(val)) score++;
+  if (val.length >= 8) {
+    score++;
+  }
+  if (/[A-Z]/.test(val)) {
+    score++;
+  }
+  if (/[a-z]/.test(val)) {
+    score++;
+  }
+  if (/\d/.test(val)) {
+    score++;
+  }
+  if (/[!@#$%^&*(),.?":{}|<>]/.test(val)) {
+    score++;
+  }
 
   // Reset classes
   strengthBar.className = 'progress-bar';

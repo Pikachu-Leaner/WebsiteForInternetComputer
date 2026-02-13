@@ -1188,19 +1188,18 @@ button:disabled {
 }
 
 .dropdown {
-  .dropdown-toggle
-  {
+  .dropdown-toggle {
     color: white;
   }
 
-  a{
+  a {
     font-size: 22px;
   }
 }
 
 .btn:hover {
-    background-color: black !important; 
-    border-color: black !important;  
-    color: white;
+  background-color: black !important;
+  border-color: black !important;
+  color: white;
 }
 /*# sourceMappingURL=style.css.map */
