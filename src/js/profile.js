@@ -146,6 +146,11 @@ function populateForm(data) {
 document.addEventListener('DOMContentLoaded', () => {
   toggleLoading(true);
   getProfile();
+
+  if(sessionStorage.getItem('profileUpdateSuccess') === 'true') {
+    showToast('Profile updated successfully!', 'success');
+    sessionStorage.removeItem('profileUpdateSuccess');
+  }
 });
 
 // Form Submit

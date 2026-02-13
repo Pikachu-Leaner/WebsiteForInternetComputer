@@ -557,7 +557,8 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleBtn.disabled = false;
             toggleBtn.innerText = 'Save Changes';
             inputs.forEach((input) => (input.disabled = false));
-            showToast('Profile updated successfully!', 'success');
+            setTimeout(() => {showToast('Profile updated successfully!', 'success');}, 2000);
+            
           }
           // Update the "original" state of snapshot so the browser doesn't warn about unsaved changes
           originalFormData = getFormDataSnapshot();
@@ -566,6 +567,7 @@ document.addEventListener('DOMContentLoaded', () => {
           setViewMode(true);
 
           // Move back to profile page after successful update
+          sessionStorage.setItem('profileUpdateSuccess', 'true');
           window.location.href = '../pages/profile.html';
         } catch (error) {
           showToast(error.message, 'error');
