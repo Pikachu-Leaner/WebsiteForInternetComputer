@@ -82,7 +82,7 @@ async function getProfile() {
 
     // Success: status 201 ( don't show toast area since you already logged in)
     if (response.ok) {
-      console.log('API Data Received:', result.data);
+      // console.log('API Data Received:', result.data);
       populateForm(result.data);
     }
     // Failures: status 401

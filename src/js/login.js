@@ -1,4 +1,4 @@
-import { validateForm, showToast, setupPasswordToggle } from '../js/validation.js';
+import { setupPasswordToggle } from '../js/validation.js';
 
 // Setup password visibility toggles
 setupPasswordToggle('password');
@@ -43,10 +43,9 @@ form.addEventListener('submit', async (e) => {
           sessionStorage.setItem('accessToken', userData.access_token);
           sessionStorage.setItem('refreshToken', userData.refresh_token);
           // Redirect to home page after successful login
-          window.location.href = '../pages/home.html';
+          window.location.href = '../pages/index.html';
         }
       }
-
     } else {
       // Handle login errors ( Backend already validation these all so no need to make 1, use the server validation messages)
       const serverMessage = data.message;
@@ -64,7 +63,7 @@ form.addEventListener('submit', async (e) => {
     setError(email, 'Server connection failed.');
   } finally {
     loginBtn.disabled = false;
-    loginBtn.innerText = originalBtnText;
+    //loginBtn.innerText = originalBtnText;
   }
 });
 
