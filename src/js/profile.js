@@ -11,6 +11,20 @@ const loadingOverlay = document.getElementById('loading-overlay');
 const authContainer = document.getElementById('auth-links-change-password');
 const authLinkHide1 = document.getElementById('auth-links-login');
 const authLinkHide2 = document.getElementById('auth-links-register');
+const authLinkHide3 = document.getElementById('auth-links-menu-drop-down');
+
+// Function to show/hide loading overlay
+function toggleLoading(isLoading) {
+  if (!loadingOverlay) return;
+
+  if (isLoading) {
+    loadingOverlay.classList.remove('d-none');
+  } else {
+    setTimeout(() => {
+      loadingOverlay.classList.add('d-none');
+    }, 200);
+  }
+}
 
 // Kick back the a href link on nav
 function handleAuthRouting(accessToken) {
@@ -19,6 +33,7 @@ function handleAuthRouting(accessToken) {
   if (!accessToken) {
     // Not log in
     authContainer.innerHTML = ` `;
+    authLinkHide3.classList.toggle('hide-link');
   } else {
     // Log in
     authContainer.innerHTML = `
@@ -38,24 +53,13 @@ function handleAuthRouting(accessToken) {
   }
 }
 
-// Function to show/hide loading overlay
-function toggleLoading(isLoading) {
-  if (!loadingOverlay) return;
-
-  if (isLoading) {
-    loadingOverlay.classList.remove('d-none');
-  } else {
-    setTimeout(() => {
-      loadingOverlay.classList.add('d-none');
-    }, 200);
-  }
-}
-
 // Get access token from session storage and check if usser is logged in or not ( technically without access token in sessio )
 //( technically with/without access token in session storage will be seen as logged in/not )
 async function getProfile() {
   const accessToken = sessionStorage.getItem('accessToken');
+
   handleAuthRouting(accessToken);
+
   // Check if user is logged in
   if (!accessToken) {
     toggleLoading(false);
