@@ -188,6 +188,7 @@ function validateProfile(data) {
   }
   */
 
+  
   return { isValid, errors };
 }
 
