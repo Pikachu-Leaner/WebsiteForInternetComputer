@@ -829,6 +829,7 @@ footer .footer-links li a:hover {
   text-decoration: none;
   color: var(--bright);
   padding-right: 20px;
+  padding-right: 20px;
 }
 
 .menu-nav {
@@ -996,6 +997,190 @@ button:disabled {
     height: 250px !important;
     object-fit: cover;
     border-radius: 80% !important;
+  }
+}
+
+#password-page-wrapper {
+  background-color: #1f2021;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+}
+
+#password-page-wrapper .container-fluid {
+  background-color: #000000;
+  max-width: 1400px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+#password-page-wrapper .col-md-6:first-child {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+#password-page-wrapper .logo-container img {
+  height: 35px;
+  margin-bottom: 20px;
+}
+
+#password-page-wrapper .image-container {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, #ffffff 0%, #ffffff 70%);
+  border-radius: 50% 20% 50% 30%;
+}
+
+#password-page-wrapper .image-container img {
+  border-radius: 34%;
+  max-width: 78%;
+  height: auto;
+}
+
+#password-page-wrapper .col-md-6:last-child {
+  padding: 60px 50px;
+}
+
+#password-page-wrapper .top-nav {
+  text-align: right;
+  margin-bottom: 40px;
+}
+
+#password-page-wrapper .top-nav a {
+  color: #d32f2f;
+  text-decoration: none;
+  font-size: 14px;
+  border: 1px solid #d32f2f;
+  padding: 5px 15px;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+#password-page-wrapper .top-nav a:hover {
+  background-color: #d32f2f;
+  color: #fff;
+}
+
+#password-page-wrapper h2 {
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+#password-page-wrapper p {
+  color: #d4d9dd;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+#password-page-wrapper .form-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #d4d9dd;
+}
+
+#password-page-wrapper .input-group {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+#password-page-wrapper .form-control {
+  border: none;
+  padding: 12px;
+}
+
+#password-page-wrapper .form-control:focus {
+  box-shadow: none;
+  background-color: #fcfaff;
+}
+
+#password-page-wrapper .btn {
+  background-color: #6200ea;
+  color: #ffffff;
+  padding: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+#password-page-wrapper .btn:hover {
+  background-color: #240c45;
+  color: #ffffff;
+}
+
+.logo-container1 {
+  img {
+    width: 250px;
+    height: 60px;
+  }
+}
+
+.password-footer-section {
+  background: #c7c1c1;
+}
+
+.password-strength-wrapper {
+  margin-top: 8px;
+}
+
+/* Base style for the bar */
+.strength-progress {
+  background-color: #e9ecef; /* Light gray background */
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+#strength-bar {
+  width: 0%;
+  transition:
+    width 0.3s ease-in-out,
+    background-color 0.3s ease-in-out;
+}
+
+/* Strength States */
+.is-weak {
+  width: 33% !important;
+  background-color: #dc3545 !important; /* Red */
+}
+
+.is-medium {
+  width: 66% !important;
+  background-color: #ffc107 !important; /* Yellow */
+}
+
+.is-strong {
+  width: 100% !important;
+  background-color: #198754 !important; /* Green */
+}
+
+.text-weak {
+  color: #dc3545;
+}
+.text-medium {
+  color: #ffc107;
+}
+.text-strong {
+  color: #198754;
+}
+.text-none {
+  color: #6c757d;
+}
+
+.input-group {
+  .current-password-input,
+  .new-password-input,
+  .comfirm-new-password-input {
+    color: white !important;
   }
 }
 

@@ -38,6 +38,8 @@ function handleAuthRouting(accessToken) {
     // Not log in
     authContainer.innerHTML = ' ';
     authLinkHide3.classList.toggle('hide-link');
+    authContainer.innerHTML = ' ';
+    authLinkHide3.classList.toggle('hide-link');
   } else {
     // Log in
     authContainer.innerHTML = `
@@ -62,7 +64,9 @@ function handleAuthRouting(accessToken) {
 async function getProfile() {
   const accessToken = sessionStorage.getItem('accessToken');
 
+
   handleAuthRouting(accessToken);
+
 
   // Check if user is logged in
   if (!accessToken) {
@@ -86,7 +90,7 @@ async function getProfile() {
 
     // Success: status 201 ( don't show toast area since you already logged in)
     if (response.ok) {
-      console.log('API Data Received:', result.data);
+      // console.log('API Data Received:', result.data);
       populateForm(result.data);
     }
     // Failures: status 401
