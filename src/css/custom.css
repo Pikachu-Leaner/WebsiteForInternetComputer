@@ -355,6 +355,7 @@ a:active {
 
 .form-check {
   text-align: right;
+  padding-left: 0.9rem !important;
 }
 .form-check .form-label {
   font-weight: 400;
@@ -367,8 +368,8 @@ a:active {
   padding-right: 10px;
 }
 .form-check .btn-login {
-  width: 121px;
-  height: 48px;
+  width: 442px;
+  height: 63px;
   background-color: var(--btn-login-bg);
   color: var(--bright);
 }
