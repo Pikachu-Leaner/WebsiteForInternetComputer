@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const result = await response.json();
       //For debugging purposes
-      console.log('API Response Object:', result);
+      //console.log('API Response Object:', result);
 
       if (!response.ok) {
         throw new Error(result.message || 'Failed to fetch profile data');
