@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Prepare UI for Loading
+    // Loading state: disable button and show spinner
     const originalText = resetBtn.innerText;
     resetBtn.disabled = true;
     resetBtn.innerHTML =
