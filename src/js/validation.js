@@ -251,5 +251,20 @@ function confirmUpdateAction(onConfirm, onDiscard) {
   modal.show();
 }
 
+function validateEmailInput(email) {
+  if (!email || email.trim() === '') {
+    return { isValid: false, message: 'Email is required' };
+  }
+
+  if (!REGEX_EMAIL.test(email)) {
+    return {
+      isValid: false,
+      message: 'Email must have 1 capital letter and end with @gmail.com',
+    };
+  }
+
+  return { isValid: true, message: '' };
+}
+
 // Export the validateForm function
-export { validateForm, showToast, setupPasswordToggle, validateProfile, confirmUpdateAction };
+export { validateForm, showToast, setupPasswordToggle, validateProfile, confirmUpdateAction,validateEmailInput };
