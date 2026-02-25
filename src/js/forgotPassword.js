@@ -46,10 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('API Response Object:', data);
 
       if (response.ok) {
-        showToast(data.message || 'Success! Check your email.', 'success');
+        showToast(data.message || 'success');
         emailInput.value = '';
       } else {
-        showToast(data.message || 'Something went wrong.', 'error');
+        showToast(data.message || 'error');
       }
     } catch (error) {
       showToast('Unable to connect to the server. Please try again later.', 'error');
