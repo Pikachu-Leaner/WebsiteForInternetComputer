@@ -557,8 +557,9 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleBtn.disabled = false;
             toggleBtn.innerText = 'Save Changes';
             inputs.forEach((input) => (input.disabled = false));
-            setTimeout(() => {showToast('Profile updated successfully!', 'success');}, 2000);
-            
+            setTimeout(() => {
+              showToast('Profile updated successfully!', 'success');
+            }, 2000);
           }
           // Update the "original" state of snapshot so the browser doesn't warn about unsaved changes
           originalFormData = getFormDataSnapshot();

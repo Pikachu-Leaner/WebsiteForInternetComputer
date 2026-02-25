@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast(data.message || 'Success!', 'success');
         emailInput.value = '';
       } else {
-        showToast(data.message || 'An error occurred','error');
+        showToast(data.message || 'An error occurred', 'error');
       }
     } catch (error) {
       showToast('Unable to connect to the server. Please try again later.', 'error');

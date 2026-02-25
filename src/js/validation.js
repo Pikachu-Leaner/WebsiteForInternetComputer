@@ -188,7 +188,6 @@ function validateProfile(data) {
   }
   */
 
-  
   return { isValid, errors };
 }
 
@@ -267,4 +266,11 @@ function validateEmailInput(email) {
 }
 
 // Export the validateForm function
-export { validateForm, showToast, setupPasswordToggle, validateProfile, confirmUpdateAction,validateEmailInput };
+export {
+  validateForm,
+  showToast,
+  setupPasswordToggle,
+  validateProfile,
+  confirmUpdateAction,
+  validateEmailInput,
+};

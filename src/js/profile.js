@@ -64,9 +64,7 @@ function handleAuthRouting(accessToken) {
 async function getProfile() {
   const accessToken = sessionStorage.getItem('accessToken');
 
-
   handleAuthRouting(accessToken);
-
 
   // Check if user is logged in
   if (!accessToken) {
@@ -151,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
   toggleLoading(true);
   getProfile();
 
-  if(sessionStorage.getItem('profileUpdateSuccess') === 'true') {
+  if (sessionStorage.getItem('profileUpdateSuccess') === 'true') {
     showToast('Profile updated successfully!', 'success');
     sessionStorage.removeItem('profileUpdateSuccess');
   }

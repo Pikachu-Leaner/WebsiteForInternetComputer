@@ -71,9 +71,10 @@ passwordForm.addEventListener('submit', async (e) => {
   }
 
   // Comfirmation warning befire changing the password
-  const userConfirmed = confirm( // eslint-disable-line no-alert
+  // eslint-disable-next-line no-alert
+  const userConfirmed = confirm(
     'Are you sure you want to change your password? Pls double check again if you are unsure !',
-  ); 
+  );
 
   if (!userConfirmed) {
     return;
