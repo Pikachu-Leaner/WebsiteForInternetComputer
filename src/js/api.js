@@ -24,7 +24,7 @@ apiClient.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 /**
@@ -59,7 +59,7 @@ apiClient.interceptors.response.use(
       console.error('Error:', error.message);
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 const ApiService = {

@@ -45,11 +45,11 @@ document.addEventListener('DOMContentLoaded', () => {
       //For debugging purposes
       console.log('API Response Object:', data);
 
-      if (response.ok) {
-        showToast(data.message || 'success');
+      if (response.status === 200) {
+        showToast(data.message || 'Success!', 'success');
         emailInput.value = '';
       } else {
-        showToast(data.message || 'error');
+        showToast(data.message || 'An error occurred','error');
       }
     } catch (error) {
       showToast('Unable to connect to the server. Please try again later.', 'error');
