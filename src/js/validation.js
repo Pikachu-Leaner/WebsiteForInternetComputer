@@ -7,6 +7,7 @@ const REGEX_NAME =
   /^[a-zA-Z0-9._ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵýỷỹ\s]{5,10}$/;
 const REGEX_USERNAME = /^[a-zA-Z0-9_]{3,20}$/;
 //const REGEX_BIRTHDAY = /^\d{4}-\d{2}-\d{2}$|^\d{2}\/\d{2}\/\d{4}$/;
+const REGEX_OTP = /^[0-9]{6}$/;
 
 // Show password toggle function
 function setupPasswordToggle(inputFieldId) {
@@ -265,6 +266,31 @@ function validateEmailInput(email) {
   return { isValid: true, message: '' };
 }
 
+/**
+ * Validates an OTP (One-Time Password) input.
+ * Expects a numeric string of exactly 6 digits.
+ * @param {string|number} otp - The OTP to validate
+ * @returns {Object} - { isValid: boolean, message: string }
+ */
+function validateOTP(otp) {
+  // Convert to string and trim to handle numbers or accidental spaces safely
+  const otpString = String(otp || '').trim();
+
+  if (!otpString) {
+    return { isValid: false, message: 'OTP is required' };
+  }
+
+  // Uses the updated REGEX_OTP to check for exactly 6 digits
+  if (!REGEX_OTP.test(otpString)) {
+    return {
+      isValid: false,
+      message: 'OTP must be exactly 6 digits',
+    };
+  }
+
+  return { isValid: true, message: '' };
+}
+
 // Export the validateForm function
 export {
   validateForm,
@@ -273,4 +299,5 @@ export {
   validateProfile,
   confirmUpdateAction,
   validateEmailInput,
+  validateOTP,
 };
