@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (response.status === 200) {
         showToast(data.message || 'Success!', 'success');
         emailInput.value = '';
+        window.location.href = '../pages/verified.html';
       } else {
         showToast(data.message || 'An error occurred', 'error');
       }
