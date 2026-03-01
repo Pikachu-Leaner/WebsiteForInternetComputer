@@ -1500,4 +1500,41 @@ button:disabled {
   z-index: 1;
 }
 
+.page-wrapper {
+    background-color: #6200ea;
+}
+
+.otp-card {
+    max-width: 500px;
+    border-radius: 15px;
+}
+
+.accent-line {
+    height: 4px;
+    width: 360px;
+    border-radius: 50%;
+    background-color: #6200ea;
+    margin: 10px auto;
+}
+
+.otp-input {
+    width: 35px;
+    height: 40px;
+    margin: 5px;
+}
+
+.btn-custom-purple {
+    background-color: #6200ea !important;
+    color: #ffffff !important;
+}
+
+.btn-custom-purple:hover {
+    background-color: #330377 !important;
+    color: #ffffff !important;
+}
+
+.resend-link {
+    color: #6200ea;
+}
+
 /*# sourceMappingURL=style.css.map */
