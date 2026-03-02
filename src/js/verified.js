@@ -26,16 +26,15 @@ function setupOTPAutoTab() {
 
 // Validation Logic for the Verify Button
 function setupVerifyButton() {
-  // Select the "Verify & Continue" button 
   const verifyBtn = document.querySelectorAll('.btn-custom-purple')[0];
 
   if (!verifyBtn) return;
 
-  verifyBtn.addEventListener('click', () => {
+  verifyBtn.addEventListener('click', async () => {
     const inputs = document.querySelectorAll('.otp-input');
     let combinedOTP = '';
 
-    // Loop through all 6 boxes and then finally combine them into 1 value
+    // Loop through all 6 boxes and combine them all into 1 value
     inputs.forEach((input) => {
       combinedOTP += input.value;
     });
@@ -43,9 +42,48 @@ function setupVerifyButton() {
     // Run the client-side validation
     const result = validateOTP(combinedOTP);
 
-    // success
     if (result.isValid) {
-      showToast('OTP is in the correct format! Verifying...', 'success');
+      // Disable button and show a loading state 
+      verifyBtn.disabled = true;
+      verifyBtn.textContent = 'Verifying...';
+
+      // Send the OTP to the backend ( API server ) for verification
+      try {
+        const response = await fetch('https://shoes-mall.onrender.com/api/v1/users/verify-otp', {
+          method: 'POST',
+          headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            otp: combinedOTP, // Sending the 6-digit string to the backend
+          }),
+        });
+
+        const data = await response.json();
+        // successful verification
+        if (response.ok) {
+          showToast('OTP verified successfully!', 'success');
+          // Redirect the user to the next page 
+          /*
+          setTimeout(() => {
+            window.location.href = '../pages/login.html'; 
+          }, 1500);
+          */
+        }
+        // errors from backend
+        else {
+          showToast(data.message || 'Invalid OTP code. Please try again.', 'error');
+          verifyBtn.disabled = false;
+          verifyBtn.textContent = 'Verify & Continue';
+        }
+      } catch (error) {
+        // Network error or server is down
+        console.error('Verification error:', error);
+        showToast('Something went wrong. Please check your connection.', 'error');
+        verifyBtn.disabled = false;
+        verifyBtn.textContent = 'Verify & Continue';
+      }
     }
     // errors
     else {
