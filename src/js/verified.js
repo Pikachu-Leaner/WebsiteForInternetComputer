@@ -45,7 +45,11 @@ function setupVerifyButton() {
     if (result.isValid) {
       // Disable button and show a loading state 
       verifyBtn.disabled = true;
-      verifyBtn.textContent = 'Verifying...';
+      // showing loading stage 
+      verifyBtn.innerHTML = `
+        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+        Verifying...
+      `;
 
       // Send the OTP to the backend ( API server ) for verification
       try {
