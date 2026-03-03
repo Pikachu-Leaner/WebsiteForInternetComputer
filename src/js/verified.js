@@ -75,7 +75,7 @@ function setupVerifyButton() {
           }, 1500);
           */
         }
-        // errors from backend
+        // Handle errors from backend using the message from the backend response
         else {
           showToast(data.message || 'Invalid OTP code. Please try again.', 'error');
           verifyBtn.disabled = false;
