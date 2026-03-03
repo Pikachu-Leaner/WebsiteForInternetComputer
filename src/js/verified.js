@@ -43,7 +43,7 @@ function setupVerifyButton() {
     const result = validateOTP(combinedOTP);
 
     if (result.isValid) {
-      // Disable button and show a loading state 
+      // Disable button after clicking when send to the backend API
       verifyBtn.disabled = true;
       // showing loading stage 
       verifyBtn.innerHTML = `
