@@ -1501,40 +1501,89 @@ button:disabled {
 }
 
 .page-wrapper {
-    background-color: #6200ea;
+  background-color: #8754cf;
 }
 
 .otp-card {
-    max-width: 500px;
-    border-radius: 15px;
+  max-width: 500px;
+  border-radius: 15px;
 }
 
 .accent-line {
-    height: 4px;
-    width: 360px;
-    border-radius: 50%;
-    background-color: #6200ea;
-    margin: 10px auto;
+  height: 4px;
+  width: 360px;
+  border-radius: 50%;
+  background-color: #6200ea;
+  margin: 10px auto;
 }
 
 .otp-input {
-    width: 35px;
-    height: 40px;
-    margin: 5px;
+  width: 35px;
+  height: 40px;
+  margin: 5px;
 }
 
 .btn-custom-purple {
-    background-color: #6200ea !important;
-    color: #ffffff !important;
+  background-color: #6200ea !important;
+  color: #ffffff !important;
 }
 
 .btn-custom-purple:hover {
-    background-color: #330377 !important;
-    color: #ffffff !important;
+  background-color: #330377 !important;
+  color: #ffffff !important;
 }
 
 .resend-link {
-    color: #6200ea;
+  color: #6200ea;
+}
+
+.password-card {
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid #f2f2f2;
+}
+
+.form-title {
+  color: #3b3b3b;
+  font-size: 1.25rem;
+}
+
+.form-desc {
+  font-size: 0.85rem;
+  color: #888;
+  line-height: 1.5;
+}
+
+.custom-password-input {
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+  border-color: #e0e0e0;
+}
+
+.custom-password-input:focus {
+  box-shadow: none;
+  border-color: #6200ea;
+}
+
+.form-control:focus + .input-group-text {
+  border-color: #6200ea;
+}
+
+.toggle-eye {
+  cursor: pointer;
+}
+
+.custom-btn {
+  background-color: #6200ea !important;
+  color: white !important;
+  border-radius: 0.4rem;
+  padding: 0.75rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.custom-btn:hover {
+  background-color: #330377 !important;
+  color: white !important;
 }
 
 /*# sourceMappingURL=style.css.map */
