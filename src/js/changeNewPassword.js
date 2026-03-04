@@ -1,6 +1,7 @@
 import { changeNewPassword, showToast, setupPasswordToggle } from '../js/validation.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Setup password toggle for both new password and confirm password fields
   setupPasswordToggle('new-forgot-password');
   setupPasswordToggle('new-confirm-forgot-password');
 
