@@ -291,6 +291,33 @@ function validateOTP(otp) {
   return { isValid: true, message: '' };
 }
 
+/**
+ * Validates the new password reset form.
+ * @param {Object} data - Contains newPassword and confirmPassword
+ * @returns {Object} - { isValid: boolean, errors: Object }
+ */
+function changeNewPassword(data) {
+  const errors = {};
+  let isValid = true;
+
+  // Check New Password against your existing REGEX_PASSWORD
+  if (!REGEX_PASSWORD.test(data.newPassword)) {
+    errors.newPassword = 'Password: 8-20 chars, 1 Capital & 1 Special char & 1 Number & 1 normal required';
+    isValid = false;
+  }
+
+  // Check Password Confirmation
+  if (data.newPassword !== data.confirmPassword) {
+    errors.confirmPassword = 'Password confirmation does not match';
+    isValid = false;
+  } else if (data.confirmPassword === '') {
+    errors.confirmPassword = 'Please confirm your new password';
+    isValid = false;
+  }
+
+  return { isValid, errors };
+}
+
 // Export the validateForm function
 export {
   validateForm,
@@ -300,4 +327,5 @@ export {
   confirmUpdateAction,
   validateEmailInput,
   validateOTP,
+  changeNewPassword,
 };
