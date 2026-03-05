@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Handle Form Submission
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault(); // Prevent page reload
 
     // Clear any previous error messages
@@ -117,12 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const validation = changeNewPassword(formData);
-    // Success
-    if (validation.isValid) {
-      showToast('Password matches all requirements!', 'success');
-    }
-    // Errors
-    else {
+
+    if (!validation.isValid) {
       if (validation.errors.newPassword) {
         newPassError.innerText = validation.errors.newPassword;
       }
@@ -130,6 +126,74 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmPassError.innerText = validation.errors.confirmPassword;
       }
       showToast('Please fix the errors below.', 'error');
+      return;
+    }
+
+    //Proceed with API calls if validation is successful
+    try {
+      showToast('Processing your request...', 'success');
+      const accessToken = localStorage.getItem('accessToken');
+
+      if (!accessToken) {
+        throw new Error('Authentication token is missing. Please log in again.');
+      }
+
+      // Get email from the profile API using the access token
+      const profileResponse = await fetch(
+        'https://shoes-mall.onrender.com/api/v1/users/@me/profile',
+        {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      if (!profileResponse.ok) {
+        throw new Error('Failed to retrieve profile information.');
+      }
+
+      const profileResult = await profileResponse.json();
+
+      // Extract the email from the get response
+      const userEmail = profileResult.data.email;
+
+      // Prepare the payload for the update password API call then post to the api backend
+      const updatePayload = {
+        email: userEmail,
+        password: formData.newPassword,
+        confirm_password: formData.confirmPassword,
+      };
+
+      const updateResponse = await fetch(
+        'https://shoes-mall.onrender.com/api/v1/users/reset-password',
+        {
+          method: 'POST',
+          headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatePayload),
+        }
+      );
+
+      if (!updateResponse.ok) {
+        const errorData = await updateResponse.json();
+        throw new Error(errorData.content || 'Failed to update password.');
+      }
+
+      // Success!
+      showToast('Password changed successfully!', 'success');
+
+      form.reset();
+      strengthContainer.classList.add('d-none');
+      // redirect to login page after a short delay to allow user to see the success message
+      // setTimeout(() => { window.location.href = '../pages/login.html'; }, 2000);
+    } catch (error) {
+      console.error('Error updating password:', error);
+      showToast(error.message || 'An error occurred. Please try again.', 'error');
     }
   });
 });

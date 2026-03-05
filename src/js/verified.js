@@ -69,11 +69,9 @@ function setupVerifyButton() {
         if (response.ok) {
           showToast('OTP verified successfully!', 'success');
           // Redirect the user to the next page
-          /*
           setTimeout(() => {
-            window.location.href = '../pages/login.html'; 
+            window.location.href = '../pages/changeNewPassword.html'; 
           }, 1500);
-          */
         }
         // Handle errors from backend using the message from the backend response
         else {
