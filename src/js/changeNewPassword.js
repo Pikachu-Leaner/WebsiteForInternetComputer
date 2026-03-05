@@ -131,6 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Proceed with API calls if validation is successful
     try {
+      // Show loading state on the button
+      submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...`;
       showToast('Processing your request...', 'success');
       const accessToken = localStorage.getItem('accessToken');
 
