@@ -106,6 +106,10 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault(); // Prevent page reload
 
+    // Get the submit button and store original text for later restoration
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.innerHTML;
+
     // Clear any previous error messages
     newPassError.innerText = '';
     confirmPassError.innerText = '';
@@ -185,18 +189,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!updateResponse.ok) {
         const errorData = await updateResponse.json();
-        throw new Error(errorData.content || 'Failed to update password.');
+        throw new Error(errorData.message || 'Failed to update password.');
       }
 
-      // Success!
-      showToast('Password changed successfully!', 'success');
+      // Handle Backend API Success Dynamically ---
+      const updateResult = await updateResponse.json();
+      const successMessage = updateResult.message || 'Password changed successfully!';
+
+      // Success !
+      showToast(successMessage, 'success');
 
       form.reset();
       strengthContainer.classList.add('d-none');
       // redirect to login page after a short delay to allow user to see the success message
       // setTimeout(() => { window.location.href = '../pages/login.html'; }, 2000);
     } catch (error) {
-      console.error('Error updating password:', error);
       showToast(error.message || 'An error occurred. Please try again.', 'error');
     } finally {
       submitBtn.disabled = false;
