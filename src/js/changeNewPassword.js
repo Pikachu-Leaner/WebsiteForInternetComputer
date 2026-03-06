@@ -169,6 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
       form.reset();
       strengthContainer.classList.add('d-none');
 
+      // Redirect to login page after a short delay to allow user to see the success message
       setTimeout(() => {
         window.location.href = '../pages/login.html';
       }, 2000);
