@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       // Call Back-end API
-      const response = await fetch('https://shoes-mall.onrender.com/api/v1/users/forgot-password', {
+      const response = await fetch('url', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('API Response Object:', data);
 
       if (response.status === 200) {
+        sessionStorage.setItem('userEmail', emailValue);
         showToast(data.message || 'Success!', 'success');
         emailInput.value = '';
         window.location.href = '../pages/verified.html';

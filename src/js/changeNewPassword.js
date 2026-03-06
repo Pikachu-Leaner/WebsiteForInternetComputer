@@ -104,17 +104,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle Form Submission
   form.addEventListener('submit', async (e) => {
-    e.preventDefault(); // Prevent page reload
+    e.preventDefault();
 
-    // Get the submit button and store original text for later restoration
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalBtnText = submitBtn.innerHTML;
 
-    // Clear any previous error messages
     newPassError.innerText = '';
     confirmPassError.innerText = '';
 
-    // Prepare the data object for validation
     const formData = {
       newPassword: newPasswordInput.value,
       confirmPassword: confirmPasswordInput.value,
@@ -123,52 +120,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const validation = changeNewPassword(formData);
 
     if (!validation.isValid) {
-      if (validation.errors.newPassword) {
-        newPassError.innerText = validation.errors.newPassword;
-      }
-      if (validation.errors.confirmPassword) {
+      if (validation.errors.newPassword) newPassError.innerText = validation.errors.newPassword;
+      if (validation.errors.confirmPassword)
         confirmPassError.innerText = validation.errors.confirmPassword;
-      }
       showToast('Please fix the errors below.', 'error');
       return;
     }
 
-    //Proceed with API calls if validation is successful
+    // Get the email from sessionStorage that was stored during the forgot password step
+    const userEmail = sessionStorage.getItem('userEmail');
+    if (!userEmail) {
+      showToast('Session expired. Please restart the password reset process.', 'error');
+      return;
+    }
+
     try {
-      // Show loading state on the button
       submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...`;
-      // Disable the button to prevent multiple submissions
       submitBtn.disabled = true;
-      showToast('Processing your request...', 'success');
-      const accessToken = localStorage.getItem('accessToken');
 
-      if (!accessToken) {
-        throw new Error('Authentication token is missing. Please log in again.');
-      }
-
-      // Get email from the profile API using the access token
-      const profileResponse = await fetch(
-        'https://shoes-mall.onrender.com/api/v1/users/@me/profile',
-        {
-          method: 'GET',
-          headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-
-      if (!profileResponse.ok) {
-        throw new Error('Failed to retrieve profile information.');
-      }
-
-      const profileResult = await profileResponse.json();
-
-      // Extract the email from the get response
-      const userEmail = profileResult.data.email;
-
-      // Prepare the payload for the update password API call then post to the api backend
       const updatePayload = {
         email: userEmail,
         password: formData.newPassword,
@@ -180,29 +149,29 @@ document.addEventListener('DOMContentLoaded', () => {
         {
           method: 'POST',
           headers: {
-            accept: 'application/json',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(updatePayload),
         }
       );
 
+      const updateResult = await updateResponse.json();
+
       if (!updateResponse.ok) {
-        const errorData = await updateResponse.json();
-        throw new Error(errorData.message || 'Failed to update password.');
+        throw new Error(updateResult.message || 'Failed to update password.');
       }
 
-      // Handle Backend API Success Dynamically ---
-      const updateResult = await updateResponse.json();
-      const successMessage = updateResult.message || 'Password changed successfully!';
+      // Success!
+      showToast(updateResult.message || 'Password changed successfully!', 'success');
 
-      // Success !
-      showToast(successMessage, 'success');
-
+      // Remove the email from sessionStorage since the process is complete 
+      sessionStorage.removeItem('userEmail');
       form.reset();
       strengthContainer.classList.add('d-none');
-      // redirect to login page after a short delay to allow user to see the success message
-      // setTimeout(() => { window.location.href = '../pages/login.html'; }, 2000);
+
+      setTimeout(() => {
+        window.location.href = '../pages/login.html';
+      }, 2000);
     } catch (error) {
       showToast(error.message || 'An error occurred. Please try again.', 'error');
     } finally {

@@ -53,7 +53,7 @@ function setupVerifyButton() {
 
       // Send the OTP to the backend ( API server ) for verification
       try {
-        const response = await fetch('https://shoes-mall.onrender.com/api/v1/users/verify-otp', {
+        const response = await fetch('url', {
           method: 'POST',
           headers: {
             accept: 'application/json',
@@ -70,7 +70,7 @@ function setupVerifyButton() {
           showToast('OTP verified successfully!', 'success');
           // Redirect the user to the next page
           setTimeout(() => {
-            window.location.href = '../pages/changeNewPassword.html'; 
+            window.location.href = '../pages/changeNewPassword.html';
           }, 1500);
         }
         // Handle errors from backend using the message from the backend response
@@ -101,44 +101,23 @@ function setupResendLink() {
   if (!resendLink) return;
 
   resendLink.addEventListener('click', async (e) => {
-    // disable the default link behavior since it's not actually a link
-    e.preventDefault(); 
-    
-    // Get the access token in sessionStorage
-    const accessToken = sessionStorage.getItem('accessToken');
-    if (!accessToken) {
-      showToast('Session expired. Please log in again.', 'error');
+    e.preventDefault();
+
+    // Changed: use the email stored in sessionStorage from the previous forgotPassword.js instead of getting accessToken in session storage
+    // Since you not even log in to have the accessToken in it to begin with
+    const userEmail = sessionStorage.getItem('userEmail');
+
+    if (!userEmail) {
+      showToast('Session error: Email not found. Please go back and try again.', 'error');
       return;
     }
 
-    // Disable the link and show a tiny spinner so they don't spam click it
+    // Disable the link and show spinner
     const originalText = resendLink.textContent;
-    resendLink.style.pointerEvents = 'none'; // Makes it unclickable
+    resendLink.style.pointerEvents = 'none';
     resendLink.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...`;
 
     try {
-      // Get email from the user's profile using the access token
-      const profileResponse = await fetch(
-        'https://shoes-mall.onrender.com/api/v1/users/@me/profile',
-        {
-          method: 'GET',
-          headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`, // use the access token to authenticate the request
-          },
-        }
-      );
-
-      const profileResult = await profileResponse.json();
-
-      if (!profileResponse.ok) {
-        throw new Error(profileResult.message || 'Failed to fetch profile data');
-      }
-
-      // Extract the previously registered email from the profile response
-      const userEmail = profileResult.data.email;
-
       const resendResponse = await fetch(
         'https://shoes-mall.onrender.com/api/v1/users/resend-verify-otp',
         {
@@ -155,9 +134,11 @@ function setupResendLink() {
 
       const resendResult = await resendResponse.json();
 
+      // Sucess !
       if (resendResponse.ok) {
         showToast('A new OTP has been sent to your email!', 'success');
-        // Start a 60-second cooldown timer before they can click the resend link again
+
+        // Cooldown timer
         let countdown = 60;
         const timerInterval = setInterval(() => {
           resendLink.textContent = `Wait ${countdown}s to resend`;
@@ -165,18 +146,18 @@ function setupResendLink() {
           if (countdown < 0) {
             clearInterval(timerInterval);
             resendLink.textContent = originalText;
-            // enable the link again after cooldown
             resendLink.style.pointerEvents = 'auto';
           }
         }, 1000);
-      } else {
+      }
+      // Errors
+      else {
         throw new Error(resendResult.message || 'Failed to resend OTP');
       }
     } catch (error) {
       console.error('Resend OTP Error:', error);
-      showToast(error.message || 'Something went wrong. Please try again later.', 'error');
+      showToast(error.message || 'Something went wrong.', 'error');
 
-      // Reset the link if an error occurred
       resendLink.textContent = originalText;
       resendLink.style.pointerEvents = 'auto';
     }
