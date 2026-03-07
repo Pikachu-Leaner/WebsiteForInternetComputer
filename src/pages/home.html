@@ -27,10 +27,6 @@
 </head>
 
 <body>
-    <!-- bootstrap scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
     <div class="container">
 
     </div>
@@ -65,9 +61,16 @@
                         <span class="badge-count">0</span>
                     </div>
 
-                    <div class="auth-links">
-                        <i class="fa fa-user user-icon"></i>
-                        <a href="#" class="register-link">Hello</a>
+                    <div class="auth-links dropdown">
+                        <a href="#"
+                            class="register-link dropdown-toggle text-white text-decoration-none d-flex align-items-center"
+                            id="authDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-user user-icon me-2"></i> Hello
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="authDropdown"
+                            id="authDropdownMenu">
+                        </ul>
                     </div>
                 </div>
 
@@ -216,1063 +219,1071 @@
 
     <!-- header title for cards container-->
     <div class="container pt-5 card-section">
-        <h1 class="text-center title-card-container">
-            Product Feature</h1>
-        <!-- Cards line 1 -->
-        <div class="row">
-            <!-- Card 1.1 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/van-old-school.png">
-                            <img src="https://shop.cyberlearn.vn/images/van-old-school.png" alt="vans old school"
-                                class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">vans old school</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Hot-item">HOT</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$200.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
+        <div class="container pt-5 card-section" id="product-container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="title-card-container mb-0">Product Feature</h1>
+
+                <div class="view-toggle">
+                    <button id="btn-grid-view" class="btn btn-dark"><i class="fas fa-th"></i> Grid</button>
+                    <button id="btn-list-view" class="btn btn-outline-dark"><i class="fas fa-list"></i> List</button>
                 </div>
             </div>
-
-            <!-- Card 1.2 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/converse-chuck-taylor.png">
-                            <img src="https://shop.cyberlearn.vn/images/converse-chuck-taylor.png"
-                                alt="converse chuck taylor" class="product-img">
-                        </a>
-
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">converse chuck taylor</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Hot-item">HOT</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$250.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 1.3 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/nike-adapt-bb.png">
-                            <img src="https://shop.cyberlearn.vn/images/nike-adapt-bb.png" alt="nike adapt bb"
-                                class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">nike adapt bb</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Sale-item">SALE</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$350.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Cards line 2 -->
-        <div class="row">
-            <!-- Card 2.1 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/nike-air-max-270-react.png">
-                            <img src="https://shop.cyberlearn.vn/images/nike-air-max-270-react.png"
-                                alt="vans old school" class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">nike air max 270</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Sale-item">Sale</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$350.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 2.2 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/nike-air-max-97.png">
-                            <img src="https://shop.cyberlearn.vn/images/nike-air-max-97.png" alt="converse chuck taylor"
-                                class="product-img">
-                        </a>
-
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">nike air max 97</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Hot-item">HOT</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$350.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3.3 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/nike-air-max-97-blue.png">
-                            <img src="https://shop.cyberlearn.vn/images/nike-air-max-97-blue.png" alt="nike adapt bb"
-                                class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">nike air max 97 blue</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Sale-item">SALE</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$350.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Cards line 3 -->
-        <div class="row">
-            <!-- Card 3.1 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/nike-flyknit.png">
-                            <img src="https://shop.cyberlearn.vn/images/nike-flyknit.png" alt="vans old school"
-                                class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">nike flyknit</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Hot-item">HOT</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$250.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3.2 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/nike-react-element.png">
-                            <img src="https://shop.cyberlearn.vn/images/nike-react-element.png"
-                                alt="converse chuck taylor" class="product-img">
-                        </a>
-
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">nike react element</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Hot-item">HOT</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$280.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3.3 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/nike-shox-tl.png">
-                            <img src="https://shop.cyberlearn.vn/images/nike-shox-tl.png" alt="nike adapt bb"
-                                class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">nike shox tl</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Hot-item">HOT</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$280.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Cards line 4 -->
-        <div class="row">
-            <!-- Card 4.1 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/nike-sp-dunk.png">
-                            <img src="https://shop.cyberlearn.vn/images/nike-sp-dunk.png" alt="vans old school"
-                                class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">nike sp dunk</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Sale-item">SALE</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$350.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 4.2 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/adidas-prophere.png">
-                            <img src="https://shop.cyberlearn.vn/images/adidas-prophere.png" alt="converse chuck taylor"
-                                class="product-img">
-                        </a>
-
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">adidas prophere</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Hot-item">HOT</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$350.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 4.3 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/adidas-prophere-black-white.png">
-                            <img src="https://shop.cyberlearn.vn/images/adidas-prophere-black-white.png"
-                                alt="nike adapt bb" class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">adidas prophere black white</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Sale-item">SALE</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$350.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Cards line 5 -->
-        <div class="row">
-            <!-- Card 5.1 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/adidas-prophere-customize.png">
-                            <img src="https://shop.cyberlearn.vn/images/adidas-prophere-customize.png"
-                                alt="vans old school" class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">adidas prophere customize</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Sale-item">SALE</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$350.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 5.2 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/adidas-super-star-red.png">
-                            <img src="https://shop.cyberlearn.vn/images/adidas-super-star-red.png"
-                                alt="converse chuck taylor" class="product-img">
-                        </a>
-
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">adidas super star red</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Hot-item">HOT</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$350.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 5.3 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/adidas-swift-run.png">
-                            <img src="https://shop.cyberlearn.vn/images/adidas-swift-run.png" alt="nike adapt bb"
-                                class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">adidas swift run</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Sale-item">SALE</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$350.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Cards line 6 -->
-        <div class="row">
-            <!-- Card 6.1 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/adidas-tenisky-super-star.png">
-                            <img src="https://shop.cyberlearn.vn/images/adidas-tenisky-super-star.png"
-                                alt="vans old school" class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">adidas tenisky super star</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Hot-item">HOT</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$350.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 6.2 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/adidas-ultraboost-4.png">
-                            <img src="https://shop.cyberlearn.vn/images/adidas-ultraboost-4.png"
-                                alt="converse chuck taylor" class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">adidas ultraboost 4</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Sale-item">SALE</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$350.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 6.3 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="https://shop.cyberlearn.vn/images/adidas-yeezy-350.png">
-                            <img src="https://shop.cyberlearn.vn/images/adidas-yeezy-350.png" alt="nike adapt bb"
-                                class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">adidas yeezy 350</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Sale-item">SALE</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$350.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Cards line 7 -->
-        <div class="row">
-            <!-- Card 7.1 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="">
-                            <img src="https://shop.cyberlearn.vn/images/van-old-school.png" alt="addias"
-                                class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">vans old school</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Sale-item">SALE</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$430002.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 7.2 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="">
-                            <img src="" alt="addias" class="product-img">
-                        </a>
-
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">test bc89</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Hot-item">HOT</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$232131.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 7.3 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="">
-                            <img src="" alt="addias" class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">samsung</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Sale-item">SALE</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$111111.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Cards line 8 -->
-        <div class="row">
-            <!-- Card 8.1 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="">
-                            <img src="" alt="addias" class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">Can gjhgjgkj bjgjg hj</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Sale-item">SALE</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$1111.000</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 8.2 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="">
-                            <img src="" alt="addias" class="product-img">
-                        </a>
-
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">thaihuynh test</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Sale-item">SALE</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$1.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 8.3 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="">
-                            <img src="" alt="addias" class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">string</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Sale-item">SALE</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$0.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Cards line 9 -->
-        <div class="row">
-            <!-- Card 9.1 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="">
-                            <img src="" alt="addias" class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">string</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Sale-item">SALE</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$0.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 9.2 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="">
-                            <img src="" alt="addias" class="product-img">
-                        </a>
-
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">test bc89</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Sale-item">SALE</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$232131.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 9.3 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="">
-                            <img src="" alt="addias" class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">test bc89</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Sale-item">SALE</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$232131.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Cards line 10 -->
-        <div class="row">
-            <!-- Card 10.1 -->
-            <div class="col-md-4 mb-4">
-                <div class="product-card">
-                    <div class="card-header-custom">
-                        <a href="#" class="btn-heart">
-                            <i class="fa fa-heart heart-icon"></i>
-                        </a>
-                    </div>
-                    <div class="product-img-container">
-                        <a href="">
-                            <img src="" alt="addias" class="product-img">
-                        </a>
-                    </div>
-                    <div class="card-body-custom">
-                        <h5 class="product-name">giày puma</h5>
-                        <div class="rating-row">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <span class="Hot-item">HOT</span>
-                        </div>
-                        <div class="price-row">
-                            <span class="price">$300.00</span>
-                            <button class="buy-now-btn">
-                                <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Page category ( not function )-->
-        <div class="container mt-5 text-center mb-5">
-            <div class="d-flex justify-content-center">
-
-                <nav aria-label="Page navigation">
-                    <ul class="pagination custom-pagination">
-                        <li class="page-item">
-                            <a class="page-link" href="#" aria-label="Previous">
-                                <span aria-hidden="true">&lt;</span>
+            <!-- Cards line 1 -->
+            <div class="row">
+                <!-- Card 1.1 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
                             </a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="">1</a></li>
-                        <li class="page-item"><a class="page-link" href="">2</a></li>
-                        <li class="page-item"><a class="page-link" href="">3</a></li>
-                        <li class="page-item"><a class="page-link" href="">4</a></li>
-                        <li class="page-item"><a class="page-link" href="">5</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#" aria-label="Next">
-                                <span aria-hidden="true">&gt;</span>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/van-old-school.png">
+                                <img src="https://shop.cyberlearn.vn/images/van-old-school.png" alt="vans old school"
+                                    class="product-img">
                             </a>
-                        </li>
-                    </ul>
-                </nav>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">vans old school</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Hot-item">HOT</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$200.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Card 1.2 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/converse-chuck-taylor.png">
+                                <img src="https://shop.cyberlearn.vn/images/converse-chuck-taylor.png"
+                                    alt="converse chuck taylor" class="product-img">
+                            </a>
+
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">converse chuck taylor</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Hot-item">HOT</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$250.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 1.3 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/nike-adapt-bb.png">
+                                <img src="https://shop.cyberlearn.vn/images/nike-adapt-bb.png" alt="nike adapt bb"
+                                    class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">nike adapt bb</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Sale-item">SALE</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$350.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <!-- Cards line 2 -->
+            <div class="row">
+                <!-- Card 2.1 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/nike-air-max-270-react.png">
+                                <img src="https://shop.cyberlearn.vn/images/nike-air-max-270-react.png"
+                                    alt="vans old school" class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">nike air max 270</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Sale-item">Sale</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$350.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2.2 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/nike-air-max-97.png">
+                                <img src="https://shop.cyberlearn.vn/images/nike-air-max-97.png"
+                                    alt="converse chuck taylor" class="product-img">
+                            </a>
+
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">nike air max 97</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Hot-item">HOT</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$350.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3.3 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/nike-air-max-97-blue.png">
+                                <img src="https://shop.cyberlearn.vn/images/nike-air-max-97-blue.png"
+                                    alt="nike adapt bb" class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">nike air max 97 blue</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Sale-item">SALE</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$350.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Cards line 3 -->
+            <div class="row">
+                <!-- Card 3.1 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/nike-flyknit.png">
+                                <img src="https://shop.cyberlearn.vn/images/nike-flyknit.png" alt="vans old school"
+                                    class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">nike flyknit</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Hot-item">HOT</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$250.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3.2 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/nike-react-element.png">
+                                <img src="https://shop.cyberlearn.vn/images/nike-react-element.png"
+                                    alt="converse chuck taylor" class="product-img">
+                            </a>
+
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">nike react element</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Hot-item">HOT</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$280.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3.3 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/nike-shox-tl.png">
+                                <img src="https://shop.cyberlearn.vn/images/nike-shox-tl.png" alt="nike adapt bb"
+                                    class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">nike shox tl</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Hot-item">HOT</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$280.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Cards line 4 -->
+            <div class="row">
+                <!-- Card 4.1 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/nike-sp-dunk.png">
+                                <img src="https://shop.cyberlearn.vn/images/nike-sp-dunk.png" alt="vans old school"
+                                    class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">nike sp dunk</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Sale-item">SALE</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$350.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4.2 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/adidas-prophere.png">
+                                <img src="https://shop.cyberlearn.vn/images/adidas-prophere.png"
+                                    alt="converse chuck taylor" class="product-img">
+                            </a>
+
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">adidas prophere</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Hot-item">HOT</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$350.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4.3 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/adidas-prophere-black-white.png">
+                                <img src="https://shop.cyberlearn.vn/images/adidas-prophere-black-white.png"
+                                    alt="nike adapt bb" class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">adidas prophere black white</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Sale-item">SALE</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$350.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Cards line 5 -->
+            <div class="row">
+                <!-- Card 5.1 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/adidas-prophere-customize.png">
+                                <img src="https://shop.cyberlearn.vn/images/adidas-prophere-customize.png"
+                                    alt="vans old school" class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">adidas prophere customize</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Sale-item">SALE</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$350.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 5.2 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/adidas-super-star-red.png">
+                                <img src="https://shop.cyberlearn.vn/images/adidas-super-star-red.png"
+                                    alt="converse chuck taylor" class="product-img">
+                            </a>
+
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">adidas super star red</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Hot-item">HOT</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$350.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 5.3 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/adidas-swift-run.png">
+                                <img src="https://shop.cyberlearn.vn/images/adidas-swift-run.png" alt="nike adapt bb"
+                                    class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">adidas swift run</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Sale-item">SALE</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$350.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Cards line 6 -->
+            <div class="row">
+                <!-- Card 6.1 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/adidas-tenisky-super-star.png">
+                                <img src="https://shop.cyberlearn.vn/images/adidas-tenisky-super-star.png"
+                                    alt="vans old school" class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">adidas tenisky super star</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Hot-item">HOT</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$350.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 6.2 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/adidas-ultraboost-4.png">
+                                <img src="https://shop.cyberlearn.vn/images/adidas-ultraboost-4.png"
+                                    alt="converse chuck taylor" class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">adidas ultraboost 4</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Sale-item">SALE</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$350.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 6.3 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="https://shop.cyberlearn.vn/images/adidas-yeezy-350.png">
+                                <img src="https://shop.cyberlearn.vn/images/adidas-yeezy-350.png" alt="nike adapt bb"
+                                    class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">adidas yeezy 350</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Sale-item">SALE</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$350.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Cards line 7 -->
+            <div class="row">
+                <!-- Card 7.1 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="">
+                                <img src="https://shop.cyberlearn.vn/images/van-old-school.png" alt="addias"
+                                    class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">vans old school</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Sale-item">SALE</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$430002.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 7.2 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="">
+                                <img src="" alt="addias" class="product-img">
+                            </a>
+
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">test bc89</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Hot-item">HOT</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$232131.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 7.3 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="">
+                                <img src="" alt="addias" class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">samsung</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Sale-item">SALE</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$111111.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Cards line 8 -->
+            <div class="row">
+                <!-- Card 8.1 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="">
+                                <img src="" alt="addias" class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">Can gjhgjgkj bjgjg hj</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Sale-item">SALE</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$1111.000</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 8.2 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="">
+                                <img src="" alt="addias" class="product-img">
+                            </a>
+
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">thaihuynh test</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Sale-item">SALE</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$1.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 8.3 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="">
+                                <img src="" alt="addias" class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">string</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Sale-item">SALE</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$0.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Cards line 9 -->
+            <div class="row">
+                <!-- Card 9.1 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="">
+                                <img src="" alt="addias" class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">string</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Sale-item">SALE</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$0.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 9.2 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="">
+                                <img src="" alt="addias" class="product-img">
+                            </a>
+
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">test bc89</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Sale-item">SALE</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$232131.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 9.3 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="">
+                                <img src="" alt="addias" class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">test bc89</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Sale-item">SALE</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$232131.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Cards line 10 -->
+            <div class="row">
+                <!-- Card 10.1 -->
+                <div class="col-md-4 mb-4">
+                    <div class="product-card">
+                        <div class="card-header-custom">
+                            <a href="#" class="btn-heart">
+                                <i class="fa fa-heart heart-icon"></i>
+                            </a>
+                        </div>
+                        <div class="product-img-container">
+                            <a href="">
+                                <img src="" alt="addias" class="product-img">
+                            </a>
+                        </div>
+                        <div class="card-body-custom">
+                            <h5 class="product-name">giày puma</h5>
+                            <div class="rating-row">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span class="Hot-item">HOT</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$300.00</span>
+                                <button class="buy-now-btn">
+                                    <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page category ( not function )-->
+            <div class="container mt-5 text-center mb-5">
+                <div class="d-flex justify-content-center">
+
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination custom-pagination">
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Previous">
+                                    <span aria-hidden="true">&lt;</span>
+                                </a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="">1</a></li>
+                            <li class="page-item"><a class="page-link" href="">2</a></li>
+                            <li class="page-item"><a class="page-link" href="">3</a></li>
+                            <li class="page-item"><a class="page-link" href="">4</a></li>
+                            <li class="page-item"><a class="page-link" href="">5</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&gt;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                </div>
+            </div>
+
+
+
+
         </div>
+        <!-- Footer -->
+        <footer class="bg-black py-5">
+            <div class="container">
+                <div class="row align-items-start">
 
+                    <div class="col-12 col-lg-4 mb-4 mb-lg-0">
+                        <a href="#" class="d-inline-block">
+                            <img src="data:image/png;base64,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"
+                                alt="Cybersoft Logo" class="img-logo-footer">
+                        </a>
+                    </div>
 
+                    <div class="col-12 col-lg-8">
 
+                        <div class="d-flex justify-content-between flex-wrap">
 
+                            <div class="footer-column">
+                                <h5 class="footer-title">GET HELP</h5>
+                                <ul class="list-unstyled footer-links">
+                                    <li><a href="#">Home</a></li>
+                                    <li><a href="#">Nike</a></li>
+                                    <li><a href="#">Adidas</a></li>
+                                    <li><a href="#">Contact</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="footer-column">
+                                <h5 class="footer-title">SUPPORT</h5>
+                                <ul class="list-unstyled footer-links">
+                                    <li><a href="#">About</a></li>
+                                    <li><a href="#">Contact</a></li>
+                                    <li><a href="#">Help</a></li>
+                                    <li><a href="#">Phone</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="footer-column">
+                                <h5 class="footer-title">REGISTER</h5>
+                                <ul class="list-unstyled footer-links">
+                                    <li><a href="#">Login</a></li>
+                                    <li><a href="#">Register</a></li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
     </div>
-    <!-- Footer -->
-    <footer class="bg-black py-5">
-        <div class="container">
-            <div class="row align-items-start">
 
-                <div class="col-12 col-lg-4 mb-4 mb-lg-0">
-                    <a href="#" class="d-inline-block">
-                        <img src="data:image/png;base64,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" alt="Cybersoft Logo" class="img-logo-footer">
-                    </a>
-                </div>
+    <!-- Introduction -->
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center">
 
-                <div class="col-12 col-lg-8">
+            <div class="col-md-6 d-flex align-items-center">
+                <span>@ 2022 </span>
+                <a href="#" class="footer-link">
+                    Cybersoft All Rights Reserved | Dương Quốc Nam
+                </a>
+            </div>
 
-                    <div class="d-flex justify-content-between flex-wrap">
+            <div class="col-md-6 d-flex justify-content-end list-unstyled mb-0">
+                <a class="footer-link ms-3 fs-5" href="#">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
 
-                        <div class="footer-column">
-                            <h5 class="footer-title">GET HELP</h5>
-                            <ul class="list-unstyled footer-links">
-                                <li><a href="#">Home</a></li>
-                                <li><a href="#">Nike</a></li>
-                                <li><a href="#">Adidas</a></li>
-                                <li><a href="#">Contact</a></li>
-                            </ul>
-                        </div>
+                <a class="footer-link ms-3 fs-5" href="#">
+                    <i class="fab fa-instagram"></i>
+                </a>
 
-                        <div class="footer-column">
-                            <h5 class="footer-title">SUPPORT</h5>
-                            <ul class="list-unstyled footer-links">
-                                <li><a href="#">About</a></li>
-                                <li><a href="#">Contact</a></li>
-                                <li><a href="#">Help</a></li>
-                                <li><a href="#">Phone</a></li>
-                            </ul>
-                        </div>
+                <a class="footer-link ms-3 fs-5" href="#">
+                    <i class="fab fa-twitter"></i>
+                </a>
 
-                        <div class="footer-column">
-                            <h5 class="footer-title">REGISTER</h5>
-                            <ul class="list-unstyled footer-links">
-                                <li><a href="#">Login</a></li>
-                                <li><a href="#">Register</a></li>
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-
+                <a class="footer-link ms-3 fs-5" href="#">
+                    <i class="fab fa-github"></i>
+                </a>
             </div>
         </div>
-        </div>
-
-        <!-- Introduction -->
-        <div class="container">
-            <div class="d-flex flex-wrap justify-content-between align-items-center">
-
-                <div class="col-md-6 d-flex align-items-center">
-                    <span>@ 2022 </span>
-                    <a href="#" class="footer-link">
-                        Cybersoft All Rights Reserved | Dương Quốc Nam
-                    </a>
-                </div>
-
-                <div class="col-md-6 d-flex justify-content-end list-unstyled mb-0">
-                    <a class="footer-link ms-3 fs-5" href="#">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-
-                    <a class="footer-link ms-3 fs-5" href="#">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-
-                    <a class="footer-link ms-3 fs-5" href="#">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-
-                    <a class="footer-link ms-3 fs-5" href="#">
-                        <i class="fab fa-github"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
+    </div>
     </footer>
     <!-- Toast area-->
     <div id="toast-container"></div>
@@ -1285,6 +1296,9 @@
 
     <!-- My script -->
     <script type="module" src="../js/menu.js"></script>
+
+    <!-- Fancybox script -->
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
 </body>
 
 </html>

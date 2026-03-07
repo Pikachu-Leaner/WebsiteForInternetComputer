@@ -1591,4 +1591,83 @@ button:disabled {
   height: 60px;
 }
 
+.auth-links .dropdown-menu {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  padding: 8px 0;
+  min-width: 150px;
+}
+
+.auth-links .dropdown-item {
+  font-weight: 500;
+  color: #333333;
+  padding: 10px 20px;
+  transition: all 0.2s ease-in-out;
+}
+
+.auth-links .dropdown-item:hover,
+.auth-links .dropdown-item:focus {
+  color: #6200ea !important;
+  background-color: #f4f5f7 !important;
+}
+
+.auth-links .dropdown-item.text-danger:hover {
+  color: #dc3545 !important;
+  background-color: #ffeeef !important;
+}
+
+.auth-links .dropdown-toggle::after {
+  display: none;
+}
+
+.card-section.list-view .col-md-4 {
+  width: 100%;
+}
+
+.card-section.list-view .product-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  padding: 15px;
+}
+
+.card-section.list-view .product-img-container {
+  width: 250px;
+  flex-shrink: 0;
+}
+
+.card-section.list-view .card-body-custom {
+  width: 100%;
+  padding-left: 30px;
+  text-align: left;
+}
+
+.card-section.list-view .card-header-custom {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+}
+
+.card-section.list-view .price-row {
+  justify-content: flex-start;
+  gap: 30px;
+  margin-top: 15px;
+}
+
+.view-toggle .btn.btn-dark {
+  background-color: #2f026e !important;
+  border-color: #2f026e !important;
+  color: #ffffff !important;
+}
+
+.view-toggle .btn:hover {
+  background-color: #2f026e !important;
+  border-color: #2f026e !important;
+  color: #ffffff !important;
+  transition: all 0.3s ease;
+}
+
 /*# sourceMappingURL=style.css.map */
