@@ -287,17 +287,38 @@ document.addEventListener('DOMContentLoaded', () => {
     applyFilters();
   }
 
-  // Scroll Back to Top Button
+  // Scroll Back to Top Button + animation ( smooth scroll + fade in/out )
   const backToTopBtn = document.getElementById('btn-back-to-top');
+  let isBtnVisible = false; // Track the current state
 
   if (backToTopBtn) {
-    // Show or hide the button based on scroll position
     window.addEventListener('scroll', () => {
-      // If user scrolls down more than 300px, show the button
-      if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-        backToTopBtn.style.display = 'block';
+      const scrollPos = document.body.scrollTop || document.documentElement.scrollTop;
+
+      if (scrollPos > 300) {
+        // Show the button with animation
+        if (!isBtnVisible) {
+          backToTopBtn.style.display = 'block';
+          backToTopBtn.classList.remove('animate__fadeOutDown');
+          backToTopBtn.classList.add('animate__fadeInUp');
+          isBtnVisible = true;
+        }
       } else {
-        backToTopBtn.style.display = 'none';
+        // Hide the button with animation
+        if (isBtnVisible) {
+          backToTopBtn.classList.remove('animate__fadeInUp');
+          backToTopBtn.classList.add('animate__fadeOutDown');
+          isBtnVisible = false;
+
+          // Wait for the fade out animation to finish before applying display: none
+          backToTopBtn.addEventListener('animationend', function hideAfterAnimation() {
+            if (!isBtnVisible) {
+              backToTopBtn.style.display = 'none';
+            }
+            // Remove the listener so it doesn't stack up
+            backToTopBtn.removeEventListener('animationend', hideAfterAnimation);
+          });
+        }
       }
     });
 
