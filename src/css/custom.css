@@ -1697,4 +1697,28 @@ button:disabled {
     color: #c4317a !important;
 }
 
+#btn-back-to-top {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    display: none; 
+    background-image: linear-gradient(90deg, #8657d9 0%, #c4317a 100%); 
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 9999; /* Ensures it stays on top of everything */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+}
+
+#btn-back-to-top:hover {
+    transform: scale(1.1); /* Slight zoom effect on hover */
+    background-image: linear-gradient(90deg, #b895fb 0%, #eb6dae 100%); 
+    color: white;
+}
+
 /*# sourceMappingURL=style.css.map */

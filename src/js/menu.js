@@ -286,4 +286,27 @@ document.addEventListener('DOMContentLoaded', () => {
   if (allProductItems.length > 0) {
     applyFilters();
   }
+
+  // Scroll Back to Top Button
+  const backToTopBtn = document.getElementById('btn-back-to-top');
+
+  if (backToTopBtn) {
+    // Show or hide the button based on scroll position
+    window.addEventListener('scroll', () => {
+      // If user scrolls down more than 300px, show the button
+      if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        backToTopBtn.style.display = 'block';
+      } else {
+        backToTopBtn.style.display = 'none';
+      }
+    });
+
+    // Scroll smoothly to the top when clicked
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    });
+  }
 });
