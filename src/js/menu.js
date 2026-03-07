@@ -303,8 +303,9 @@ document.addEventListener('DOMContentLoaded', () => {
           backToTopBtn.classList.add('animate__fadeInUp');
           isBtnVisible = true;
         }
-      } else {
-        // Hide the button with animation
+      }
+      // Hide the button with animation
+      else {
         if (isBtnVisible) {
           backToTopBtn.classList.remove('animate__fadeInUp');
           backToTopBtn.classList.add('animate__fadeOutDown');
