@@ -1670,4 +1670,31 @@ button:disabled {
   transition: all 0.3s ease;
 }
 
+.custom-filter-menu .nav-link {
+    color: #212529; 
+    border-radius: 50px; 
+    transition: all 0.3s ease; 
+    margin: 0 5px; 
+}
+
+.custom-filter-menu .nav-link:hover {
+    background-image: linear-gradient(90deg, #b895fb 0%, #eb6dae 100%);
+    color: #ffffff !important; 
+}
+
+.custom-filter-menu .nav-link.active {
+    background-image: linear-gradient(90deg, #8657d9 0%, #c4317a 100%);
+    color: #ffffff !important;
+}
+
+.custom-pagination .page-item.active .page-link {
+    background-image: linear-gradient(90deg, #8657d9 0%, #c4317a 100%);
+    border-color: transparent;
+    color: white !important;
+}
+
+.custom-pagination .page-link:hover {
+    color: #c4317a !important;
+}
+
 /*# sourceMappingURL=style.css.map */

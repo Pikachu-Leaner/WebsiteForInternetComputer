@@ -95,4 +95,114 @@ document.addEventListener('DOMContentLoaded', () => {
       btnListView.classList.replace('btn-dark', 'btn-outline-dark');
     });
   }
+
+  // Category Filter functionality
+const filterLinks = document.querySelectorAll('#category-filter .nav-link');
+const allProductItems = Array.from(document.querySelectorAll('.product-item')); // Get all products as an Array
+const paginationContainer = document.getElementById('product-pagination');
+
+let filteredItems = [...allProductItems]; // Array to store currently filtered products
+let currentPage = 1; // Start on page 1
+const itemsPerPage = 6; // Set how many items you want per page
+
+// Display only the products for the current page
+function displayProducts(page) {
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  // First, hide ALL products
+  allProductItems.forEach((item) => {
+    item.style.display = 'none';
+  });
+
+  // Then, show only the products within the current page range
+  for (let i = startIndex; i < endIndex && i < filteredItems.length; i++) {
+    filteredItems[i].style.display = '';
+  }
+}
+
+// Generate the pagination buttons (1, 2, 3...)
+function setupPagination() {
+  if (!paginationContainer) return;
+  paginationContainer.innerHTML = ''; // Clear old buttons
+
+  const pageCount = Math.ceil(filteredItems.length / itemsPerPage);
+
+  // If there is only 1 page (or 0 products), hide the pagination
+  if (pageCount <= 1) return;
+
+  // Render Previous (<) button
+  let prevDisabled = currentPage === 1 ? 'disabled' : '';
+  paginationContainer.innerHTML += `<li class="page-item ${prevDisabled}"><a class="page-link text-dark" href="#" data-page="prev">&lt;</a></li>`;
+
+  // Render page numbers (1, 2, 3...)
+  for (let i = 1; i <= pageCount; i++) {
+    let activeClass = currentPage === i ? 'active' : '';
+    paginationContainer.innerHTML += `<li class="page-item ${activeClass}"><a class="page-link text-dark" href="#" data-page="${i}">${i}</a></li>`;
+  }
+
+  // Render Next (>) button
+  let nextDisabled = currentPage === pageCount ? 'disabled' : '';
+  paginationContainer.innerHTML += `<li class="page-item ${nextDisabled}"><a class="page-link text-dark" href="#" data-page="next">&gt;</a></li>`;
+
+  // Add click events to the newly created pagination buttons
+  const pageLinks = paginationContainer.querySelectorAll('.page-link');
+  pageLinks.forEach((link) => {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      // Prevent clicking if the button is disabled
+      if (this.parentElement.classList.contains('disabled')) return;
+
+      const targetPage = this.getAttribute('data-page');
+
+      if (targetPage === 'prev') {
+        currentPage--;
+      } else if (targetPage === 'next') {
+        currentPage++;
+      } else {
+        currentPage = parseInt(targetPage);
+      }
+
+      displayProducts(currentPage); // Update the products shown
+      setupPagination(); // Re-render the pagination (to update the active button color)
+    });
+  });
+}
+
+// Initialize on page load
+if (allProductItems.length > 0) {
+  displayProducts(currentPage);
+  setupPagination();
+}
+
+// Handle Category Filter Clicks
+if (filterLinks.length > 0) {
+  filterLinks.forEach((link) => {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      // Change the active color on the filter menu
+      filterLinks.forEach((el) => el.classList.remove('active'));
+      this.classList.add('active');
+
+      // Get the category to filter by
+      const filterValue = this.getAttribute('data-filter');
+
+      // Update the `filteredItems` array based on the selected category
+      if (filterValue === 'all') {
+        filteredItems = [...allProductItems];
+      } else {
+        filteredItems = allProductItems.filter(
+          (item) => item.getAttribute('data-category') === filterValue
+        );
+      }
+
+      // Always reset to Page 1 when changing categories
+      currentPage = 1;
+      displayProducts(currentPage);
+      setupPagination();
+    });
+  });
+}
 });
