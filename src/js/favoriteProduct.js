@@ -1,3 +1,4 @@
+import {  showToast } from '../js/validation.js';
 document.addEventListener('DOMContentLoaded', () => {
   // Target the specific containers in your HTML
   const productGrid = document.getElementById('favorite-product-grid');
@@ -38,25 +39,35 @@ document.addEventListener('DOMContentLoaded', () => {
         },
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to fetch: ${response.status}`);
-      }
-
       const responseData = await response.json();
-
-      // Extract the products array from the backend response structure
-      const products = responseData.data || [];
-
-      // Pass the products to the render function
-      renderProducts(products);
-    } catch (error) {
-      console.error('Error fetching favorite products:', error);
-      if (productGrid) {
-        productGrid.innerHTML = `<p class="text-danger text-center w-100 mt-4">Failed to load favorite products. Please try again later.</p>`;
+      // Success
+      if (!response.ok) {
+        // If it fails, throw the backend's specific error message to the catch block
+        const errorMessage = responseData.message || 'An unexpected error occurred.';
+        throw new Error(errorMessage);
       }
-    } finally {
-      // Hide the loading spinner
-      if (loadingOverlay) loadingOverlay.classList.add('d-none');
+
+      const products = responseData.data || [];
+      renderProducts(products);
+
+      if (responseData.message) {
+        showToast(responseData.message, 'success');
+      }
+    }
+    // Errors
+    catch (error) {
+      // Show the error toast using the backend's message
+      showToast(error.message, 'error'); 
+
+      // Show a simple fallback UI in the grid
+      if (productGrid) {
+        productGrid.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="fas fa-exclamation-triangle text-danger fa-3x mb-3"></i>
+                        <p class="text-danger fw-bold fs-5">Failed to load favorites</p>
+                    </div>
+                `;
+      }
     }
   }
 
