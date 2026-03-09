@@ -148,39 +148,32 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderProducts(products) {
     if (!productGrid) return;
 
+    // Clear out the loading spinner or previous products
     productGrid.innerHTML = '';
     let htmlContent = '';
 
-    products.forEach((product) => {
-      htmlContent += generateCardHTML(product);
-    });
+    // Handle the case where the user has no favorites
+    if (products.length === 0) {
+      productGrid.innerHTML = `
+        <div class="col-12 text-center py-5">
+            <i class="fas fa-heart-broken text-muted fa-3x mb-3 opacity-50"></i>
+            <p class="text-muted fw-bold fs-5">You haven't favorited any products yet.</p>
+        </div>
+      `;
+    } else {
+      // Loop through the data and build the HTML string
+      products.forEach((product) => {
+        htmlContent += generateCardHTML(product);
+      });
 
-    productGrid.innerHTML = htmlContent;
+      // Inject the generated HTML into the DOM
+      productGrid.innerHTML = htmlContent;
+    }
 
     // Dynamically update the product count text in the header
     if (productCountText) {
       productCountText.textContent = `(${products.length} items)`;
     }
-  }
-
-  // View Toggle Logic
-  const viewToggleGroup = document.querySelector('.custom-view-toggle');
-  if (viewToggleGroup) {
-    const toggleButtons = viewToggleGroup.querySelectorAll('.btn');
-
-    toggleButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        // Reset all buttons to inactive state
-        toggleButtons.forEach((btn) => {
-          btn.classList.remove('custom-active-bg-purple');
-          btn.classList.add('btn-light');
-        });
-
-        // Set the clicked button to active state
-        button.classList.add('custom-active-bg-purple');
-        button.classList.remove('btn-light');
-      });
-    });
   }
 
   // Initialization
