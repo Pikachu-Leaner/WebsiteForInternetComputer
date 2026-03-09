@@ -16,6 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
+      // Show the loading spinner while fetching data
+      if (productGrid) {
+        productGrid.innerHTML = `
+                    <div class="col-12 section-loader-container">
+                        <div class="spinner-border custom-spinner" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3 text-muted fw-bold" style="font-size: 1.1rem;">Loading your favorites...</p>
+                    </div>
+                `;
+      }
+
       const apiUrl = 'https://shoes-mall.onrender.com/api/v1/users/favorite';
 
       const response = await fetch(apiUrl, {

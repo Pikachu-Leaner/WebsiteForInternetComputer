@@ -1922,4 +1922,20 @@ button:disabled {
   background-color: #d0e8f2 !important;
 }
 
+.section-loader-container {
+    min-height: 300px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%; 
+}
+
+.custom-spinner {
+    width: 3.5rem;
+    height: 3.5rem;
+    color: #7519f5 !important; 
+    border-width: 0.25em; 
+}
+
 /*# sourceMappingURL=style.css.map */
