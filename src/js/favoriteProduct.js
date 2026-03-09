@@ -46,3 +46,25 @@ function generateCardHTML(product) {
         </div>
     `;
 }
+
+// Render Logic & Product Count
+function renderProducts(products) {
+  const productGrid = document.getElementById('favorite-product-grid');
+  const productCountText = document.getElementById('product-count'); // Grabs the new count element
+
+  if (!productGrid) return;
+
+  productGrid.innerHTML = '';
+  let htmlContent = '';
+
+  products.forEach((product) => {
+    htmlContent += generateCardHTML(product);
+  });
+
+  productGrid.innerHTML = htmlContent;
+
+  // Updates the text to match the number of products in the array
+  if (productCountText) {
+    productCountText.textContent = `(${products.length} items)`;
+  }
+}
