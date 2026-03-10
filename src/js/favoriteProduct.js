@@ -162,8 +162,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         
                         <div class="d-flex justify-content-between align-items-center mt-3">
                             <p class="card-price text-dark fw-bold mb-0 fs-5">$${price}</p>
+                            
                             <button class="btn btn-light rounded-circle p-2 shadow-sm btn-icon-circle-md">
-                                <i class="fas fa-heart text-danger"></i>
+                                <i class="fa fa-heart heart-icon"></i>
                             </button>
                         </div>
                     </div>
