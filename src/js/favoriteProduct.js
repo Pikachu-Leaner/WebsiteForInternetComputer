@@ -200,16 +200,15 @@ document.addEventListener('DOMContentLoaded', () => {
       // Inject the generated HTML into the DOM
       productGrid.innerHTML = htmlContent;
 
-      // Unfavorite API Click Handler 
+      // Unfavorite API Click Handler + Delete after post
       const heartButtons = productGrid.querySelectorAll('.btn-heart');
 
       heartButtons.forEach((button) => {
         button.addEventListener('click', async function () {
-          // Extract the _id we stored on the button
           const productId = this.getAttribute('data-id');
           const cardElement = this.closest('.favorite-product-placeholder');
 
-          // Remove heart active class and turn it back to un-active
+          // Optimistic UI Update: Instantly remove the active class (fades to grey)
           this.classList.remove('active');
 
           try {
@@ -218,25 +217,44 @@ document.addEventListener('DOMContentLoaded', () => {
               throw new Error('You must be logged in to do this.');
             }
 
-            const apiUrl = 'https://your-api-domain.com/api/v1/favorites/remove';
+            // The POST Request
+            const postUrl = `https://shoes-mall.onrender.com/api/v1/products/${productId}/unlike`;
 
-            const response = await fetch(apiUrl, {
+            const postResponse = await fetch(postUrl, {
               method: 'POST',
               headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json',
               },
-              // Send the ID to the backend.             
-              body: JSON.stringify({ productId: productId }),
             });
 
-            const responseData = await response.json();
-
-            if (!response.ok) {
-              throw new Error(responseData.message || 'Failed to unfavorite product.');
+            if (!postResponse.ok) {
+              const errData = await postResponse.json();
+              showToast(errData.message || 'POST request to server failed.', 'error');
+              this.classList.add('active');
+              return;
             }
 
-            // Success ! 
+            // The DELETE Request (Only runs if POST was successful)
+            const deleteUrl = `https://shoes-mall.onrender.com/api/v1/products?id=${productId}`;
+
+            const deleteResponse = await fetch(deleteUrl, {
+              method: 'DELETE',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+            });
+
+            if (!deleteResponse.ok) {
+              const errData = await deleteResponse.json();
+              showToast(errData.message || 'DELETE request to server failed.', 'error');
+              this.classList.add('active');
+              return;
+            }
+
+            // UI Updates (Both API calls succeeded!)
+            // Remove the HTML card completely from the grid
             if (cardElement) {
               cardElement.remove();
             }
@@ -248,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const newCount = parseInt(currentCountMatch[0], 10) - 1;
                 productCountText.textContent = `(${newCount} items)`;
 
-                // If they just removed their only/last favorite, show the empty state
+                // If they just removed their very last favorite, show the empty state
                 if (newCount === 0) {
                   productGrid.innerHTML = `
                                   <div class="col-12 text-center py-5">
@@ -260,15 +278,15 @@ document.addEventListener('DOMContentLoaded', () => {
               }
             }
 
-            // Show success toast (using the backend's message if available)
-            showToast(responseData.message || 'Removed from favorites', 'success');
+            // Show success toast
+            showToast('Successfully removed from favorites and inventory', 'success');
 
             // Clear the cache so the next page reload pulls fresh data
             sessionStorage.removeItem('favoriteProductsCache');
           } catch (error) {
-            console.error('Unfavorite Error:', error);
+            console.error('Unfavorite Process Error:', error);
 
-            // If the API failed, revert the heart back to purple (active)
+            // If either 1 of the API call failed, revert the heart back to active stage
             this.classList.add('active');
 
             // Show the error toast
@@ -276,49 +294,48 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
       });
+      // Dynamically update the product count text in the header
+      if (productCountText) {
+        productCountText.textContent = `(${products.length} items)`;
+      }
     }
 
-    // Dynamically update the product count text in the header
-    if (productCountText) {
-      productCountText.textContent = `(${products.length} items)`;
-    }
-  }
+    // View Toggle Logic
+    const viewToggleGroup = document.querySelector('.custom-view-toggle');
+    if (viewToggleGroup) {
+      const toggleButtons = viewToggleGroup.querySelectorAll('.btn');
 
-  // View Toggle Logic
-  const viewToggleGroup = document.querySelector('.custom-view-toggle');
-  if (viewToggleGroup) {
-    const toggleButtons = viewToggleGroup.querySelectorAll('.btn');
+      toggleButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          toggleButtons.forEach((btn) => {
+            btn.classList.remove('custom-active-bg-purple');
+            btn.classList.add('btn-light');
+          });
 
-    toggleButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        toggleButtons.forEach((btn) => {
-          btn.classList.remove('custom-active-bg-purple');
-          btn.classList.add('btn-light');
+          button.classList.add('custom-active-bg-purple');
+          button.classList.remove('btn-light');
         });
-
-        button.classList.add('custom-active-bg-purple');
-        button.classList.remove('btn-light');
       });
-    });
-  }
+    }
 
-  // Refresh Button Logic
-  const refreshBtn = document.getElementById('btn-refresh-favorites');
+    // Refresh Button Logic
+    const refreshBtn = document.getElementById('btn-refresh-favorites');
 
-  if (refreshBtn) {
-    refreshBtn.addEventListener('click', () => {
-      // Grab the FontAwesome icon inside the button
-      const icon = refreshBtn.querySelector('i');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', () => {
+        // Grab the FontAwesome icon inside the button
+        const icon = refreshBtn.querySelector('i');
 
-      // Add the FontAwesome spin class to make it rotate
-      if (icon) icon.classList.add('fa-spin');
+        // Add the FontAwesome spin class to make it rotate
+        if (icon) icon.classList.add('fa-spin');
 
-      // Call the fetch function and force it to bypass the cache
-      fetchFavoriteProducts(true).finally(() => {
-        // Remove the spin animation once the fetch is complete (success or fail)
-        if (icon) icon.classList.remove('fa-spin');
+        // Call the fetch function and force it to bypass the cache
+        fetchFavoriteProducts(true).finally(() => {
+          // Remove the spin animation once the fetch is complete (success or fail)
+          if (icon) icon.classList.remove('fa-spin');
+        });
       });
-    });
+    }
   }
 
   // Initialization
