@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!token) {
       // Optional: Redirect the user to login.html here
-      window.location.href = '../pages/login.html';
+      // window.location.href = '../pages/login.html';
       return;
     }
 
@@ -163,8 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="d-flex justify-content-between align-items-center mt-3">
                             <p class="card-price text-dark fw-bold mb-0 fs-5">$${price}</p>
                             
-                            <button class="btn btn-light rounded-circle p-2 shadow-sm btn-icon-circle-md">
-                                <i class="fa fa-heart heart-icon"></i>
+                            <button class="btn btn-light rounded-circle p-2 shadow-sm btn-icon-circle-md btn-heart active">
+                                <i class="fas fa-heart heart-icon"></i>
                             </button>
                         </div>
                     </div>
@@ -198,6 +198,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Inject the generated HTML into the DOM
       productGrid.innerHTML = htmlContent;
+      // Visual State Toggle for Hearts (Color Fade)
+      const heartButtons = productGrid.querySelectorAll('.btn-heart');
+
+      heartButtons.forEach((button) => {
+        button.addEventListener('click', function () {
+          this.classList.toggle('active');
+        });
+      });
     }
 
     // Dynamically update the product count text in the header

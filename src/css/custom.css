@@ -760,6 +760,10 @@ footer .footer-links li a:hover {
   color: #d452ee;
 }
 
+.btn-heart.active .heart-icon {
+    color: #b054fc !important; 
+}
+
 .card-body-custom {
   margin-right: 25px;
   margin-left: 25px;
