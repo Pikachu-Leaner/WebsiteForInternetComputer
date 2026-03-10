@@ -1938,4 +1938,26 @@ button:disabled {
     border-width: 0.25em; 
 }
 
+.btn-icon-circle-sm {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+
+    background-color: transparent !important;
+    color: #000000 !important;
+    border: 1px solid transparent !important; 
+
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-icon-circle-sm:hover {
+    background-color: #7519f5 !important; 
+    color: #ffffff !important;
+    border: 1px solid transparent !important;
+}
+
 /*# sourceMappingURL=style.css.map */

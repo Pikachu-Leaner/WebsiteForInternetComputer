@@ -1,18 +1,18 @@
 import { showToast } from '../js/validation.js';
+
 document.addEventListener('DOMContentLoaded', () => {
   // Target the specific containers in your HTML
   const productGrid = document.getElementById('favorite-product-grid');
   const productCountText = document.getElementById('product-count');
-  const loadingOverlay = document.getElementById('loading-overlay');
 
   // Fetch Favorite Products from API
-  async function fetchFavoriteProducts() {
+  async function fetchFavoriteProducts(forceReload = false) {
     // Retrieve the access token from session storage
     const token = sessionStorage.getItem('accessToken');
 
     if (!token) {
-      console.error('No access token found. Please log in.');
       // Optional: Redirect the user to login.html here
+      window.location.href = '../pages/login.html';
       return;
     }
 
@@ -20,13 +20,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let hasCachedData = false;
     const cachedProducts = sessionStorage.getItem('favoriteProductsCache');
 
-    if (cachedProducts) {
+    if (cachedProducts && !forceReload) {
+      // Only use cache if not forcing reload
       try {
         const parsedCache = JSON.parse(cachedProducts);
         renderProducts(parsedCache); // Render instantly
         hasCachedData = true;
       } catch (e) {
-        console.warn('Failed to parse cached products. Fetching fresh data.');
+        showToast('Failed to parse cached products. Fetching fresh data.');
       }
     }
 
@@ -54,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       const responseData = await response.json();
+
       // Success
       if (!response.ok) {
         // If it fails, throw the backend's specific error message to the catch block
@@ -69,8 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast(responseData.message, 'success');
       }
     } catch (error) {
-      console.error('Error fetching favorite products:', error);
-
       // If we have cached data, don't break the UI. Just show a toast warning.
       if (hasCachedData) {
         showToast('Could not sync latest favorites. Showing offline data.', 'error');
@@ -105,8 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
       themeClass = 'green-theme';
     }
 
-    // Get datas from backend response, with fallbacks for missing data
-
     // Check for images, fallback to a "No Image" placeholder if missing
     const imageUrl = product.images && product.images.length > 0 ? product.images[0] : '';
     const rating = product.totalRatings || 0;
@@ -123,21 +121,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Discount Badge Element
     const discountBadge =
       discount > 0
-        ? `<span class="badge bg-danger position-absolute top-0 end-0 m-2" style="z-index: 5;">-${discount}%</span>`
+        ? `<span class="badge bg-danger position-absolute top-0 end-0 m-2 fav-badge-discount">-${discount}%</span>`
         : '';
 
     // Image Element Fallback
     const imageElement = imageUrl
-      ? `<img src="${imageUrl}" alt="${product.name}" class="img-fluid" style="max-height: 80px; z-index: 2; position: relative;">`
-      : `<div class="text-muted d-flex flex-column align-items-center justify-content-center" style="z-index: 2; font-size: 0.8rem;"><i class="fas fa-image fa-2x mb-1 opacity-50"></i>No Image</div>`;
+      ? `<img src="${imageUrl}" alt="${product.name}" class="img-fluid fav-product-img">`
+      : `<div class="text-muted d-flex flex-column align-items-center justify-content-center fav-no-image"><i class="fas fa-image fa-2x mb-1 opacity-50"></i>No Image</div>`;
 
     return `
             <div class="col favorite-product-placeholder ${themeClass}">
-                <div class="generic-product-card p-3 h-100" style="border-radius: 1.25rem;">
+                <div class="generic-product-card p-3 h-100 fav-card-wrapper">
                     
-                    <div class="card-header-overlay position-relative mb-3 text-center" style="height: 120px; border-radius: 1rem; overflow: hidden;">
+                    <div class="card-header-overlay position-relative mb-3 text-center fav-card-img-header">
                         
-                        <span class="rating-badge position-absolute top-0 start-0 m-2 p-1 px-2 rounded-pill bg-white shadow-sm" style="font-size: 0.8rem; font-weight: bold; z-index: 5;">
+                        <span class="rating-badge position-absolute top-0 start-0 m-2 p-1 px-2 rounded-pill bg-white shadow-sm fav-badge-rating">
                             <i class="fas fa-star text-warning me-1"></i>${rating} 
                             <span class="text-muted fw-normal" style="font-size: 0.7rem;">(${reviewsCount})</span>
                         </span>
@@ -151,20 +149,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     <div class="card-body-overlay mt-2">
                         <h5 class="card-title text-dark fs-6 fw-bold mb-1 text-truncate" title="${product.name}">${product.name}</h5>
-                        <p class="card-text text-muted mb-1" style="font-size: 0.85rem;">${brandDisplay}</p>
+                        <p class="card-text text-muted mb-1 fav-text-brand">${brandDisplay}</p>
                         
-                        <p class="card-text text-secondary mb-1" style="font-size: 0.75rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" title="${description}">
+                        <p class="card-text text-secondary mb-1 fav-text-desc" title="${description}">
                             ${description}
                         </p>
                         
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="text-muted" style="font-size: 0.75rem;">Sold: <span class="fw-bold text-dark">${sold}</span></span>
-                            <span class="text-muted" style="font-size: 0.75rem;">Stock: <span class="fw-bold text-dark">${quantity}</span></span>
+                        <div class="d-flex justify-content-between align-items-center mb-2 fav-text-stats">
+                            <span class="text-muted">Sold: <span class="fw-bold text-dark">${sold}</span></span>
+                            <span class="text-muted">Stock: <span class="fw-bold text-dark">${quantity}</span></span>
                         </div>
                         
                         <div class="d-flex justify-content-between align-items-center mt-3">
                             <p class="card-price text-dark fw-bold mb-0 fs-5">$${price}</p>
-                            <button class="btn btn-light rounded-circle p-2 shadow-sm" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                            <button class="btn btn-light rounded-circle p-2 shadow-sm btn-icon-circle-md">
                                 <i class="fas fa-heart text-danger"></i>
                             </button>
                         </div>
@@ -205,6 +203,43 @@ document.addEventListener('DOMContentLoaded', () => {
     if (productCountText) {
       productCountText.textContent = `(${products.length} items)`;
     }
+  }
+
+  // View Toggle Logic
+  const viewToggleGroup = document.querySelector('.custom-view-toggle');
+  if (viewToggleGroup) {
+    const toggleButtons = viewToggleGroup.querySelectorAll('.btn');
+
+    toggleButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        toggleButtons.forEach((btn) => {
+          btn.classList.remove('custom-active-bg-purple');
+          btn.classList.add('btn-light');
+        });
+
+        button.classList.add('custom-active-bg-purple');
+        button.classList.remove('btn-light');
+      });
+    });
+  }
+
+  // Refresh Button Logic
+  const refreshBtn = document.getElementById('btn-refresh-favorites');
+
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', () => {
+      // Grab the FontAwesome icon inside the button
+      const icon = refreshBtn.querySelector('i');
+
+      // Add the FontAwesome spin class to make it rotate
+      if (icon) icon.classList.add('fa-spin');
+
+      // Call the fetch function and force it to bypass the cache
+      fetchFavoriteProducts(true).finally(() => {
+        // Remove the spin animation once the fetch is complete (success or fail)
+        if (icon) icon.classList.remove('fa-spin');
+      });
+    });
   }
 
   // Initialization
