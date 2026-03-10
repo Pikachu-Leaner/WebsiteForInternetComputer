@@ -254,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // UI Updates (Both API calls succeeded!)
-            // Remove the HTML card completely from the grid
+            // Remove the HTML card completely from the grid after request delete success
             if (cardElement) {
               cardElement.remove();
             }
