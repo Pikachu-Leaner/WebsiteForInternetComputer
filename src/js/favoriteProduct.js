@@ -111,6 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const reviewsCount = product.numberOfReview || 0;
 
     // Exact fields from the schema
+    const productId = product._id || '';
     const price = parseFloat(product.price || 0).toFixed(2);
     const discount = product.discount || 0;
     const sold = product.sold || 0;
@@ -163,8 +164,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="d-flex justify-content-between align-items-center mt-3">
                             <p class="card-price text-dark fw-bold mb-0 fs-5">$${price}</p>
                             
-                            <button class="btn btn-light rounded-circle p-2 shadow-sm btn-icon-circle-md btn-heart active">
-                                <i class="fas fa-heart heart-icon"></i>
+                            <button class="btn btn-light rounded-circle p-2 shadow-sm btn-icon-circle-md btn-heart active" data-id="${productId}">
+                                <i class="fa fa-heart heart-icon"></i>
                             </button>
                         </div>
                     </div>
@@ -198,12 +199,81 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Inject the generated HTML into the DOM
       productGrid.innerHTML = htmlContent;
-      // Visual State Toggle for Hearts (Color Fade)
+
+      // Unfavorite API Click Handler 
       const heartButtons = productGrid.querySelectorAll('.btn-heart');
 
       heartButtons.forEach((button) => {
-        button.addEventListener('click', function () {
-          this.classList.toggle('active');
+        button.addEventListener('click', async function () {
+          // Extract the _id we stored on the button
+          const productId = this.getAttribute('data-id');
+          const cardElement = this.closest('.favorite-product-placeholder');
+
+          // Remove heart active class and turn it back to un-active
+          this.classList.remove('active');
+
+          try {
+            const token = sessionStorage.getItem('accessToken');
+            if (!token) {
+              throw new Error('You must be logged in to do this.');
+            }
+
+            const apiUrl = 'https://your-api-domain.com/api/v1/favorites/remove';
+
+            const response = await fetch(apiUrl, {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+              // Send the ID to the backend.             
+              body: JSON.stringify({ productId: productId }),
+            });
+
+            const responseData = await response.json();
+
+            if (!response.ok) {
+              throw new Error(responseData.message || 'Failed to unfavorite product.');
+            }
+
+            // Success ! 
+            if (cardElement) {
+              cardElement.remove();
+            }
+
+            // Update the Product Count Text dynamically
+            if (productCountText) {
+              const currentCountMatch = productCountText.textContent.match(/\d+/);
+              if (currentCountMatch) {
+                const newCount = parseInt(currentCountMatch[0], 10) - 1;
+                productCountText.textContent = `(${newCount} items)`;
+
+                // If they just removed their only/last favorite, show the empty state
+                if (newCount === 0) {
+                  productGrid.innerHTML = `
+                                  <div class="col-12 text-center py-5">
+                                      <i class="fas fa-heart-broken text-muted fa-3x mb-3 opacity-50"></i>
+                                      <p class="text-muted fw-bold fs-5">You haven't favorited any products yet.</p>
+                                  </div>
+                              `;
+                }
+              }
+            }
+
+            // Show success toast (using the backend's message if available)
+            showToast(responseData.message || 'Removed from favorites', 'success');
+
+            // Clear the cache so the next page reload pulls fresh data
+            sessionStorage.removeItem('favoriteProductsCache');
+          } catch (error) {
+            console.error('Unfavorite Error:', error);
+
+            // If the API failed, revert the heart back to purple (active)
+            this.classList.add('active');
+
+            // Show the error toast
+            showToast(error.message, 'error');
+          }
         });
       });
     }
