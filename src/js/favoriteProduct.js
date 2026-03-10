@@ -1,4 +1,4 @@
-import {  showToast } from '../js/validation.js';
+import { showToast } from '../js/validation.js';
 document.addEventListener('DOMContentLoaded', () => {
   // Target the specific containers in your HTML
   const productGrid = document.getElementById('favorite-product-grid');
@@ -12,13 +12,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!token) {
       console.error('No access token found. Please log in.');
-      // Optional: You could redirect the user to login.html here
+      // Optional: Redirect the user to login.html here
       return;
     }
 
+    // Check for catched data
+    let hasCachedData = false;
+    const cachedProducts = sessionStorage.getItem('favoriteProductsCache');
+
+    if (cachedProducts) {
+      try {
+        const parsedCache = JSON.parse(cachedProducts);
+        renderProducts(parsedCache); // Render instantly
+        hasCachedData = true;
+      } catch (e) {
+        console.warn('Failed to parse cached products. Fetching fresh data.');
+      }
+    }
+
     try {
-      // Show the loading spinner while fetching data
-      if (productGrid) {
+      // Show the loading spinner while fetching data + can't catch the data
+      if (!hasCachedData && productGrid) {
         productGrid.innerHTML = `
                     <div class="col-12 section-loader-container">
                         <div class="spinner-border custom-spinner" role="status">
@@ -48,25 +62,31 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const products = responseData.data || [];
+      sessionStorage.setItem('favoriteProductsCache', JSON.stringify(products));
       renderProducts(products);
 
-      if (responseData.message) {
+      if (!hasCachedData && responseData.message) {
         showToast(responseData.message, 'success');
       }
-    }
-    // Errors
-    catch (error) {
-      // Show the error toast using the backend's message
-      showToast(error.message, 'error'); 
+    } catch (error) {
+      console.error('Error fetching favorite products:', error);
 
-      // Show a simple fallback UI in the grid
-      if (productGrid) {
-        productGrid.innerHTML = `
-                    <div class="col-12 text-center py-5">
-                        <i class="fas fa-exclamation-triangle text-danger fa-3x mb-3"></i>
-                        <p class="text-danger fw-bold fs-5">Failed to load favorites</p>
-                    </div>
-                `;
+      // If we have cached data, don't break the UI. Just show a toast warning.
+      if (hasCachedData) {
+        showToast('Could not sync latest favorites. Showing offline data.', 'error');
+      }
+      // Error
+      else {
+        // If no cache exists, show the error UI in the grid
+        showToast(error.message, 'error');
+        if (productGrid) {
+          productGrid.innerHTML = `
+                        <div class="col-12 text-center py-5">
+                            <i class="fas fa-exclamation-triangle text-danger fa-3x mb-3"></i>
+                            <p class="text-danger fw-bold fs-5">Failed to load favorites</p>
+                        </div>
+                    `;
+        }
       }
     }
   }
