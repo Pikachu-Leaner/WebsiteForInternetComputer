@@ -1756,7 +1756,7 @@ button:disabled {
 
 .custom-search-input ~ i.fa-search {
   color: #000000 !important;
-  padding-right: 20px;
+  padding-right: 5px;
 }
 
 .custom-search-input::-webkit-search-cancel-button {
@@ -1962,6 +1962,18 @@ button:disabled {
     background-color: #7519f5 !important; 
     color: #ffffff !important;
     border: 1px solid transparent !important;
+}
+
+.custom-filter-chip:hover {
+    background-color: #8e4beb !important;
+    border-color: #8e4beb !important;
+    color: white !important;
+}
+
+.custom-active-bg-purple {
+    background-color: #8e4beb !important;
+    border-color: #8e4beb !important;
+    color: white !important;
 }
 
 /*# sourceMappingURL=style.css.map */

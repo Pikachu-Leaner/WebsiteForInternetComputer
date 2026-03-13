@@ -1,52 +1,82 @@
 import { showToast } from '../js/validation.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Target the specific containers in your HTML
+  // DOM Elements
   const productGrid = document.getElementById('favorite-product-grid');
   const productCountText = document.getElementById('product-count');
+  const searchInput = document.getElementById('product-search-input');
+  const filterButtons = document.querySelectorAll('.custom-filter-chip');
+  const paginationContainer = document.getElementById('pagination-container');
+  const viewToggleGroup = document.querySelector('.custom-view-toggle');
+  const refreshBtn = document.getElementById('btn-refresh-favorites');
 
-  // Fetch Favorite Products from API
+  // Search Icons
+  const clearSearchBtn = document.getElementById('clear-search');
+  const mainSearchIcon = document.getElementById('main-search-icon');
+
+  // State Management
+  let allFavorites = [];
+  let filteredFavorites = [];
+  let currentPage = 1;
+  const itemsPerPage = 8;
+  let currentView = 'list'; // Default to List
+  let currentBrand = 'all'; // Default to All Brands
+
+  // Initialization
+  function initUI() {
+    // Active Brand Chip (All Products) - Now uses your purple class!
+    filterButtons.forEach((btn) => {
+      if (btn.innerText.trim().toLowerCase().includes('all')) {
+        btn.classList.add('custom-active-bg-purple', 'text-white');
+        btn.classList.remove('btn-outline-secondary', 'btn-light');
+      } else {
+        btn.classList.remove('custom-active-bg-purple', 'text-white');
+        btn.classList.add('btn-outline-secondary');
+      }
+    });
+
+    // Active View Toggle (List)
+    if (viewToggleGroup) {
+      const btns = viewToggleGroup.querySelectorAll('.btn');
+      if (btns.length >= 2) {
+        btns[0].classList.add('custom-active-bg-purple');
+        btns[0].classList.remove('btn-light');
+        btns[1].classList.remove('custom-active-bg-purple');
+        btns[1].classList.add('btn-light');
+      }
+    }
+  }
+
+  // Data Fetching
   async function fetchFavoriteProducts(forceReload = false) {
-    // Retrieve the access token from session storage
     const token = sessionStorage.getItem('accessToken');
 
+    // Redirect if not logged in
     if (!token) {
-      // Optional: Redirect the user to login.html here
-      // window.location.href = '../pages/login.html';
+      window.location.href = '../pages/login.html';
       return;
     }
 
-    // Check for catched data
-    let hasCachedData = false;
-    const cachedProducts = sessionStorage.getItem('favoriteProductsCache');
-
-    if (cachedProducts && !forceReload) {
-      // Only use cache if not forcing reload
+    const cached = sessionStorage.getItem('favoriteProductsCache');
+    if (cached && !forceReload) {
       try {
-        const parsedCache = JSON.parse(cachedProducts);
-        renderProducts(parsedCache); // Render instantly
-        hasCachedData = true;
+        allFavorites = JSON.parse(cached);
+        applyFiltersAndRender();
       } catch (e) {
-        showToast('Failed to parse cached products. Fetching fresh data.');
+        console.warn('Cache parse error');
       }
     }
 
     try {
-      // Show the loading spinner while fetching data + can't catch the data
-      if (!hasCachedData && productGrid) {
+      if (allFavorites.length === 0 && productGrid) {
         productGrid.innerHTML = `
-                    <div class="col-12 section-loader-container">
-                        <div class="spinner-border custom-spinner" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="mt-3 text-muted fw-bold" style="font-size: 1.1rem;">Loading your favorites...</p>
-                    </div>
-                `;
+                    <div class="container py-5 text-center">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-3 text-muted">Loading your favorites...</p>
+                    </div>`;
       }
 
-      const apiUrl = 'https://shoes-mall.onrender.com/api/v1/users/favorite';
-
-      const response = await fetch(apiUrl, {
+      const res = await fetch('https://shoes-mall.onrender.com/api/v1/users/favorite', {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -54,290 +84,333 @@ document.addEventListener('DOMContentLoaded', () => {
         },
       });
 
-      const responseData = await response.json();
+      const responseData = await res.json();
+      if (!res.ok) throw new Error(responseData.message || 'Failed to fetch data');
 
-      // Success
-      if (!response.ok) {
-        // If it fails, throw the backend's specific error message to the catch block
-        const errorMessage = responseData.message || 'An unexpected error occurred.';
-        throw new Error(errorMessage);
-      }
+      allFavorites = responseData.data || [];
+      sessionStorage.setItem('favoriteProductsCache', JSON.stringify(allFavorites));
+      applyFiltersAndRender();
 
-      const products = responseData.data || [];
-      sessionStorage.setItem('favoriteProductsCache', JSON.stringify(products));
-      renderProducts(products);
-
-      if (!hasCachedData && responseData.message) {
-        showToast(responseData.message, 'success');
+      if (forceReload && responseData.message) {
+        showToast('Favorites refreshed successfully!', 'success');
       }
-    } catch (error) {
-      // If we have cached data, don't break the UI. Just show a toast warning.
-      if (hasCachedData) {
-        showToast('Could not sync latest favorites. Showing offline data.', 'error');
-      }
-      // Error
-      else {
-        // If no cache exists, show the error UI in the grid
-        showToast(error.message, 'error');
-        if (productGrid) {
-          productGrid.innerHTML = `
-                        <div class="col-12 text-center py-5">
-                            <i class="fas fa-exclamation-triangle text-danger fa-3x mb-3"></i>
-                            <p class="text-danger fw-bold fs-5">Failed to load favorites</p>
-                        </div>
-                    `;
-        }
+    } catch (err) {
+      showToast(err.message, 'error');
+      if (allFavorites.length === 0 && productGrid) {
+        productGrid.innerHTML = `<div class="col-12 text-center py-5 text-danger">Failed to load favorites.</div>`;
       }
     }
   }
 
-  // Product Card Component Generator
-  function generateCardHTML(product) {
-    // Determine the theme color based on the brand_id or name
-    let themeClass = 'blue-theme';
-    const brandString = (product.brand_id || product.name || '').toLowerCase();
+  // Filtering & Rendering
+  function applyFiltersAndRender() {
+    const searchTerm = searchInput.value.toLowerCase().trim();
 
-    if (brandString.includes('nike')) {
-      themeClass = 'pink-theme';
-    } else if (brandString.includes('adidas')) {
-      themeClass = 'tan-theme';
-    } else if (brandString.includes('vans')) {
-      themeClass = 'green-theme';
+    filteredFavorites = allFavorites.filter((p) => {
+      const name = p.name.toLowerCase();
+      const matchesSearch = name.includes(searchTerm);
+      let matchesBrand =
+        currentBrand === 'all'
+          ? true
+          : currentBrand === 'other'
+            ? !name.includes('nike') && !name.includes('adidas') && !name.includes('vans')
+            : name.includes(currentBrand);
+      return matchesSearch && matchesBrand;
+    });
+
+    renderPagination();
+    renderCurrentPage();
+  }
+
+  function renderCurrentPage() {
+    if (!productGrid) return;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const pageItems = filteredFavorites.slice(startIndex, startIndex + itemsPerPage);
+
+    if (productCountText) productCountText.textContent = `(${filteredFavorites.length} items)`;
+
+    productGrid.innerHTML = '';
+    productGrid.className =
+      currentView === 'list'
+        ? 'row row-cols-1 g-3'
+        : 'row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4';
+
+    if (pageItems.length === 0) {
+      productGrid.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-heart-broken text-muted fa-3x mb-3 opacity-50"></i>
+                    <p class="text-muted fw-bold fs-5">No products found.</p>
+                </div>`;
+      return;
     }
 
-    // Check for images, fallback to a "No Image" placeholder if missing
-    const imageUrl = product.images && product.images.length > 0 ? product.images[0] : '';
+    pageItems.forEach((p) =>
+      productGrid.insertAdjacentHTML('beforeend', generateCardHTML(p, currentView))
+    );
+    attachHeartListeners();
+  }
+
+  function renderPagination() {
+    if (!paginationContainer) return;
+
+    if (filteredFavorites.length === 0) {
+      paginationContainer.innerHTML = '';
+      return;
+    }
+
+    const totalPages = Math.ceil(filteredFavorites.length / itemsPerPage) || 1;
+    paginationContainer.innerHTML = '<span class="custom-pages-text me-2 fw-bold">Page</span>';
+
+    for (let i = 1; i <= totalPages; i++) {
+      const btn = document.createElement('button');
+
+      if (i === currentPage) {
+        btn.className = 'btn btn-sm mx-1 text-white shadow-sm';
+        btn.style.backgroundColor = '#8e4beb';
+        btn.style.borderColor = '#8e4beb';
+      } else {
+        btn.className = 'btn btn-sm mx-1 btn-light border';
+      }
+
+      btn.textContent = i;
+      btn.onclick = () => {
+        currentPage = i;
+        renderCurrentPage();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+      paginationContainer.appendChild(btn);
+    }
+  }
+
+  function generateCardHTML(product, view) {
+    const brand = product.name.toLowerCase();
+    let themeClass = brand.includes('nike')
+      ? 'pink-theme'
+      : brand.includes('adidas')
+        ? 'tan-theme'
+        : brand.includes('vans')
+          ? 'green-theme'
+          : 'blue-theme';
+
+    const imageUrl = product.images?.[0]?.url || '';
     const rating = product.totalRatings || 0;
     const reviewsCount = product.numberOfReview || 0;
-
-    // Exact fields from the schema
     const productId = product._id || '';
     const price = parseFloat(product.price || 0).toFixed(2);
     const discount = product.discount || 0;
     const sold = product.sold || 0;
-    const quantity = product.quantity || 0; // Stock quantity
+    const quantity = product.quantity || 0;
     const description = product.description || '';
-    const brandDisplay = product.brand_id ? `Brand: ${product.brand_id}` : 'Shoes';
 
-    // Discount Badge Element
     const discountBadge =
       discount > 0
         ? `<span class="badge bg-danger position-absolute top-0 end-0 m-2 fav-badge-discount">-${discount}%</span>`
         : '';
 
-    // Image Element Fallback
     const imageElement = imageUrl
-      ? `<img src="${imageUrl}" alt="${product.name}" class="img-fluid fav-product-img">`
-      : `<div class="text-muted d-flex flex-column align-items-center justify-content-center fav-no-image"><i class="fas fa-image fa-2x mb-1 opacity-50"></i>No Image</div>`;
+      ? `<img src="${imageUrl}" alt="${product.name}" class="img-fluid fav-product-img" style="max-height: 150px; object-fit: contain;">`
+      : `<div class="text-muted d-flex flex-column align-items-center justify-content-center fav-no-image">
+                <i class="fas fa-image fa-2x mb-1 opacity-50"></i>No Image
+               </div>`;
 
-    return `
+    // LIST VIEW
+    if (view === 'list') {
+      return `
             <div class="col favorite-product-placeholder ${themeClass}">
-                <div class="generic-product-card p-3 h-100 fav-card-wrapper">
-                    
-                    <div class="card-header-overlay position-relative mb-3 text-center fav-card-img-header">
-                        
-                        <span class="rating-badge position-absolute top-0 start-0 m-2 p-1 px-2 rounded-pill bg-white shadow-sm fav-badge-rating">
-                            <i class="fas fa-star text-warning me-1"></i>${rating} 
-                            <span class="text-muted fw-normal" style="font-size: 0.7rem;">(${reviewsCount})</span>
-                        </span>
-
+                <div class="generic-product-card p-3 d-flex align-items-center border rounded bg-white h-100 fav-card-wrapper shadow-sm">
+                    <div class="position-relative text-center me-4" style="width: 150px; flex-shrink: 0;">
                         ${discountBadge}
-                        
-                        <div class="product-silhouette-placeholder mx-auto d-flex align-items-center justify-content-center h-100 position-relative">
-                            ${imageElement}
-                        </div>
+                        ${imageElement}
                     </div>
-                    
-                    <div class="card-body-overlay mt-2">
-                        <h5 class="card-title text-dark fs-6 fw-bold mb-1 text-truncate" title="${product.name}">${product.name}</h5>
-                        <p class="card-text text-muted mb-1 fav-text-brand">${brandDisplay}</p>
-                        
-                        <p class="card-text text-secondary mb-1 fav-text-desc" title="${description}">
-                            ${description}
-                        </p>
-                        
-                        <div class="d-flex justify-content-between align-items-center mb-2 fav-text-stats">
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="fw-bold mb-1 text-dark text-truncate" title="${product.name}">${product.name}</h5>
+                            <span class="rating-badge p-1 px-2 rounded-pill bg-light shadow-sm fav-badge-rating" style="font-size: 0.85rem;">
+                                <i class="fas fa-star text-warning me-1"></i>${rating} 
+                                <span class="text-muted fw-normal" style="font-size: 0.7rem;">(${reviewsCount})</span>
+                            </span>
+                        </div>
+                        <p class="text-muted small mb-2 fav-text-desc text-truncate" style="max-width: 400px;" title="${description}">${description}</p>
+                        <div class="d-flex align-items-center gap-4 mb-3 small fav-text-stats flex-wrap">
                             <span class="text-muted">Sold: <span class="fw-bold text-dark">${sold}</span></span>
                             <span class="text-muted">Stock: <span class="fw-bold text-dark">${quantity}</span></span>
+                            <span class="text-muted ms-auto">Review counts <span class="fw-normal" style="font-size: 0.7rem;">(${reviewsCount})</span></span>
                         </div>
-                        
-                        <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="d-flex justify-content-between align-items-center mt-2">
                             <p class="card-price text-dark fw-bold mb-0 fs-5">$${price}</p>
-                            
                             <button class="btn btn-light rounded-circle p-2 shadow-sm btn-icon-circle-md btn-heart active" data-id="${productId}">
                                 <i class="fa fa-heart heart-icon"></i>
                             </button>
                         </div>
                     </div>
+                </div>
+            </div>`;
+    }
 
+    // GRID VIEW
+    return `
+        <div class="col favorite-product-placeholder ${themeClass}">
+            <div class="generic-product-card p-3 h-100 fav-card-wrapper border rounded shadow-sm bg-white">
+                <div class="card-header-overlay position-relative mb-3 text-center fav-card-img-header">
+                    <span class="rating-badge position-absolute top-0 start-0 m-2 p-1 px-2 rounded-pill bg-white shadow-sm fav-badge-rating">
+                        <i class="fas fa-star text-warning me-1"></i>${rating} 
+                    </span>
+                    ${discountBadge}
+                    <div class="product-silhouette-placeholder mx-auto d-flex align-items-center justify-content-center h-100 position-relative" style="height: 150px;">
+                        ${imageElement}
+                    </div>
+                </div>
+                <div class="card-body-overlay mt-2">
+                    <h5 class="card-title text-dark fs-6 fw-bold mb-1 text-truncate" title="${product.name}">${product.name}</h5>
+                    <p class="card-text text-secondary mb-1 fav-text-desc text-truncate" title="${description}">${description}</p>
+                    <div class="d-flex align-items-center mb-2 fav-text-stats gap-2 flex-wrap">
+                        <span class="text-muted">Sold: <span class="fw-bold text-dark">${sold}</span></span>
+                        <span class="text-muted">Stock: <span class="fw-bold text-dark">${quantity}</span></span>
+                        <span class="text-muted ms-auto">Review counts <span class="fw-normal" style="font-size: 0.7rem;">(${reviewsCount})</span></span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <p class="card-price text-dark fw-bold mb-0 fs-5">$${price}</p>
+                        <button class="btn btn-light rounded-circle p-2 shadow-sm btn-icon-circle-md btn-heart active" data-id="${productId}">
+                            <i class="fa fa-heart heart-icon"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-        `;
+        </div>`;
   }
 
-  // Render Logic & Product Count
-  function renderProducts(products) {
-    if (!productGrid) return;
+  // Event Listeners
 
-    // Clear out the loading spinner or previous products
-    productGrid.innerHTML = '';
-    let htmlContent = '';
+  // Search Input
+  searchInput.addEventListener('input', () => {
+    const text = searchInput.value.trim();
+    if (clearSearchBtn) clearSearchBtn.style.display = text ? 'inline-block' : 'none';
+    if (mainSearchIcon) mainSearchIcon.style.display = text ? 'none' : 'inline-block';
+    currentPage = 1;
+    applyFiltersAndRender();
+  });
 
-    // Handle the case where the user has no favorites
-    if (products.length === 0) {
-      productGrid.innerHTML = `
-        <div class="col-12 text-center py-5">
-            <i class="fas fa-heart-broken text-muted fa-3x mb-3 opacity-50"></i>
-            <p class="text-muted fw-bold fs-5">You haven't favorited any products yet.</p>
-        </div>
-      `;
-    } else {
-      // Loop through the data and build the HTML string
-      products.forEach((product) => {
-        htmlContent += generateCardHTML(product);
+  if (clearSearchBtn) {
+    clearSearchBtn.onclick = () => {
+      searchInput.value = '';
+      clearSearchBtn.style.display = 'none';
+      mainSearchIcon.style.display = 'inline-block';
+      currentPage = 1;
+      applyFiltersAndRender();
+      searchInput.focus();
+    };
+  }
+
+  // Filter Chips - Swapped to custom purple class!
+  filterButtons.forEach((btn) => {
+    btn.onclick = function () {
+      filterButtons.forEach((b) => {
+        b.classList.remove('custom-active-bg-purple', 'text-white');
+        b.classList.add('btn-outline-secondary');
       });
+      this.classList.add('custom-active-bg-purple', 'text-white');
+      this.classList.remove('btn-outline-secondary', 'btn-light');
 
-      // Inject the generated HTML into the DOM
-      productGrid.innerHTML = htmlContent;
+      currentBrand = this.innerText.toLowerCase().includes('all')
+        ? 'all'
+        : this.innerText.toLowerCase().trim();
+      currentPage = 1;
+      applyFiltersAndRender();
+    };
+  });
 
-      // Unfavorite API Click Handler + Delete after post
-      const heartButtons = productGrid.querySelectorAll('.btn-heart');
-
-      heartButtons.forEach((button) => {
-        button.addEventListener('click', async function () {
-          const productId = this.getAttribute('data-id');
-          const cardElement = this.closest('.favorite-product-placeholder');
-
-          // Optimistic UI Update: Instantly remove the active class (fades to grey)
-          this.classList.remove('active');
-
-          try {
-            const token = sessionStorage.getItem('accessToken');
-            if (!token) {
-              throw new Error('You must be logged in to do this.');
-            }
-
-            // The POST Request
-            const postUrl = `https://shoes-mall.onrender.com/api/v1/products/${productId}/unlike`;
-
-            const postResponse = await fetch(postUrl, {
-              method: 'POST',
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
-            });
-
-            if (!postResponse.ok) {
-              const errData = await postResponse.json();
-              showToast(errData.message || 'POST request to server failed.', 'error');
-              this.classList.add('active');
-              return;
-            }
-
-            // The DELETE Request (Only runs if POST was successful)
-            const deleteUrl = `https://shoes-mall.onrender.com/api/v1/products?id=${productId}`;
-
-            const deleteResponse = await fetch(deleteUrl, {
-              method: 'DELETE',
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
-            });
-
-            if (!deleteResponse.ok) {
-              const errData = await deleteResponse.json();
-              showToast(errData.message || 'DELETE request to server failed.', 'error');
-              this.classList.add('active');
-              return;
-            }
-
-            // UI Updates (Both API calls succeeded!)
-            // Remove the HTML card completely from the grid after request delete success
-            if (cardElement) {
-              cardElement.remove();
-            }
-
-            // Update the Product Count Text dynamically
-            if (productCountText) {
-              const currentCountMatch = productCountText.textContent.match(/\d+/);
-              if (currentCountMatch) {
-                const newCount = parseInt(currentCountMatch[0], 10) - 1;
-                productCountText.textContent = `(${newCount} items)`;
-
-                // If they just removed their very last favorite, show the empty state
-                if (newCount === 0) {
-                  productGrid.innerHTML = `
-                                  <div class="col-12 text-center py-5">
-                                      <i class="fas fa-heart-broken text-muted fa-3x mb-3 opacity-50"></i>
-                                      <p class="text-muted fw-bold fs-5">You haven't favorited any products yet.</p>
-                                  </div>
-                              `;
-                }
-              }
-            }
-
-            // Show success toast
-            showToast('Successfully removed from favorites and inventory', 'success');
-
-            // Clear the cache so the next page reload pulls fresh data
-            sessionStorage.removeItem('favoriteProductsCache');
-          } catch (error) {
-            console.error('Unfavorite Process Error:', error);
-
-            // If either 1 of the API call failed, revert the heart back to active stage
-            this.classList.add('active');
-
-            // Show the error toast
-            showToast(error.message, 'error');
-          }
+  // View Toggle
+  if (viewToggleGroup) {
+    const btns = viewToggleGroup.querySelectorAll('.btn');
+    btns.forEach((btn, idx) => {
+      btn.onclick = () => {
+        currentView = idx === 0 ? 'list' : 'grid';
+        btns.forEach((b) => {
+          b.classList.remove('custom-active-bg-purple');
+          b.classList.add('btn-light');
         });
+        btn.classList.add('custom-active-bg-purple');
+        btn.classList.remove('btn-light');
+        renderCurrentPage();
+      };
+    });
+  }
+
+  // Refresh Button Logic
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', () => {
+      const icon = refreshBtn.querySelector('i');
+      if (icon) icon.classList.add('fa-spin');
+
+      fetchFavoriteProducts(true).finally(() => {
+        if (icon) icon.classList.remove('fa-spin');
       });
-      // Dynamically update the product count text in the header
-      if (productCountText) {
-        productCountText.textContent = `(${products.length} items)`;
-      }
-    }
+    });
+  }
 
-    // View Toggle Logic
-    const viewToggleGroup = document.querySelector('.custom-view-toggle');
-    if (viewToggleGroup) {
-      const toggleButtons = viewToggleGroup.querySelectorAll('.btn');
+  // Unfavorite Logic (POST then DELETE)
+  function attachHeartListeners() {
+    productGrid.querySelectorAll('.btn-heart').forEach((btn) => {
+      btn.onclick = async function () {
+        const productId = this.getAttribute('data-id');
+        const token = sessionStorage.getItem('accessToken');
 
-      toggleButtons.forEach((button) => {
-        button.addEventListener('click', () => {
-          toggleButtons.forEach((btn) => {
-            btn.classList.remove('custom-active-bg-purple');
-            btn.classList.add('btn-light');
+        // Redirect if session expired
+        if (!token) {
+          showToast('Your session expired. Please log in again.', 'error');
+          window.location.href = '../pages/login.html';
+          return;
+        }
+
+        // Optimistic UI Update
+        this.classList.remove('active');
+
+        try {
+          // POST Request (Unlike)
+          const postUrl = `https://shoes-mall.onrender.com/api/v1/products/${productId}/unlike`;
+          const postResponse = await fetch(postUrl, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
           });
 
-          button.classList.add('custom-active-bg-purple');
-          button.classList.remove('btn-light');
-        });
-      });
-    }
+          if (!postResponse.ok) {
+            const errData = await postResponse.json();
+            throw new Error(errData.message || 'POST request to unlike failed.');
+          }
 
-    // Refresh Button Logic
-    const refreshBtn = document.getElementById('btn-refresh-favorites');
+          // DELETE Request
+          const deleteUrl = `https://shoes-mall.onrender.com/api/v1/products?id=${productId}`;
+          const deleteResponse = await fetch(deleteUrl, {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
 
-    if (refreshBtn) {
-      refreshBtn.addEventListener('click', () => {
-        // Grab the FontAwesome icon inside the button
-        const icon = refreshBtn.querySelector('i');
+          if (!deleteResponse.ok) {
+            const errData = await deleteResponse.json();
+            throw new Error(errData.message || 'DELETE request failed.');
+          }
 
-        // Add the FontAwesome spin class to make it rotate
-        if (icon) icon.classList.add('fa-spin');
+          // Update State & UI
+          allFavorites = allFavorites.filter((p) => p._id !== productId);
+          sessionStorage.setItem('favoriteProductsCache', JSON.stringify(allFavorites));
 
-        // Call the fetch function and force it to bypass the cache
-        fetchFavoriteProducts(true).finally(() => {
-          // Remove the spin animation once the fetch is complete (success or fail)
-          if (icon) icon.classList.remove('fa-spin');
-        });
-      });
-    }
+          applyFiltersAndRender();
+          showToast('Successfully removed from favorites.', 'success');
+        } catch (error) {
+          this.classList.add('active');
+          showToast(error.message, 'error');
+        }
+      };
+    });
   }
 
-  // Initialization
+  // Start App
+  initUI();
   fetchFavoriteProducts();
 });

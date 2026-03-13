@@ -46,9 +46,11 @@
                     </a>
                 </div>
 
-                <div class="header-search ms-auto me-4 d-flex align-items-center">
-                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                    <span class="search-text">Search</span>
+                <div
+                    class="search-icons-container position-absolute end-0 top-50 translate-middle-y me-3 d-flex align-items-center">
+                    <i class="fas fa-times me-2 text-muted" id="clear-search"
+                        style="cursor: pointer; display: none;"></i>
+                    <i class="fas fa-search text-muted" id="main-search-icon"></i>
                 </div>
 
                 <div class="header-components d-flex align-items-center gap-4">
@@ -120,9 +122,9 @@
 
             <div class="row mb-4 justify-content-center mt-3">
                 <div class="col-12 col-md-8 position-relative">
-                    <input type="search" class="form-control rounded-pill custom-search-input" placeholder="Search"
-                        aria-label="Search">
-                    <i class="fas fa-search position-absolute end-0 top-50 translate-middle-y me-3 text-muted"></i>
+                    <input type="search" id="product-search-input" class="form-control rounded-pill custom-search-input"
+                        placeholder="Search by name...">
+                    <i class="fas fa-search position-absolute end-0 top-50 translate-middle-y me-4 text-muted"></i>
                 </div>
             </div>
 
@@ -143,15 +145,12 @@
             <div class="row mb-4 align-items-center">
                 <div class="col">
                     <div class="btn-group custom-view-toggle" role="group">
-                        <button type="button" class="btn custom-active-bg-purple"><i class="fas fa-bars"></i></button>
+                        <button type="button" class="btn btn-light"><i class="fas fa-bars"></i></button>
                         <button type="button" class="btn btn-light"><i class="fas fa-th-large"></i></button>
                     </div>
                 </div>
-                <div class="col-auto text-end custom-pagination-group">
-                    <span class="custom-pages-text me-2">Pages</span>
-                    <span class="custom-page-circle active me-1">1</span>
-                    <span class="custom-page-circle me-1">2</span>
-                    <span class="custom-page-circle">3</span>
+                <div class="col-auto text-end custom-pagination-group" id="pagination-container">
+                    <span class="custom-pages-text me-2">Page</span>
                 </div>
             </div>
 
