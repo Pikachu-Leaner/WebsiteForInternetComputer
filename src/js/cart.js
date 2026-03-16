@@ -170,7 +170,7 @@ document.getElementById('cart-items-container').addEventListener('change', funct
 
   if (itemIndex === -1) return;
 
-  // Handle quantity input typing
+  // Handle manual quantity input typing from user
   if (e.target.classList.contains('qty-input')) {
     let newQty = parseInt(e.target.value);
 
