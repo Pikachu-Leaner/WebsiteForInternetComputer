@@ -1977,4 +1977,133 @@ button:disabled {
   color: white !important;
 }
 
+.custom-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.cart-header th {
+  background-color: #dadada !important;
+  color: #333;
+  font-weight: 500;
+  padding: 12px 15px;
+  border-bottom: none;
+}
+
+.col-check {
+  width: 5%;
+}
+.col-id {
+  width: 5%;
+}
+.col-img {
+  width: 15%;
+}
+.col-name {
+  width: 20%;
+}
+.col-price {
+  width: 10%;
+}
+.col-qty {
+  width: 15%;
+  text-align: center;
+}
+.col-total {
+  width: 10%;
+}
+.col-action {
+  width: 20%;
+  text-align: center;
+}
+
+tbody tr td {
+  padding: 15px;
+  background-color: #ffffff;
+}
+
+.product-img {
+  width: 60px;
+  height: auto;
+  object-fit: cover;
+}
+
+.custom-checkbox {
+  border-color: #6b21a8 !important;
+}
+.custom-checkbox:checked {
+  background-color: #6b21a8 !important;
+  border-color: #6b21a8 !important;
+}
+
+.btn-purple {
+  background-color: #6b21a8 !important;
+  color: white !important;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.btn-purple:hover {
+  background-color: #581c87 !important;
+  color: white !important;
+}
+
+.btn-red {
+  background-color: #ef4444 !important; 
+  color: white !important;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.btn-red:hover {
+  background-color: #dc2626 !important ;
+  color: white !important;
+}
+
+.btn-submit {
+  background-color: #f97316 !important; 
+  color: white !important;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 20px;
+  letter-spacing: 0.5px;
+}
+
+.btn-submit:hover {
+  background-color: #ea580c !important;
+  color: white !important;
+}
+
+.btn-action {
+  padding: 6px 16px;
+  border-radius: 4px;
+}
+
+.btn-qty {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  border-radius: 4px;
+}
+
+.qty-input {
+  width: 50px;
+  height: 28px;
+  background-color: #e5e7eb !important;
+  border: none;
+  border-radius: 0;
+  font-weight: 600;
+}
+
+.qty-input:focus {
+  box-shadow: none;
+  background-color: #e5e7eb !important;
+}
+
 /*# sourceMappingURL=style.css.map */
