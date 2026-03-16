@@ -19,12 +19,30 @@ document.addEventListener('DOMContentLoaded', () => {
   let filteredFavorites = [];
   let currentPage = 1;
   const itemsPerPage = 8;
-  let currentView = 'list'; // Default to List
-  let currentBrand = 'all'; // Default to All Brands
+  let currentView = 'list';
+  let currentBrand = 'all';
+  let searchTimeout = null;
+  let isProcessing = false; // Prevents overlapping loading states
+
+  // Helper function for artificial delay
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  // Helper to show loading spinner
+  function showLoadingSpinner(message = 'Processing...') {
+    if (!productGrid) return;
+    productGrid.className = 'row'; // Reset grid classes during loading
+    productGrid.innerHTML = `
+      <div class="container col-12 text-center py-5">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem; color: #8e4beb !important;">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3 text-muted fw-bold">${message}</p>
+      </div>`;
+  }
 
   // Initialization
+
   function initUI() {
-    // Active Brand Chip (All Products) - Now uses your purple class!
     filterButtons.forEach((btn) => {
       if (btn.innerText.trim().toLowerCase().includes('all')) {
         btn.classList.add('custom-active-bg-purple', 'text-white');
@@ -35,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Active View Toggle (List)
     if (viewToggleGroup) {
       const btns = viewToggleGroup.querySelectorAll('.btn');
       if (btns.length >= 2) {
@@ -48,33 +65,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Data Fetching
-  async function fetchFavoriteProducts(forceReload = false) {
-    const token = sessionStorage.getItem('accessToken');
 
-    // Redirect if not logged in
+  async function fetchFavoriteProducts(forceReload = false) {
+    if (isProcessing) return;
+
+    const token = sessionStorage.getItem('accessToken');
     if (!token) {
       window.location.href = '../pages/login.html';
       return;
     }
 
-    const cached = sessionStorage.getItem('favoriteProductsCache');
-    if (cached && !forceReload) {
-      try {
-        allFavorites = JSON.parse(cached);
-        applyFiltersAndRender();
-      } catch (e) {
-        console.warn('Cache parse error');
-      }
-    }
+    isProcessing = true;
+    showLoadingSpinner(forceReload ? 'Refreshing your favorites...' : 'Loading your favorites...');
 
     try {
-      if (allFavorites.length === 0 && productGrid) {
-        productGrid.innerHTML = `
-                    <div class="container py-5 text-center">
-                        <div class="spinner-border text-primary" role="status"></div>
-                        <p class="mt-3 text-muted">Loading your favorites...</p>
-                    </div>`;
-      }
+      await delay(2500);
 
       const res = await fetch('https://shoes-mall.onrender.com/api/v1/users/favorite', {
         method: 'GET',
@@ -91,18 +96,37 @@ document.addEventListener('DOMContentLoaded', () => {
       sessionStorage.setItem('favoriteProductsCache', JSON.stringify(allFavorites));
       applyFiltersAndRender();
 
-      if (forceReload && responseData.message) {
+      if (forceReload) {
         showToast('Favorites refreshed successfully!', 'success');
       }
     } catch (err) {
       showToast(err.message, 'error');
-      if (allFavorites.length === 0 && productGrid) {
-        productGrid.innerHTML = `<div class="col-12 text-center py-5 text-danger">Failed to load favorites.</div>`;
+      if (productGrid) {
+        productGrid.innerHTML = `<div class="container col-12 text-center py-5 text-danger">Failed to load favorites.</div>`;
       }
+    } finally {
+      isProcessing = false;
     }
   }
 
   // Filtering & Rendering
+
+  async function handleUIInteraction(actionType) {
+    if (isProcessing) return;
+    isProcessing = true;
+
+    let msg = 'Updating...';
+    if (actionType === 'filter') msg = 'Filtering products...';
+    if (actionType === 'view') msg = 'Switching view...';
+    if (actionType === 'search') msg = 'Searching...';
+
+    showLoadingSpinner(msg);
+    await delay(2000);
+    applyFiltersAndRender();
+
+    isProcessing = false;
+  }
+
   function applyFiltersAndRender() {
     const searchTerm = searchInput.value.toLowerCase().trim();
 
@@ -117,6 +141,12 @@ document.addEventListener('DOMContentLoaded', () => {
             : name.includes(currentBrand);
       return matchesSearch && matchesBrand;
     });
+
+    // Logic Check Fix: Ensure current page doesn't exceed total pages after filtering/deleting
+    const totalPages = Math.ceil(filteredFavorites.length / itemsPerPage) || 1;
+    if (currentPage > totalPages) {
+      currentPage = totalPages;
+    }
 
     renderPagination();
     renderCurrentPage();
@@ -163,7 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     for (let i = 1; i <= totalPages; i++) {
       const btn = document.createElement('button');
-
       if (i === currentPage) {
         btn.className = 'btn btn-sm mx-1 text-white shadow-sm';
         btn.style.backgroundColor = '#8e4beb';
@@ -171,9 +200,9 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         btn.className = 'btn btn-sm mx-1 btn-light border';
       }
-
       btn.textContent = i;
       btn.onclick = () => {
+        if (isProcessing) return; // Prevent page changes while loading
         currentPage = i;
         renderCurrentPage();
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -206,35 +235,26 @@ document.addEventListener('DOMContentLoaded', () => {
       discount > 0
         ? `<span class="badge bg-danger position-absolute top-0 end-0 m-2 fav-badge-discount">-${discount}%</span>`
         : '';
-
     const imageElement = imageUrl
       ? `<img src="${imageUrl}" alt="${product.name}" class="img-fluid fav-product-img" style="max-height: 150px; object-fit: contain;">`
-      : `<div class="text-muted d-flex flex-column align-items-center justify-content-center fav-no-image">
-                <i class="fas fa-image fa-2x mb-1 opacity-50"></i>No Image
-               </div>`;
+      : `<div class="text-muted d-flex flex-column align-items-center justify-content-center fav-no-image"><i class="fas fa-image fa-2x mb-1 opacity-50"></i>No Image</div>`;
 
-    // LIST VIEW
     if (view === 'list') {
       return `
             <div class="col favorite-product-placeholder ${themeClass}">
                 <div class="generic-product-card p-3 d-flex align-items-center border rounded bg-white h-100 fav-card-wrapper shadow-sm">
-                    <div class="position-relative text-center me-4" style="width: 150px; flex-shrink: 0;">
-                        ${discountBadge}
-                        ${imageElement}
-                    </div>
+                    <div class="position-relative text-center me-4" style="width: 150px; flex-shrink: 0;">${discountBadge}${imageElement}</div>
                     <div class="flex-grow-1">
                         <div class="d-flex justify-content-between align-items-start">
                             <h5 class="fw-bold mb-1 text-dark text-truncate" title="${product.name}">${product.name}</h5>
                             <span class="rating-badge p-1 px-2 rounded-pill bg-light shadow-sm fav-badge-rating" style="font-size: 0.85rem;">
-                                <i class="fas fa-star text-warning me-1"></i>${rating} 
-                                <span class="text-muted fw-normal" style="font-size: 0.7rem;">(${reviewsCount})</span>
+                                <i class="fas fa-star text-warning me-1"></i>${rating} <span class="text-muted fw-normal" style="font-size: 0.7rem;">(${reviewsCount})</span>
                             </span>
                         </div>
                         <p class="text-muted small mb-2 fav-text-desc text-truncate" style="max-width: 400px;" title="${description}">${description}</p>
                         <div class="d-flex align-items-center gap-4 mb-3 small fav-text-stats flex-wrap">
                             <span class="text-muted">Sold: <span class="fw-bold text-dark">${sold}</span></span>
                             <span class="text-muted">Stock: <span class="fw-bold text-dark">${quantity}</span></span>
-                            <span class="text-muted ms-auto">Review counts <span class="fw-normal" style="font-size: 0.7rem;">(${reviewsCount})</span></span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mt-2">
                             <p class="card-price text-dark fw-bold mb-0 fs-5">$${price}</p>
@@ -247,7 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
     }
 
-    // GRID VIEW
     return `
         <div class="col favorite-product-placeholder ${themeClass}">
             <div class="generic-product-card p-3 h-100 fav-card-wrapper border rounded shadow-sm bg-white">
@@ -266,7 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="d-flex align-items-center mb-2 fav-text-stats gap-2 flex-wrap">
                         <span class="text-muted">Sold: <span class="fw-bold text-dark">${sold}</span></span>
                         <span class="text-muted">Stock: <span class="fw-bold text-dark">${quantity}</span></span>
-                        <span class="text-muted ms-auto">Review counts <span class="fw-normal" style="font-size: 0.7rem;">(${reviewsCount})</span></span>
                     </div>
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <p class="card-price text-dark fw-bold mb-0 fs-5">$${price}</p>
@@ -281,13 +299,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Event Listeners
 
-  // Search Input
   searchInput.addEventListener('input', () => {
     const text = searchInput.value.trim();
     if (clearSearchBtn) clearSearchBtn.style.display = text ? 'inline-block' : 'none';
     if (mainSearchIcon) mainSearchIcon.style.display = text ? 'none' : 'inline-block';
-    currentPage = 1;
-    applyFiltersAndRender();
+
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      currentPage = 1;
+      // Bypassing the isProcessing lock just for search initiation so users
+      // aren't blocked from searching if a previous animation is ending
+      isProcessing = false;
+      handleUIInteraction('search');
+    }, 400);
   });
 
   if (clearSearchBtn) {
@@ -296,14 +320,16 @@ document.addEventListener('DOMContentLoaded', () => {
       clearSearchBtn.style.display = 'none';
       mainSearchIcon.style.display = 'inline-block';
       currentPage = 1;
-      applyFiltersAndRender();
+      isProcessing = false;
+      handleUIInteraction('search');
       searchInput.focus();
     };
   }
 
-  // Filter Chips - Swapped to custom purple class!
   filterButtons.forEach((btn) => {
     btn.onclick = function () {
+      if (isProcessing) return;
+
       filterButtons.forEach((b) => {
         b.classList.remove('custom-active-bg-purple', 'text-white');
         b.classList.add('btn-outline-secondary');
@@ -315,15 +341,16 @@ document.addEventListener('DOMContentLoaded', () => {
         ? 'all'
         : this.innerText.toLowerCase().trim();
       currentPage = 1;
-      applyFiltersAndRender();
+      handleUIInteraction('filter');
     };
   });
 
-  // View Toggle
   if (viewToggleGroup) {
     const btns = viewToggleGroup.querySelectorAll('.btn');
     btns.forEach((btn, idx) => {
       btn.onclick = () => {
+        if (isProcessing) return;
+
         currentView = idx === 0 ? 'list' : 'grid';
         btns.forEach((b) => {
           b.classList.remove('custom-active-bg-purple');
@@ -331,14 +358,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         btn.classList.add('custom-active-bg-purple');
         btn.classList.remove('btn-light');
-        renderCurrentPage();
+        handleUIInteraction('view');
       };
     });
   }
 
-  // Refresh Button Logic
   if (refreshBtn) {
     refreshBtn.addEventListener('click', () => {
+      if (isProcessing) return;
+
       const icon = refreshBtn.querySelector('i');
       if (icon) icon.classList.add('fa-spin');
 
@@ -348,25 +376,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Unfavorite Logic (POST then DELETE)
   function attachHeartListeners() {
     productGrid.querySelectorAll('.btn-heart').forEach((btn) => {
       btn.onclick = async function () {
+        if (isProcessing) return;
+
         const productId = this.getAttribute('data-id');
         const token = sessionStorage.getItem('accessToken');
 
-        // Redirect if session expired
         if (!token) {
           showToast('Your session expired. Please log in again.', 'error');
           window.location.href = '../pages/login.html';
           return;
         }
 
-        // Optimistic UI Update
-        this.classList.remove('active');
+        isProcessing = true;
+        showLoadingSpinner('Updating your favorites...');
 
         try {
-          // POST Request (Unlike)
+          await delay(2000);
+
           const postUrl = `https://shoes-mall.onrender.com/api/v1/products/${productId}/unlike`;
           const postResponse = await fetch(postUrl, {
             method: 'POST',
@@ -378,33 +407,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
           if (!postResponse.ok) {
             const errData = await postResponse.json();
-            throw new Error(errData.message || 'POST request to unlike failed.');
+            throw new Error(errData.message || 'Unlike failed.');
           }
 
-          // DELETE Request
-          const deleteUrl = `https://shoes-mall.onrender.com/api/v1/products?id=${productId}`;
-          const deleteResponse = await fetch(deleteUrl, {
-            method: 'DELETE',
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          });
-
-          if (!deleteResponse.ok) {
-            const errData = await deleteResponse.json();
-            throw new Error(errData.message || 'DELETE request failed.');
-          }
-
-          // Update State & UI
           allFavorites = allFavorites.filter((p) => p._id !== productId);
           sessionStorage.setItem('favoriteProductsCache', JSON.stringify(allFavorites));
 
           applyFiltersAndRender();
           showToast('Successfully removed from favorites.', 'success');
         } catch (error) {
-          this.classList.add('active');
           showToast(error.message, 'error');
+          renderCurrentPage();
+        } finally {
+          isProcessing = false;
         }
       };
     });
