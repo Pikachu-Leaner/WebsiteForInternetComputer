@@ -90,7 +90,7 @@ function updateCartUI() {
 
   // Update Header Count
   itemCountText.innerText = cartItems.length;
-
+  // Show all the card product
   if (cartItems.length === 0) {
     submitSection.classList.add('d-none');
     selectAllCheckbox.checked = false; // Uncheck if empty
