@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (authDropdownMenu && authDropdownToggle) {
     if (accessToken) {
-      authDropdownToggle.innerHTML = '<i class="fa fa-user user-icon me-2"></i> My Account';
+      authDropdownToggle.innerHTML = '<i class="fa fa-user user-icon me-2"></i> Favorite product';
       authDropdownMenu.innerHTML = `
                 <li><a class="dropdown-item" href="#">Profile</a></li>
                 <li><hr class="dropdown-divider"></li>
@@ -102,8 +102,48 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // LOADING SPINNER LOGIC
+  let loadingInterval;
+
+  function showLoading() {
+    const overlay = document.getElementById('loading-overlay');
+    const loadingText = document.getElementById('loading-text');
+    if (!overlay || !loadingText) return;
+
+    overlay.style.display = 'flex';
+    setTimeout(() => {
+      overlay.style.opacity = '1';
+    }, 10);
+
+    let dots = 0;
+    loadingText.innerText = 'Loading';
+
+    loadingInterval = setInterval(() => {
+      dots = (dots % 3) + 1; // Cycles 1, 2, 3
+      loadingText.innerText = 'Loading' + '.'.repeat(dots);
+    }, 400);
+  }
+
+  function hideLoading() {
+    const overlay = document.getElementById('loading-overlay');
+    const loadingText = document.getElementById('loading-text');
+    if (!overlay || !loadingText) return;
+
+    clearInterval(loadingInterval);
+    loadingText.innerText = 'Loading done';
+
+    setTimeout(() => {
+      overlay.style.opacity = '0';
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 300);
+    }, 500);
+  }
+
   // FETCH DATA & RENDER HTML
   async function fetchProducts() {
+    showLoading(); // Trigger the loading animation
+
     try {
       let favoriteIds = [];
       const token = sessionStorage.getItem('accessToken');
@@ -136,9 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (responses[1] && responses[1].ok) {
         try {
           const favResult = await responses[1].json();
-          // Assuming backend returns an array of products in 'data'
           if (favResult.data) {
-            // Extract just the IDs so we can check them easily
             favoriteIds = favResult.data.map((item) => item._id || item.id);
           }
         } catch (err) {
@@ -152,15 +190,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (result.statusCode === 200 && result.data && result.data.items) {
         const products = result.data.items;
         renderCarousel(products.slice(0, 4));
-
-        // Pass the favorite IDs into the render function
         renderProductCards(products, favoriteIds);
-
-        // Initialize features that depend on DOM elements existing
         initializeShopLogic();
       }
     } catch (error) {
       showToast('Error fetching data: ' + error.message, 'error');
+    } finally {
+      // Ensure the loader is removed whether the API succeeds or fails
+      hideLoading();
     }
   }
 

@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (pageItems.length === 0) {
       productGrid.innerHTML = `
-                <div class="col-12 text-center py-5">
+                <div class="container text-center py-5">
                     <i class="fas fa-heart-broken text-muted fa-3x mb-3 opacity-50"></i>
                     <p class="text-muted fw-bold fs-5">No products found.</p>
                 </div>`;

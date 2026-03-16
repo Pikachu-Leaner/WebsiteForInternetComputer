@@ -761,7 +761,7 @@ footer .footer-links li a:hover {
 }
 
 .btn-heart.active .heart-icon {
-    color: #b054fc !important; 
+  color: #b054fc !important;
 }
 
 .card-body-custom {
@@ -937,6 +937,7 @@ footer .footer-links li a:hover {
 .loading-text {
   padding-left: 25px;
   font-size: 30px;
+  color: #000000 !important;
 }
 
 input:disabled,
@@ -1927,53 +1928,53 @@ button:disabled {
 }
 
 .section-loader-container {
-    min-height: 300px; 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%; 
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 .custom-spinner {
-    width: 3.5rem;
-    height: 3.5rem;
-    color: #7519f5 !important; 
-    border-width: 0.25em; 
+  width: 3.5rem;
+  height: 3.5rem;
+  color: #7519f5 !important;
+  border-width: 0.25em;
 }
 
 .btn-icon-circle-sm {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    width: 2.2rem;
-    height: 2.2rem;
-    border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
 
-    background-color: transparent !important;
-    color: #000000 !important;
-    border: 1px solid transparent !important; 
+  background-color: transparent !important;
+  color: #000000 !important;
+  border: 1px solid transparent !important;
 
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
 
 .btn-icon-circle-sm:hover {
-    background-color: #7519f5 !important; 
-    color: #ffffff !important;
-    border: 1px solid transparent !important;
+  background-color: #7519f5 !important;
+  color: #ffffff !important;
+  border: 1px solid transparent !important;
 }
 
 .custom-filter-chip:hover {
-    background-color: #8e4beb !important;
-    border-color: #8e4beb !important;
-    color: white !important;
+  background-color: #8e4beb !important;
+  border-color: #8e4beb !important;
+  color: white !important;
 }
 
 .custom-active-bg-purple {
-    background-color: #8e4beb !important;
-    border-color: #8e4beb !important;
-    color: white !important;
+  background-color: #8e4beb !important;
+  border-color: #8e4beb !important;
+  color: white !important;
 }
 
 /*# sourceMappingURL=style.css.map */
