@@ -28,7 +28,9 @@ function setupOTPAutoTab() {
 function setupVerifyButton() {
   const verifyBtn = document.querySelectorAll('.btn-custom-purple')[0];
 
-  if (!verifyBtn) {return;}
+  if (!verifyBtn) {
+    return;
+  }
 
   verifyBtn.addEventListener('click', async () => {
     const inputs = document.querySelectorAll('.otp-input');
@@ -98,7 +100,9 @@ function setupVerifyButton() {
 function setupResendLink() {
   const resendLink = document.querySelector('.resend-link');
 
-  if (!resendLink) {return;}
+  if (!resendLink) {
+    return;
+  }
 
   resendLink.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -115,7 +119,8 @@ function setupResendLink() {
     // Disable the link and show spinner
     const originalText = resendLink.textContent;
     resendLink.style.pointerEvents = 'none';
-    resendLink.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...';
+    resendLink.innerHTML =
+      '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...';
 
     try {
       const resendResponse = await fetch(

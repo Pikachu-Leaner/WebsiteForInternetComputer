@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item text-danger" href="#" id="signOutBtn">Sign out</a></li>
             `;
-      document.getElementById('signOutBtn').addEventListener('click', function (e) {
+      document.getElementById('signOutBtn').addEventListener('click', (e) => {
         e.preventDefault();
         sessionStorage.removeItem('accessToken');
         window.location.reload();
@@ -90,7 +90,9 @@ document.addEventListener('DOMContentLoaded', () => {
           backToTopBtn.classList.add('animate__fadeOutDown');
           isBtnVisible = false;
           backToTopBtn.addEventListener('animationend', function hideAfterAnimation() {
-            if (!isBtnVisible) backToTopBtn.style.display = 'none';
+            if (!isBtnVisible) {
+              backToTopBtn.style.display = 'none';
+            }
             backToTopBtn.removeEventListener('animationend', hideAfterAnimation);
           });
         }
@@ -108,7 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function showLoading() {
     const overlay = document.getElementById('loading-overlay');
     const loadingText = document.getElementById('loading-text');
-    if (!overlay || !loadingText) return;
+    if (!overlay || !loadingText) {
+      return;
+    }
 
     overlay.style.display = 'flex';
     setTimeout(() => {
@@ -127,7 +131,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function hideLoading() {
     const overlay = document.getElementById('loading-overlay');
     const loadingText = document.getElementById('loading-text');
-    if (!overlay || !loadingText) return;
+    if (!overlay || !loadingText) {
+      return;
+    }
 
     clearInterval(loadingInterval);
     loadingText.innerText = 'Loading done';
@@ -162,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
           fetch(API_URLS.GET_FAVORITES, {
             method: 'GET',
             headers: getAuthHeaders(),
-          })
+          }),
         );
       }
 
@@ -170,7 +176,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const responses = await Promise.all(requests);
       const productResponse = responses[0];
 
-      if (!productResponse.ok) throw new Error('Failed to fetch products');
+      if (!productResponse.ok) {
+        throw new Error('Failed to fetch products');
+      }
 
       // Process Favorites if the second request exists and succeeded
       if (responses[1] && responses[1].ok) {
@@ -204,7 +212,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderCarousel(products) {
     const carouselInner = document.getElementById('dynamic-carousel-inner');
     const carouselIndicators = document.getElementById('dynamic-carousel-indicators');
-    if (!carouselInner || !carouselIndicators) return;
+    if (!carouselInner || !carouselIndicators) {
+      return;
+    }
 
     let innerHTML = '';
     let indicatorsHTML = '';
@@ -243,7 +253,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderProductCards(products, favoriteIds = []) {
     const productRow = document.getElementById('dynamic-product-row');
-    if (!productRow) return;
+    if (!productRow) {
+      return;
+    }
 
     const cardsHTML = products
       .map((product) => {
@@ -295,6 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function initializeShopLogic() {
     // Initialize Fancybox for dynamically injected HTML
     if (typeof Fancybox !== 'undefined') {
+      // eslint-disable-next-line no-undef
       Fancybox.bind('[data-fancybox="gallery"]', { infinite: true });
     }
 
@@ -303,7 +316,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (productRow) {
       productRow.addEventListener('click', async (e) => {
         const heartBtn = e.target.closest('.btn-heart');
-        if (!heartBtn) return;
+        if (!heartBtn) {
+          return;
+        }
 
         e.preventDefault();
 
@@ -330,7 +345,9 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: getAuthHeaders(),
           });
 
-          if (!response.ok) throw new Error('Action failed');
+          if (!response.ok) {
+            throw new Error('Action failed');
+          }
 
           showToast(isCurrentlyLiked ? 'Removed from favorites' : 'Added to favorites');
         } catch (error) {
@@ -365,32 +382,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setupPagination() {
-      if (!paginationContainer) return;
+      if (!paginationContainer) {
+        return;
+      }
       paginationContainer.innerHTML = '';
 
       const pageCount = Math.ceil(filteredItems.length / itemsPerPage);
-      if (pageCount <= 1) return;
+      if (pageCount <= 1) {
+        return;
+      }
 
-      let prevDisabled = currentPage === 1 ? 'disabled' : '';
+      const prevDisabled = currentPage === 1 ? 'disabled' : '';
       paginationContainer.innerHTML += `<li class="page-item ${prevDisabled}"><a class="page-link text-dark" href="#" data-page="prev">&lt;</a></li>`;
 
       for (let i = 1; i <= pageCount; i++) {
-        let activeClass = currentPage === i ? 'active' : '';
+        const activeClass = currentPage === i ? 'active' : '';
         paginationContainer.innerHTML += `<li class="page-item ${activeClass}"><a class="page-link text-dark" href="#" data-page="${i}">${i}</a></li>`;
       }
 
-      let nextDisabled = currentPage === pageCount ? 'disabled' : '';
+      const nextDisabled = currentPage === pageCount ? 'disabled' : '';
       paginationContainer.innerHTML += `<li class="page-item ${nextDisabled}"><a class="page-link text-dark" href="#" data-page="next">&gt;</a></li>`;
 
       paginationContainer.querySelectorAll('.page-link').forEach((link) => {
         link.addEventListener('click', function (e) {
           e.preventDefault();
-          if (this.parentElement.classList.contains('disabled')) return;
+          if (this.parentElement.classList.contains('disabled')) {
+            return;
+          }
 
           const targetPage = this.getAttribute('data-page');
-          if (targetPage === 'prev') currentPage--;
-          else if (targetPage === 'next') currentPage++;
-          else currentPage = parseInt(targetPage);
+          if (targetPage === 'prev') {
+            currentPage--;
+          } else if (targetPage === 'next') {
+            currentPage++;
+          } else {
+            currentPage = parseInt(targetPage);
+          }
 
           displayProducts(currentPage);
           setupPagination();
@@ -428,18 +455,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (searchInput) {
-      searchInput.addEventListener('input', function (e) {
+      searchInput.addEventListener('input', (e) => {
         searchQuery = e.target.value.toLowerCase().trim();
         applyFilters();
       });
     }
 
     const scrollToContainer = () => {
-      if (productContainer) productContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (productContainer) {
+        productContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     };
 
     if (searchForm) {
-      searchForm.addEventListener('submit', function (e) {
+      searchForm.addEventListener('submit', (e) => {
         e.preventDefault();
         if (searchInput) {
           searchQuery = searchInput.value.toLowerCase().trim();
@@ -451,7 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (searchIcon) {
       searchIcon.style.cursor = 'pointer';
-      searchIcon.addEventListener('click', function () {
+      searchIcon.addEventListener('click', () => {
         if (searchInput) {
           searchQuery = searchInput.value.toLowerCase().trim();
           applyFilters();

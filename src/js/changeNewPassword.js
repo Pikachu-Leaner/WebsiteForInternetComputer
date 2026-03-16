@@ -33,11 +33,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Calculate score based on strength criteria
-    if (val.length >= 8) {strengthScore += 1;}
-    if (/[A-Z]/.test(val)) {strengthScore += 1;}
-    if (/[a-z]/.test(val)) {strengthScore += 1;}
-    if (/[0-9]/.test(val)) {strengthScore += 1;}
-    if (/[!@#$%^&*(),.?":{}|<>]/.test(val)) {strengthScore += 1;}
+    if (val.length >= 8) {
+      strengthScore += 1;
+    }
+    if (/[A-Z]/.test(val)) {
+      strengthScore += 1;
+    }
+    if (/[a-z]/.test(val)) {
+      strengthScore += 1;
+    }
+    if (/[0-9]/.test(val)) {
+      strengthScore += 1;
+    }
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(val)) {
+      strengthScore += 1;
+    }
 
     let percent = 0;
     let text = '';
@@ -120,9 +130,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const validation = changeNewPassword(formData);
 
     if (!validation.isValid) {
-      if (validation.errors.newPassword) {newPassError.innerText = validation.errors.newPassword;}
-      if (validation.errors.confirmPassword)
-        {confirmPassError.innerText = validation.errors.confirmPassword;}
+      if (validation.errors.newPassword) {
+        newPassError.innerText = validation.errors.newPassword;
+      }
+      if (validation.errors.confirmPassword) {
+        confirmPassError.innerText = validation.errors.confirmPassword;
+      }
       showToast('Please fix the errors below.', 'error');
       return;
     }
@@ -135,7 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...';
+      submitBtn.innerHTML =
+        '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...';
       submitBtn.disabled = true;
 
       const updatePayload = {
@@ -164,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Success!
       showToast(updateResult.message || 'Password changed successfully!', 'success');
 
-      // Remove the email from sessionStorage since the process is complete 
+      // Remove the email from sessionStorage since the process is complete
       sessionStorage.removeItem('userEmail');
       form.reset();
       strengthContainer.classList.add('d-none');

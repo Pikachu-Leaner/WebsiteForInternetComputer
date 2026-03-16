@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Helper to show loading spinner
   function showLoadingSpinner(message = 'Processing...') {
-    if (!productGrid) return;
+    if (!productGrid) {return;}
     productGrid.className = 'row'; // Reset grid classes during loading
     productGrid.innerHTML = `
       <div class="container col-12 text-center py-5">
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Data Fetching
 
   async function fetchFavoriteProducts(forceReload = false) {
-    if (isProcessing) return;
+    if (isProcessing) {return;}
 
     const token = sessionStorage.getItem('accessToken');
     if (!token) {
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       const responseData = await res.json();
-      if (!res.ok) throw new Error(responseData.message || 'Failed to fetch data');
+      if (!res.ok) {throw new Error(responseData.message || 'Failed to fetch data');}
 
       allFavorites = responseData.data || [];
       sessionStorage.setItem('favoriteProductsCache', JSON.stringify(allFavorites));
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       showToast(err.message, 'error');
       if (productGrid) {
-        productGrid.innerHTML = `<div class="container col-12 text-center py-5 text-danger">Failed to load favorites.</div>`;
+        productGrid.innerHTML = '<div class="container col-12 text-center py-5 text-danger">Failed to load favorites.</div>';
       }
     } finally {
       isProcessing = false;
@@ -112,13 +112,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Filtering & Rendering
 
   async function handleUIInteraction(actionType) {
-    if (isProcessing) return;
+    if (isProcessing) {return;}
     isProcessing = true;
 
     let msg = 'Updating...';
-    if (actionType === 'filter') msg = 'Filtering products...';
-    if (actionType === 'view') msg = 'Switching view...';
-    if (actionType === 'search') msg = 'Searching...';
+    if (actionType === 'filter') {msg = 'Filtering products...';}
+    if (actionType === 'view') {msg = 'Switching view...';}
+    if (actionType === 'search') {msg = 'Searching...';}
 
     showLoadingSpinner(msg);
     await delay(2000);
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     filteredFavorites = allFavorites.filter((p) => {
       const name = p.name.toLowerCase();
       const matchesSearch = name.includes(searchTerm);
-      let matchesBrand =
+      const matchesBrand =
         currentBrand === 'all'
           ? true
           : currentBrand === 'other'
@@ -153,11 +153,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderCurrentPage() {
-    if (!productGrid) return;
+    if (!productGrid) {return;}
     const startIndex = (currentPage - 1) * itemsPerPage;
     const pageItems = filteredFavorites.slice(startIndex, startIndex + itemsPerPage);
 
-    if (productCountText) productCountText.textContent = `(${filteredFavorites.length} items)`;
+    if (productCountText) {productCountText.textContent = `(${filteredFavorites.length} items)`;}
 
     productGrid.innerHTML = '';
     productGrid.className =
@@ -175,13 +175,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     pageItems.forEach((p) =>
-      productGrid.insertAdjacentHTML('beforeend', generateCardHTML(p, currentView))
+      productGrid.insertAdjacentHTML('beforeend', generateCardHTML(p, currentView)),
     );
     attachHeartListeners();
   }
 
   function renderPagination() {
-    if (!paginationContainer) return;
+    if (!paginationContainer) {return;}
 
     if (filteredFavorites.length === 0) {
       paginationContainer.innerHTML = '';
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       btn.textContent = i;
       btn.onclick = () => {
-        if (isProcessing) return; // Prevent page changes while loading
+        if (isProcessing) {return;} // Prevent page changes while loading
         currentPage = i;
         renderCurrentPage();
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function generateCardHTML(product, view) {
     const brand = product.name.toLowerCase();
-    let themeClass = brand.includes('nike')
+    const themeClass = brand.includes('nike')
       ? 'pink-theme'
       : brand.includes('adidas')
         ? 'tan-theme'
@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
         : '';
     const imageElement = imageUrl
       ? `<img src="${imageUrl}" alt="${product.name}" class="img-fluid fav-product-img" style="max-height: 150px; object-fit: contain;">`
-      : `<div class="text-muted d-flex flex-column align-items-center justify-content-center fav-no-image"><i class="fas fa-image fa-2x mb-1 opacity-50"></i>No Image</div>`;
+      : '<div class="text-muted d-flex flex-column align-items-center justify-content-center fav-no-image"><i class="fas fa-image fa-2x mb-1 opacity-50"></i>No Image</div>';
 
     if (view === 'list') {
       return `
@@ -301,8 +301,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   searchInput.addEventListener('input', () => {
     const text = searchInput.value.trim();
-    if (clearSearchBtn) clearSearchBtn.style.display = text ? 'inline-block' : 'none';
-    if (mainSearchIcon) mainSearchIcon.style.display = text ? 'none' : 'inline-block';
+    if (clearSearchBtn) {clearSearchBtn.style.display = text ? 'inline-block' : 'none';}
+    if (mainSearchIcon) {mainSearchIcon.style.display = text ? 'none' : 'inline-block';}
 
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   filterButtons.forEach((btn) => {
     btn.onclick = function () {
-      if (isProcessing) return;
+      if (isProcessing) {return;}
 
       filterButtons.forEach((b) => {
         b.classList.remove('custom-active-bg-purple', 'text-white');
@@ -349,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btns = viewToggleGroup.querySelectorAll('.btn');
     btns.forEach((btn, idx) => {
       btn.onclick = () => {
-        if (isProcessing) return;
+        if (isProcessing) {return;}
 
         currentView = idx === 0 ? 'list' : 'grid';
         btns.forEach((b) => {
@@ -365,13 +365,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (refreshBtn) {
     refreshBtn.addEventListener('click', () => {
-      if (isProcessing) return;
+      if (isProcessing) {return;}
 
       const icon = refreshBtn.querySelector('i');
-      if (icon) icon.classList.add('fa-spin');
+      if (icon) {icon.classList.add('fa-spin');}
 
       fetchFavoriteProducts(true).finally(() => {
-        if (icon) icon.classList.remove('fa-spin');
+        if (icon) {icon.classList.remove('fa-spin');}
       });
     });
   }
@@ -379,7 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function attachHeartListeners() {
     productGrid.querySelectorAll('.btn-heart').forEach((btn) => {
       btn.onclick = async function () {
-        if (isProcessing) return;
+        if (isProcessing) {return;}
 
         const productId = this.getAttribute('data-id');
         const token = sessionStorage.getItem('accessToken');

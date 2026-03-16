@@ -302,7 +302,8 @@ function changeNewPassword(data) {
 
   // Check New Password against your existing REGEX_PASSWORD
   if (!REGEX_PASSWORD.test(data.newPassword)) {
-    errors.newPassword = 'Password: 8-20 chars, 1 Capital & 1 Special char & 1 Number & 1 normal required';
+    errors.newPassword =
+      'Password: 8-20 chars, 1 Capital & 1 Special char & 1 Number & 1 normal required';
     isValid = false;
   }
 
