@@ -12,6 +12,7 @@ async function fetchCartData() {
   }
 
   try {
+    // For now use get all favorite since didn't make get order product for user
     const response = await fetch('https://shoes-mall.onrender.com/api/v1/users/favorite', {
       method: 'GET',
       headers: {
@@ -44,6 +45,7 @@ async function fetchCartData() {
 // Generate HTML for a single cart item row
 
 function createCartItemCard(item) {
+  // Calculate and Display Subtotal per Item
   const rowTotal = item.price * item.quantity;
   const isChecked = item.selected ? 'checked' : '';
 
