@@ -138,13 +138,13 @@ document.getElementById('cart-items-container').addEventListener('click', functi
 
   if (itemIndex === -1) return;
 
-  // Handle '+' button click (Using closest() and Number() for safe math)
+  // Handle '+' button click
   if (e.target.closest('.btn-increase')) {
     cartItems[itemIndex].quantity = Number(cartItems[itemIndex].quantity) + 1;
     updateCartUI();
   }
 
-  // Handle '-' button click
+  // Handle '-' button click for product quantity
   if (e.target.closest('.btn-decrease')) {
     if (cartItems[itemIndex].quantity > 1) {
       cartItems[itemIndex].quantity = Number(cartItems[itemIndex].quantity) - 1;
