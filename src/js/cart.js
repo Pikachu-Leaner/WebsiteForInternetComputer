@@ -138,7 +138,7 @@ document.getElementById('cart-items-container').addEventListener('click', functi
 
   if (itemIndex === -1) return;
 
-  // Handle '+' button click
+  // Handle '+' button click for product quantity
   if (e.target.closest('.btn-increase')) {
     cartItems[itemIndex].quantity = Number(cartItems[itemIndex].quantity) + 1;
     updateCartUI();
