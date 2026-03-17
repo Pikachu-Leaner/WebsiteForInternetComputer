@@ -146,7 +146,7 @@ document.getElementById('cart-items-container').addEventListener('click', functi
 
   // Handle '+' button click for product quantity
   if (e.target.closest('.btn-increase')) {
-    // NEW: Enforce Max Stock Limit when clicking +
+    // Enforce Max Stock Limit when clicking +
     if (cartItems[itemIndex].quantity < cartItems[itemIndex].maxStock) {
         cartItems[itemIndex].quantity = Number(cartItems[itemIndex].quantity) + 1;
         updateCartUI();
