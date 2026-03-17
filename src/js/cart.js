@@ -113,7 +113,7 @@ function createCartItemCard(item) {
             <td>${rowTotal}</td>
             <td class="text-center">
                 <button class="btn btn-action btn-purple shadow-sm me-2 btn-edit">EDIT</button>
-                <button class="btn btn-action btn-red shadow-sm btn-delete">DELETE</button>
+                <button class="btn btn-action btn-red shadow-sm btn-delete">DELETE </button>
             </td>
         </tr>
     `;
