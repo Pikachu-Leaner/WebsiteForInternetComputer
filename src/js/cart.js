@@ -1,14 +1,31 @@
 // Global array to store the cart items locally
 let cartItems = [];
 
+// Helper function to simulate a 2-3s delay
+function simulateDelay() {
+  const delayTime = Math.floor(Math.random() * 1000) + 2000;
+  return new Promise(resolve => setTimeout(resolve, delayTime));
+}
+
 // Fetch Data from Backend
 async function fetchCartData() {
   const token = sessionStorage.getItem('accessToken');
+  const container = document.getElementById('cart-items-container');
 
   if (!token) {
     console.error('No access token found. User might not be logged in.');
     return;
   }
+
+  // Show a loading spinner in the table while the GET request is running
+  container.innerHTML = `
+      <tr>
+          <td colspan="8" class="text-center py-5">
+              <div class="spinner-border text-primary mb-2" role="status"></div>
+              <p class="text-muted">Loading your cart...</p>
+          </td>
+      </tr>
+  `;
 
   try {
     // For now use get all favorite since didn't make get order product for user
@@ -19,6 +36,9 @@ async function fetchCartData() {
         'Content-Type': 'application/json',
       },
     });
+
+    // NEW: Wait 2 to 3 seconds before continuing
+    await simulateDelay();
 
     // Extract the limit header directly from the response
     const headerLimit = response.headers.get('x-ratelimit-limit');
@@ -41,13 +61,15 @@ async function fetchCartData() {
       updateCartUI();
     } else {
       console.error('Backend returned an error:', result.message);
+      container.innerHTML = `<tr><td colspan="8" class="text-center py-5 text-danger">Failed to load cart.</td></tr>`;
     }
   } catch (error) {
     console.error('Failed to fetch cart data:', error);
+    container.innerHTML = `<tr><td colspan="8" class="text-center py-5 text-danger">Network error occurred.</td></tr>`;
   }
 }
 
-// Function to save quantity to the Backend
+// Function to save quantity to the Backend (POST)
 async function saveQuantityToBackend(productId, newQuantity) {
   const token = sessionStorage.getItem('accessToken');
   if (!token) return false;
@@ -66,12 +88,46 @@ async function saveQuantityToBackend(productId, newQuantity) {
           })
       });
 
+      // NEW: Wait 2 to 3 seconds
+      await simulateDelay();
+
       const result = await response.json();
 
       if (result.statusCode === 200) {
           return true;
       } else {
           console.error("Failed to save:", result.message);
+          return false;
+      }
+  } catch (error) {
+      console.error("API Error:", error);
+      return false;
+  }
+}
+
+// Function to Delete Item from Backend (PUT)
+async function deleteItemFromBackend(productId) {
+  const token = sessionStorage.getItem('accessToken');
+  if (!token) return false;
+
+  try {
+      const response = await fetch(`https://shoes-mall.onrender.com/api/v1/orders/${productId}/cancel`, {
+          method: 'PUT',
+          headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+          }
+      });
+
+      // Wait 2 to 3 seconds
+      await simulateDelay();
+
+      const result = await response.json();
+
+      if (result.statusCode === 200) {
+          return true;
+      } else {
+          console.error("Failed to delete:", result.message);
           return false;
       }
   } catch (error) {
@@ -113,7 +169,7 @@ function createCartItemCard(item) {
             <td>${rowTotal}</td>
             <td class="text-center">
                 <button class="btn btn-action btn-purple shadow-sm me-2 btn-edit">EDIT</button>
-                <button class="btn btn-action btn-red shadow-sm btn-delete">DELETE </button>
+                <button class="btn btn-action btn-red shadow-sm btn-delete">DELETE</button>
             </td>
         </tr>
     `;
@@ -175,6 +231,7 @@ document.getElementById('cart-items-container').addEventListener('click', async 
 
   const btnIncrease = e.target.closest('.btn-increase');
   const btnDecrease = e.target.closest('.btn-decrease');
+  const btnDelete = e.target.closest('.btn-delete'); // NEW: Target the delete button
   const spinnerHtml = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
   // Handle '+' button click for product quantity
@@ -228,10 +285,27 @@ document.getElementById('cart-items-container').addEventListener('click', async 
     }
   }
 
-  // Handle 'DELETE' button click
-  if (e.target.closest('.btn-delete')) {
-    cartItems.splice(itemIndex, 1);
-    updateCartUI();
+  // Handle 'DELETE' button click using PUT method
+  if (btnDelete) {
+    if (!confirm("Are you sure you want to remove this item from your cart?")) return;
+
+    // Show loading spinner on the delete button
+    const originalText = btnDelete.innerHTML;
+    btnDelete.innerHTML = spinnerHtml;
+    btnDelete.disabled = true;
+
+    // Call the PUT API
+    const success = await deleteItemFromBackend(itemId);
+
+    // Remove card product from cart display list
+    if (success) {
+        cartItems.splice(itemIndex, 1);
+        updateCartUI();
+    } else {
+        alert("Failed to remove item from the server.");
+        btnDelete.innerHTML = originalText;
+        btnDelete.disabled = false;
+    }
   }
 });
 
