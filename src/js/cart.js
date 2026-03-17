@@ -285,7 +285,7 @@ document.getElementById('cart-items-container').addEventListener('click', async 
     }
   }
 
-  // Handle 'DELETE' button click using PUT method
+  // Handle 'DELETE' button click using PUT method to send to backend API
   if (btnDelete) {
     if (!confirm("Are you sure you want to remove this item from your cart?")) return;
 
