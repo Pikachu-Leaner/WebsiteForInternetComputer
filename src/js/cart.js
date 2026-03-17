@@ -373,5 +373,80 @@ document.getElementById('cart-items-container').addEventListener('change', async
   }
 });
 
+//Submit Order to Backend (POST)
+async function submitOrder(event) {
+    const token = sessionStorage.getItem('accessToken');
+    if (!token) {
+        alert("Please log in to submit your order.");
+        return;
+    }
+
+    // Filter only the items that are currently checked/selected
+    const selectedItems = cartItems.filter(item => item.selected);
+
+    if (selectedItems.length === 0) {
+        alert("Please select at least one item to order.");
+        return;
+    }
+
+    // Map the data EXACTLY to the schema from your screenshot
+    const orderPayload = {
+        orders: selectedItems.map(item => ({
+            product_id: item._id,
+            size: item.size || "40", // Using a default size since it's not in the UI yet
+            amount: item.quantity
+        })),
+        address: "123 Default Street, HCM City" // Using a default address
+    };
+
+    // UI Loading State for the Submit Button
+    const btnSubmit = event.target;
+    const originalText = btnSubmit.innerHTML;
+    btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+    btnSubmit.disabled = true;
+
+    try {
+        const response = await fetch('https://shoes-mall.onrender.com/api/v1/orders/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderPayload)
+        });
+
+        await simulateDelay(); // Adding the 2-3s spinner delay
+
+        const result = await response.json();
+
+        // Check against the 200 status code from your screenshot or standard ok status
+        if (result.statusCode === 200 || response.ok) {
+            alert("Order placed successfully!");
+            
+            // Remove the ordered items from the cart display since they are bought!
+            cartItems = cartItems.filter(item => !item.selected);
+            updateCartUI(); 
+            
+        } else {
+            console.error("Order Failed:", result);
+            alert(`Failed to place order: ${result.message || "Unknown error"}`);
+        }
+    } catch (error) {
+        console.error("API Error submitting order:", error);
+        alert("An error occurred while submitting your order.");
+    } finally {
+        // Reset button state
+        btnSubmit.innerHTML = originalText;
+        btnSubmit.disabled = false;
+    }
+}
+
+// Listen for clicks on the SUBMIT ORDER button
+document.getElementById('submit-order-section').addEventListener('click', function(e) {
+    if (e.target.classList.contains('btn-submit')) {
+        submitOrder(e);
+    }
+});
+
 // Kick off the fetch when the script loads
 fetchCartData();
