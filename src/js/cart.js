@@ -21,6 +21,11 @@ async function fetchCartData() {
       },
     });
 
+    // Extract the limit header directly from the response
+    const headerLimit = response.headers.get('x-ratelimit-limit');
+    // Convert to integer. Fallback to 100 if the header is missing or undefined
+    const maxStock = headerLimit ? parseInt(headerLimit, 100) : 100;
+
     const result = await response.json();
 
     if (result.statusCode === 200) {
@@ -30,6 +35,7 @@ async function fetchCartData() {
         // Ensure quantity is at least 1 for the UI
         quantity: item.quantity > 0 ? item.quantity : 1,
         selected: true, // Default to checked
+        maxStock: maxStock // NEW: Save the max stock limit to every item
       }));
 
       // Render the table
@@ -69,7 +75,7 @@ function createCartItemCard(item) {
             <td>
                 <div class="d-flex justify-content-center align-items-center">
                     <button class="btn btn-qty btn-purple shadow-sm btn-decrease">-</button>
-                    <input type="number" class="form-control text-center mx-2 qty-input" value="${item.quantity}" min="1">
+                    <input type="number" class="form-control text-center mx-2 qty-input" value="${item.quantity}" min="1" max="${item.maxStock}">
                     <button class="btn btn-qty btn-purple shadow-sm btn-increase">+</button>
                 </div>
             </td>
@@ -140,8 +146,13 @@ document.getElementById('cart-items-container').addEventListener('click', functi
 
   // Handle '+' button click for product quantity
   if (e.target.closest('.btn-increase')) {
-    cartItems[itemIndex].quantity = Number(cartItems[itemIndex].quantity) + 1;
-    updateCartUI();
+    // NEW: Enforce Max Stock Limit when clicking +
+    if (cartItems[itemIndex].quantity < cartItems[itemIndex].maxStock) {
+        cartItems[itemIndex].quantity = Number(cartItems[itemIndex].quantity) + 1;
+        updateCartUI();
+    } else {
+        alert(`You have reached the maximum stock limit of ${cartItems[itemIndex].maxStock} for this item.`);
+    }
   }
 
   // Handle '-' button click for product quantity
@@ -173,10 +184,16 @@ document.getElementById('cart-items-container').addEventListener('change', funct
   // Handle manual quantity input typing from user
   if (e.target.classList.contains('qty-input')) {
     let newQty = parseInt(e.target.value);
+    const maxAllowed = cartItems[itemIndex].maxStock; // NEW: Get max stock limit
 
     // Prevent negative numbers or text
     if (isNaN(newQty) || newQty < 1) {
       newQty = 1;
+    } 
+    // Enforce Max Stock Limit if user types a number that is too high
+    else if (newQty > maxAllowed) {
+        newQty = maxAllowed;
+        alert(`You can only order up to ${maxAllowed} of this item.`);
     }
 
     cartItems[itemIndex].quantity = newQty;
