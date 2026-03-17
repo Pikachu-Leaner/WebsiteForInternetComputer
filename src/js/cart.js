@@ -37,7 +37,7 @@ async function fetchCartData() {
       },
     });
 
-    // NEW: Wait 2 to 3 seconds before continuing
+    // Wait 2 to 3 seconds before continuing
     await simulateDelay();
 
     // Extract the limit header directly from the response
@@ -88,7 +88,7 @@ async function saveQuantityToBackend(productId, newQuantity) {
           })
       });
 
-      // NEW: Wait 2 to 3 seconds
+      // Wait 2 to 3 seconds
       await simulateDelay();
 
       const result = await response.json();
@@ -181,6 +181,7 @@ function updateCartUI() {
   const submitSection = document.getElementById('submit-order-section');
   const itemCountText = document.getElementById('cart-item-count');
   const selectAllCheckbox = document.getElementById('select-all-checkbox');
+  const grandTotalText = document.getElementById('cart-grand-total'); // NEW: Added target for grand total
 
   // Update Header Count
   itemCountText.innerText = cartItems.length;
@@ -204,6 +205,18 @@ function updateCartUI() {
     // Sync the "Select All" header checkbox based on item states
     const allSelected = cartItems.every((item) => item.selected);
     selectAllCheckbox.checked = allSelected;
+
+    // Calculate and display the Grand Total Price
+    let grandTotal = 0;
+    cartItems.forEach(item => {
+        if (item.selected) {
+            grandTotal += (item.price * item.quantity);
+        }
+    });
+
+    if (grandTotalText) {
+        grandTotalText.innerText = grandTotal.toLocaleString(); 
+    }
   }
 }
 
@@ -231,7 +244,7 @@ document.getElementById('cart-items-container').addEventListener('click', async 
 
   const btnIncrease = e.target.closest('.btn-increase');
   const btnDecrease = e.target.closest('.btn-decrease');
-  const btnDelete = e.target.closest('.btn-delete'); // NEW: Target the delete button
+  const btnDelete = e.target.closest('.btn-delete'); // Target the delete button
   const spinnerHtml = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
 
   // Handle '+' button click for product quantity
@@ -300,7 +313,7 @@ document.getElementById('cart-items-container').addEventListener('click', async 
     // Remove card product from cart display list
     if (success) {
         cartItems.splice(itemIndex, 1);
-        updateCartUI();
+        updateCartUI(); // This will automatically recalculate the Grand Total now!
     } else {
         alert("Failed to remove item from the server.");
         btnDelete.innerHTML = originalText;
@@ -356,7 +369,7 @@ document.getElementById('cart-items-container').addEventListener('change', async
   // Handle clicking an individual item's checkbox
   if (e.target.classList.contains('item-checkbox')) {
     cartItems[itemIndex].selected = e.target.checked;
-    updateCartUI();
+    updateCartUI(); // This also triggers the Grand Total recalculation!
   }
 });
 
