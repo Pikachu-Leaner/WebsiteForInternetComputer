@@ -2022,7 +2022,7 @@ tbody tr td {
   background-color: #ffffff;
 }
 
-.product-img {
+.product-img-cart {
   width: 60px;
   height: auto;
   object-fit: cover;
@@ -2111,8 +2111,37 @@ tbody tr td {
 
 .qty-input::-webkit-outer-spin-button,
 .qty-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.cart-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.cart-icon {
+  font-size: 1.5rem;
+  color: white;
+}
+
+.cart-badge-count {
+  position: absolute;
+  top: -7px;
+  right: -16px;
+  background-color: red;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border-radius: 50%;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px;
 }
 
 /*# sourceMappingURL=style.css.map */

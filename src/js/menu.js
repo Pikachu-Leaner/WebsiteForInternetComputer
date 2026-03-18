@@ -7,6 +7,8 @@ const API_URLS = {
   LIKE_PRODUCT: (productId) => `https://shoes-mall.onrender.com/api/v1/products/${productId}/like`,
   UNLIKE_PRODUCT: (productId) =>
     `https://shoes-mall.onrender.com/api/v1/products/${productId}/unlike`,
+  ADD_TO_CART: 'https://shoes-mall.onrender.com/api/v1/orders/',
+  GET_CART: 'https://shoes-mall.onrender.com/api/v1/orders/',
 };
 
 // Helper for authorization headers
@@ -42,12 +44,49 @@ document.addEventListener('DOMContentLoaded', () => {
         sessionStorage.removeItem('accessToken');
         window.location.reload();
       });
+
+      // Fetch cart count on load if logged in
+      fetchCartCount();
     } else {
       authDropdownToggle.innerHTML = '<i class="fa fa-user user-icon me-2"></i> Hello';
       authDropdownMenu.innerHTML = `
                 <li><a class="dropdown-item" href="#">Sign in</a></li>
                 <li><a class="dropdown-item" href="#">Sign up</a></li>
             `;
+    }
+  }
+
+  // GET CART COUNT LOGIC
+  async function fetchCartCount() {
+    const token = sessionStorage.getItem('accessToken');
+    if (!token) return;
+
+    try {
+      const response = await fetch(API_URLS.GET_CART, {
+        method: 'GET',
+        headers: getAuthHeaders(),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+
+        // Better data mapping to find the order count ---
+        let totalItems = 0;
+        if (result.data && Array.isArray(result.data)) {
+          totalItems = result.data.length;
+        } else if (result.data && Array.isArray(result.data.items)) {
+          totalItems = result.data.items.length;
+        } else if (Array.isArray(result)) {
+          totalItems = result.length;
+        }
+
+        const bagBadge = document.querySelector('.bag-item .badge-count');
+        if (bagBadge) {
+          bagBadge.innerText = totalItems;
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching cart count:', error);
     }
   }
 
@@ -104,15 +143,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // LOADING SPINNER LOGIC
+  // LOADING SPINNER LOGIC (Page level)
   let loadingInterval;
 
   function showLoading() {
     const overlay = document.getElementById('loading-overlay');
     const loadingText = document.getElementById('loading-text');
-    if (!overlay || !loadingText) {
-      return;
-    }
+    if (!overlay || !loadingText) return;
 
     overlay.style.display = 'flex';
     setTimeout(() => {
@@ -123,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadingText.innerText = 'Loading';
 
     loadingInterval = setInterval(() => {
-      dots = (dots % 3) + 1; // Cycles 1, 2, 3
+      dots = (dots % 3) + 1;
       loadingText.innerText = 'Loading' + '.'.repeat(dots);
     }, 400);
   }
@@ -131,9 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function hideLoading() {
     const overlay = document.getElementById('loading-overlay');
     const loadingText = document.getElementById('loading-text');
-    if (!overlay || !loadingText) {
-      return;
-    }
+    if (!overlay || !loadingText) return;
 
     clearInterval(loadingInterval);
     loadingText.innerText = 'Loading done';
@@ -148,13 +183,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // FETCH DATA & RENDER HTML
   async function fetchProducts() {
-    showLoading(); // Trigger the loading animation
+    showLoading();
 
     try {
       let favoriteIds = [];
       const token = sessionStorage.getItem('accessToken');
 
-      // Setup the fetch for products
       const requests = [
         fetch(API_URLS.GET_PRODUCTS, {
           method: 'GET',
@@ -162,17 +196,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }),
       ];
 
-      // If logged in, fetch the user's favorites concurrently
       if (token) {
         requests.push(
           fetch(API_URLS.GET_FAVORITES, {
             method: 'GET',
             headers: getAuthHeaders(),
-          }),
+          })
         );
       }
 
-      // Wait for all requests to finish
       const responses = await Promise.all(requests);
       const productResponse = responses[0];
 
@@ -180,7 +212,6 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Failed to fetch products');
       }
 
-      // Process Favorites if the second request exists and succeeded
       if (responses[1] && responses[1].ok) {
         try {
           const favResult = await responses[1].json();
@@ -192,7 +223,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      // Process Products
       const result = await productResponse.json();
 
       if (result.statusCode === 200 && result.data && result.data.items) {
@@ -204,7 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (error) {
       showToast('Error fetching data: ' + error.message, 'error');
     } finally {
-      // Ensure the loader is removed whether the API succeeds or fails
       hideLoading();
     }
   }
@@ -212,9 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderCarousel(products) {
     const carouselInner = document.getElementById('dynamic-carousel-inner');
     const carouselIndicators = document.getElementById('dynamic-carousel-indicators');
-    if (!carouselInner || !carouselIndicators) {
-      return;
-    }
+    if (!carouselInner || !carouselIndicators) return;
 
     let innerHTML = '';
     let indicatorsHTML = '';
@@ -237,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="col-md-5">
                                 <h1 class="product-title">${product.name}</h1>
                                 <p class="product-desc">${product.description || 'Premium quality shoes.'}</p>
-                                <button class="btn btn-buy">
+                                <button class="btn btn-buy buy-now-btn" data-id="${product._id}">
                                     <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
                                 </button>
                             </div>
@@ -253,9 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderProductCards(products, favoriteIds = []) {
     const productRow = document.getElementById('dynamic-product-row');
-    if (!productRow) {
-      return;
-    }
+    if (!productRow) return;
 
     const cardsHTML = products
       .map((product) => {
@@ -264,7 +289,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const discountTag =
           product.discount > 0 ? `<span class="Sale-item">SALE ${product.discount}%</span>` : '';
 
-        // Check if this product's ID is in the favoriteIds array
         const isLiked = favoriteIds.includes(product._id);
         const heartClass = isLiked ? 'btn-heart active' : 'btn-heart';
 
@@ -289,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                             <div class="price-row">
                                 <span class="price">${formatPrice(product.price)}</span>
-                                <button class="buy-now-btn">
+                                <button class="buy-now-btn" data-id="${product._id}">
                                     <i class="fa-solid fa-cart-shopping cart-icon"></i> Buy now
                                 </button>
                             </div>
@@ -305,24 +329,93 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // DYNAMIC LOGIC (Runs AFTER fetch)
   function initializeShopLogic() {
-    // Initialize Fancybox for dynamically injected HTML
     if (typeof Fancybox !== 'undefined') {
-      // eslint-disable-next-line no-undef
       Fancybox.bind('[data-fancybox="gallery"]', { infinite: true });
     }
 
-    // --- Setup Like Functionality ---
+    // Setup BUY NOW Functionality
+    document.body.addEventListener('click', async (e) => {
+      const buyBtn = e.target.closest('.buy-now-btn');
+      if (!buyBtn) return;
+
+      e.preventDefault();
+
+      const token = sessionStorage.getItem('accessToken');
+      if (!token) {
+        showToast('Please sign in to buy products.', 'error');
+        return;
+      }
+
+      const productId = buyBtn.getAttribute('data-id');
+
+      // Trigger the full-screen overlay loading animation ---
+      showLoading();
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+        const orderData = {
+          orders: [
+            {
+              product_id: productId,
+              size: '40', // for now for the data backend accept
+              amount: 1,
+            },
+          ],
+          address: 'sth sth somewhere', // for now for the data backend accept
+        };
+
+        const response = await fetch(API_URLS.ADD_TO_CART, {
+          method: 'POST',
+          headers: {
+            ...getAuthHeaders(),
+            accept: 'application/json',
+          },
+          body: JSON.stringify(orderData),
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`Action failed with status: ${response.status}`);
+        }
+
+        // Hide the full-screen overlay when done ---
+        hideLoading();
+
+        // Still showing success on the button right before the redirect
+        buyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Success';
+        buyBtn.classList.replace('btn-outline-dark', 'btn-success');
+
+        await fetchCartCount();
+
+        setTimeout(() => {
+          window.location.href = '../pages/cart.html';
+        }, 500);
+      } catch (error) {
+        // Make sure the overlay hides if the request fails ---
+        hideLoading();
+
+        if (error.name === 'AbortError') {
+          showToast('Request timed out after 3 seconds.', 'error');
+        } else {
+          showToast('Something went wrong adding to cart. Make sure data is valid.', 'error');
+          console.error('Order Error:', error);
+        }
+      }
+    });
+
+    // Setup Like Functionality
     const productRow = document.getElementById('dynamic-product-row');
     if (productRow) {
       productRow.addEventListener('click', async (e) => {
         const heartBtn = e.target.closest('.btn-heart');
-        if (!heartBtn) {
-          return;
-        }
+        if (!heartBtn) return;
 
         e.preventDefault();
 
-        // Block action if not logged in
         if (!sessionStorage.getItem('accessToken')) {
           showToast('Please sign in to like products.', 'error');
           return;
@@ -330,28 +423,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const productId = heartBtn.getAttribute('data-id');
         const isCurrentlyLiked = heartBtn.classList.contains('active');
-
-        // Optimistic UI update
         heartBtn.classList.toggle('active');
 
-        // Determine target URL using the functions defined at the top
         const targetUrl = isCurrentlyLiked
           ? API_URLS.UNLIKE_PRODUCT(productId)
           : API_URLS.LIKE_PRODUCT(productId);
 
         try {
           const response = await fetch(targetUrl, {
-            method: 'POST', // Update this to 'DELETE' if your UNLIKE route requires it
+            method: 'POST',
             headers: getAuthHeaders(),
           });
 
-          if (!response.ok) {
-            throw new Error('Action failed');
-          }
-
+          if (!response.ok) throw new Error('Action failed');
           showToast(isCurrentlyLiked ? 'Removed from favorites' : 'Added to favorites');
         } catch (error) {
-          heartBtn.classList.toggle('active'); // Revert UI on failure
+          heartBtn.classList.toggle('active');
           showToast('Something went wrong. Please try again.', 'error');
         }
       });
@@ -382,15 +469,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setupPagination() {
-      if (!paginationContainer) {
-        return;
-      }
+      if (!paginationContainer) return;
       paginationContainer.innerHTML = '';
 
       const pageCount = Math.ceil(filteredItems.length / itemsPerPage);
-      if (pageCount <= 1) {
-        return;
-      }
+      if (pageCount <= 1) return;
 
       const prevDisabled = currentPage === 1 ? 'disabled' : '';
       paginationContainer.innerHTML += `<li class="page-item ${prevDisabled}"><a class="page-link text-dark" href="#" data-page="prev">&lt;</a></li>`;
@@ -406,9 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
       paginationContainer.querySelectorAll('.page-link').forEach((link) => {
         link.addEventListener('click', function (e) {
           e.preventDefault();
-          if (this.parentElement.classList.contains('disabled')) {
-            return;
-          }
+          if (this.parentElement.classList.contains('disabled')) return;
 
           const targetPage = this.getAttribute('data-page');
           if (targetPage === 'prev') {
@@ -489,12 +570,10 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Run initial display
     if (allProductItems.length > 0) {
       applyFilters();
     }
   }
 
-  // Trigger the initial fetch
   fetchProducts();
 });
