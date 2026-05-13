@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Redirect to login page after a short delay to allow user to see the success message
       setTimeout(() => {
-        window.location.href = '../pages/login.html';
+        window.location.href = 'login.html';
       }, 2000);
     } catch (error) {
       showToast(error.message || 'An error occurred. Please try again.', 'error');

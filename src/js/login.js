@@ -43,7 +43,7 @@ form.addEventListener('submit', async (e) => {
           sessionStorage.setItem('accessToken', userData.access_token);
           sessionStorage.setItem('refreshToken', userData.refresh_token);
           // Redirect to home page after successful login
-          window.location.href = '../pages/index.html';
+          window.location.href = 'index.html';
         }
       }
     } else {

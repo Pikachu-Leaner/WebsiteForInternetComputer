@@ -43,7 +43,7 @@ function handleAuthRouting(accessToken) {
   } else {
     // Log in
     authContainer.innerHTML = `
-    <a href="../pages/changePassword.html" class="register-link">Change password</a>
+    <a href="changePassword.html" class="register-link">Change password</a>
     `;
     authLinkHide1.classList.toggle('hide-link');
     authLinkHide2.classList.toggle('hide-link');
@@ -159,6 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
 if (profileForm) {
   profileForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    window.location.href = '../pages/updateProfile.html';
+    window.location.href = 'updateProfile.html';
   });
 }

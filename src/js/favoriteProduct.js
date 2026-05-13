@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const token = sessionStorage.getItem('accessToken');
     if (!token) {
-      window.location.href = '../pages/login.html';
+      window.location.href = 'login.html';
       return;
     }
 

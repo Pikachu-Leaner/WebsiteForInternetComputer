@@ -9,7 +9,7 @@ import { validateProfile, showToast, confirmUpdateAction } from '../js/validatio
 // Have to refresh the page to active this
 if (!sessionStorage.getItem('accessToken')) {
   alert('Your session has been expired or not log in! Pls login again to use this feature.'); // eslint-disable-line no-alert
-  window.location.href = '../pages/login.html';
+  window.location.href = 'login.html';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Have to refresh the page to active this
   if (!sessionStorage.getItem('accessToken')) {
     alert('Your session has been expired or not log in! Pls login again to use this feature.'); // eslint-disable-line no-alert
-    window.location.href = '../pages/login.html';
+    window.location.href = 'login.html';
   }
   // Select UI Elements ( buttons, form, inputs)
   const toggleBtn = document.getElementById('btnToggleProfile');
@@ -346,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // This also like the same logic at the start but not when refrsh but for when click the button then it kick user back  to login page
       if (!accessToken) {
         alert('Your session has been expired or not log in! Pls login again to use this feature.'); // eslint-disable-line no-alert
-        window.location.href = '../pages/login.html';
+        window.location.href = 'login.html';
         return;
       }
 
@@ -569,7 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // Move back to profile page after successful update
           sessionStorage.setItem('profileUpdateSuccess', 'true');
-          window.location.href = '../pages/profile.html';
+          window.location.href = 'profile.html';
         } catch (error) {
           showToast(error.message, 'error');
         } finally {

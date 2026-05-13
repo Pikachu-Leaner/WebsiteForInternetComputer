@@ -82,7 +82,7 @@ function showCustomConfirm(message) {
 // INSTANT AUTHENTICATION CHECK
 const token = sessionStorage.getItem('accessToken');
 if (!token) {
-  window.location.href = '../pages/login.html';
+  window.location.href = 'login.html';
 }
 
 document.addEventListener('DOMContentLoaded', () => {

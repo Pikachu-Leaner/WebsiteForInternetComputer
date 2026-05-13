@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (accessToken) {
       authDropdownToggle.innerHTML = '<i class="fa fa-user user-icon me-2"></i> Favorite product';
       authDropdownMenu.innerHTML = `
-                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><a class="dropdown-item" href="profile.html">Profile</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item text-danger" href="#" id="signOutBtn">Sign out</a></li>
             `;
@@ -48,11 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // Fetch cart count on load if logged in
       fetchCartCount();
     } else {
-      authDropdownToggle.innerHTML = '<i class="fa fa-user user-icon me-2"></i> Hello';
       authDropdownMenu.innerHTML = `
-                <li><a class="dropdown-item" href="#">Sign in</a></li>
-                <li><a class="dropdown-item" href="#">Sign up</a></li>
-            `;
+    <li><a class="dropdown-item" href="login.html">Sign in</a></li>
+    <li><a class="dropdown-item" href="register.html">Sign up</a></li>
+`;
     }
   }
 
@@ -392,7 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await fetchCartCount();
 
         setTimeout(() => {
-          window.location.href = '../pages/cart.html';
+          window.location.href = 'cart.html';
         }, 500);
       } catch (error) {
         // Make sure the overlay hides if the request fails ---

@@ -5,7 +5,7 @@ import { changePasswordValidation, showToast, setupPasswordToggle } from './vali
 // Have to refresh the page to active this
 if (!sessionStorage.getItem('accessToken')) {
   alert('Your session has been expired or not log in! Pls login again to use this feature.'); // eslint-disable-line no-alert
-  window.location.href = '../pages/login.html';
+  window.location.href = 'login.html';
 }
 
 // Setup the functions ( password toggle for all 3 passwordd input fields)
@@ -48,7 +48,7 @@ passwordForm.addEventListener('submit', async (e) => {
   // This also like the same logic at the start but not when refrsh but for when click the button then it kick user back  to login page
   if (!accessToken) {
     alert('Your session has been expired or not log in! Pls login again to use this feature.'); // eslint-disable-line no-alert
-    window.location.href = '../pages/login.html';
+    window.location.href = 'login.html';
     return;
   }
 
@@ -119,7 +119,7 @@ passwordForm.addEventListener('submit', async (e) => {
       sessionStorage.removeItem('accessToken');
       sessionStorage.removeItem('refreshToken');
       // Send user back to the login page
-      window.location.href = '../pages/login.html';
+      window.location.href = 'login.html';
     }
     // Expired token respone ( situation send to the Api server when access token expired )
     // However the case for no login ( have access token in the session storage already been deal with in the profle.js with when no access token not show the link to click change password.)
@@ -130,7 +130,7 @@ passwordForm.addEventListener('submit', async (e) => {
       sessionStorage.removeItem('accessToken');
       sessionStorage.removeItem('refreshToken');
 
-      window.location.href = '../pages/login.html';
+      window.location.href = 'login.html';
     }
     // Errors respone
     else {

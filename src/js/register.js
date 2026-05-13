@@ -192,7 +192,7 @@ registerForm.addEventListener('submit', async (event) => {
 
         // Slight delay to let the loading screen render before the page unloads
         setTimeout(() => {
-          window.location.href = '../pages/index.html';
+          window.location.href = 'index.html';
         }, 2000);
       }, 2000);
     }
