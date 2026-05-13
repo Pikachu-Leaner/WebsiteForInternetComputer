@@ -1,3 +1,4 @@
+/* global Fancybox */
 import { showToast } from '../js/validation.js';
 
 // API Configuration
@@ -58,7 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // GET CART COUNT LOGIC
   async function fetchCartCount() {
     const token = sessionStorage.getItem('accessToken');
-    if (!token) return;
+    if (!token) {
+      return;
+    }
 
     try {
       const response = await fetch(API_URLS.GET_CART, {
@@ -148,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function showLoading() {
     const overlay = document.getElementById('loading-overlay');
     const loadingText = document.getElementById('loading-text');
-    if (!overlay || !loadingText) return;
+    if (!overlay || !loadingText) {return;}
 
     overlay.style.display = 'flex';
     setTimeout(() => {
@@ -167,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function hideLoading() {
     const overlay = document.getElementById('loading-overlay');
     const loadingText = document.getElementById('loading-text');
-    if (!overlay || !loadingText) return;
+    if (!overlay || !loadingText) {return;}
 
     clearInterval(loadingInterval);
     loadingText.innerText = 'Loading done';
@@ -200,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
           fetch(API_URLS.GET_FAVORITES, {
             method: 'GET',
             headers: getAuthHeaders(),
-          })
+          }),
         );
       }
 
@@ -240,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderCarousel(products) {
     const carouselInner = document.getElementById('dynamic-carousel-inner');
     const carouselIndicators = document.getElementById('dynamic-carousel-indicators');
-    if (!carouselInner || !carouselIndicators) return;
+    if (!carouselInner || !carouselIndicators) {return;}
 
     let innerHTML = '';
     let indicatorsHTML = '';
@@ -279,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderProductCards(products, favoriteIds = []) {
     const productRow = document.getElementById('dynamic-product-row');
-    if (!productRow) return;
+    if (!productRow) {return;}
 
     const cardsHTML = products
       .map((product) => {
@@ -335,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Setup BUY NOW Functionality
     document.body.addEventListener('click', async (e) => {
       const buyBtn = e.target.closest('.buy-now-btn');
-      if (!buyBtn) return;
+      if (!buyBtn) {return;}
 
       e.preventDefault();
 
@@ -411,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (productRow) {
       productRow.addEventListener('click', async (e) => {
         const heartBtn = e.target.closest('.btn-heart');
-        if (!heartBtn) return;
+        if (!heartBtn) {return;}
 
         e.preventDefault();
 
@@ -434,7 +437,9 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: getAuthHeaders(),
           });
 
-          if (!response.ok) throw new Error('Action failed');
+          if (!response.ok) {
+            throw new Error('Action failed');
+          }
           showToast(isCurrentlyLiked ? 'Removed from favorites' : 'Added to favorites');
         } catch (error) {
           heartBtn.classList.toggle('active');
@@ -468,11 +473,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setupPagination() {
-      if (!paginationContainer) return;
+      if (!paginationContainer) {return;}
       paginationContainer.innerHTML = '';
 
       const pageCount = Math.ceil(filteredItems.length / itemsPerPage);
-      if (pageCount <= 1) return;
+      if (pageCount <= 1) {return;}
 
       const prevDisabled = currentPage === 1 ? 'disabled' : '';
       paginationContainer.innerHTML += `<li class="page-item ${prevDisabled}"><a class="page-link text-dark" href="#" data-page="prev">&lt;</a></li>`;
@@ -488,7 +493,7 @@ document.addEventListener('DOMContentLoaded', () => {
       paginationContainer.querySelectorAll('.page-link').forEach((link) => {
         link.addEventListener('click', function (e) {
           e.preventDefault();
-          if (this.parentElement.classList.contains('disabled')) return;
+          if (this.parentElement.classList.contains('disabled')) {return;}
 
           const targetPage = this.getAttribute('data-page');
           if (targetPage === 'prev') {
