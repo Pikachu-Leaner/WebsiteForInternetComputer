@@ -2144,4 +2144,21 @@ tbody tr td {
   padding: 2px;
 }
 
+#category-nav .nav-link {
+  border: none;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+#category-nav .nav-link.active {
+  border-bottom: 3px solid black;
+  color: black !important;
+  background: transparent !important;
+}
+
+#category-nav .nav-link:not(.active) {
+  border-bottom: 3px solid transparent;
+  background: transparent !important;
+}
+
 /*# sourceMappingURL=style.css.map */
