@@ -22,4 +22,4 @@ jobs:
 
       - name: Upload Website To S3
         run: |
-          aws s3 sync ./src s3://auth211-cart-products --delete
+          aws s3 sync ./src s3://testing-s3-bucketdemo --delete
