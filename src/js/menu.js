@@ -340,13 +340,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // DYNAMIC LOGIC (Runs AFTER fetch)
   function initializeShopLogic() {
+    // ==============================
+    // Fancybox
+    // ==============================
     if (typeof Fancybox !== 'undefined') {
-      Fancybox.bind('[data-fancybox="gallery"]', { infinite: true });
+      Fancybox.bind('[data-fancybox="gallery"]', {
+        infinite: true,
+      });
     }
 
-    // Setup BUY NOW Functionality
+    // ==============================
+    // BUY NOW FUNCTIONALITY
+    // ==============================
     document.body.addEventListener('click', async (e) => {
       const buyBtn = e.target.closest('.buy-now-btn');
+
       if (!buyBtn) {
         return;
       }
@@ -354,6 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
 
       const token = sessionStorage.getItem('accessToken');
+
       if (!token) {
         showToast('Please sign in to buy products.', 'error');
         return;
@@ -361,22 +370,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const productId = buyBtn.getAttribute('data-id');
 
-      // Trigger the full-screen overlay loading animation ---
+      if (!productId) {
+        showToast('Invalid product.', 'error');
+        return;
+      }
+
       showLoading();
 
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+        const timeoutId = setTimeout(() => {
+          controller.abort();
+        }, 3000);
 
         const orderData = {
           orders: [
             {
               product_id: productId,
-              size: '40', // for now for the data backend accept
+              size: '40',
               amount: 1,
             },
           ],
-          address: 'sth sth somewhere', // for now for the data backend accept
+          address: 'sth sth somewhere',
         };
 
         const response = await fetch(API_URLS.ADD_TO_CART, {
@@ -384,6 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: {
             ...getAuthHeaders(),
             accept: 'application/json',
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(orderData),
           signal: controller.signal,
@@ -395,12 +412,12 @@ document.addEventListener('DOMContentLoaded', () => {
           throw new Error(`Action failed with status: ${response.status}`);
         }
 
-        // Hide the full-screen overlay when done ---
         hideLoading();
 
-        // Still showing success on the button right before the redirect
         buyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Success';
-        buyBtn.classList.replace('btn-outline-dark', 'btn-success');
+
+        buyBtn.classList.remove('btn-outline-dark');
+        buyBtn.classList.add('btn-success');
 
         await fetchCartCount();
 
@@ -408,113 +425,178 @@ document.addEventListener('DOMContentLoaded', () => {
           window.location.href = '../pages/cart.html';
         }, 500);
       } catch (error) {
-        // Make sure the overlay hides if the request fails ---
         hideLoading();
+
+        console.error('Order Error:', error);
 
         if (error.name === 'AbortError') {
           showToast('Request timed out after 3 seconds.', 'error');
         } else {
-          showToast('Something went wrong adding to cart. Make sure data is valid.', 'error');
-          console.error('Order Error:', error);
+          showToast('Something went wrong adding to cart.', 'error');
         }
       }
     });
 
-    // Setup Like Functionality
-    const productRow = document.getElementById('dynamic-product-row');
-    if (productRow) {
-      productRow.addEventListener('click', async (e) => {
-        const heartBtn = e.target.closest('.btn-heart');
-        if (!heartBtn) {
-          return;
-        }
+    // ==============================
+    // LIKE / UNLIKE FUNCTIONALITY
+    // ==============================
+    document.body.addEventListener('click', async (e) => {
+      const heartBtn = e.target.closest('.btn-heart');
 
-        e.preventDefault();
+      if (!heartBtn) {
+        return;
+      }
 
-        if (!sessionStorage.getItem('accessToken')) {
-          showToast('Please sign in to like products.', 'error');
-          return;
-        }
+      e.preventDefault();
 
-        const productId = heartBtn.getAttribute('data-id');
-        const isCurrentlyLiked = heartBtn.classList.contains('active');
-        heartBtn.classList.toggle('active');
+      const token = sessionStorage.getItem('accessToken');
 
-        const targetUrl = isCurrentlyLiked
-          ? API_URLS.UNLIKE_PRODUCT(productId)
-          : API_URLS.LIKE_PRODUCT(productId);
+      if (!token) {
+        showToast('Please login first', 'error');
+        return;
+      }
 
-        try {
-          const response = await fetch(targetUrl, {
+      const productId = heartBtn.dataset.id;
+
+      if (!productId) {
+        showToast('Invalid product', 'error');
+        return;
+      }
+
+      const isCurrentlyLiked = heartBtn.classList.contains('active');
+
+      // Optimistic UI
+      heartBtn.classList.toggle('active');
+
+      try {
+        const response = await fetch(
+          isCurrentlyLiked ? API_URLS.UNLIKE_PRODUCT(productId) : API_URLS.LIKE_PRODUCT(productId),
+          {
             method: 'POST',
             headers: getAuthHeaders(),
-          });
+          },
+        );
 
-          if (!response.ok) {
-            throw new Error('Action failed');
-          }
-          showToast(isCurrentlyLiked ? 'Removed from favorites' : 'Added to favorites');
-        } catch (error) {
-          heartBtn.classList.toggle('active');
-          showToast('Something went wrong. Please try again.', 'error');
+        if (!response.ok) {
+          throw new Error('Action failed');
         }
-      });
-    }
 
-    // Setup Pagination, Filters & Search
-    const filterLinks = document.querySelectorAll('#category-filter .nav-link');
+        showToast(isCurrentlyLiked ? 'Removed from favorites' : 'Added to favorites', 'success');
+      } catch (error) {
+        console.error(error);
+
+        // rollback UI if failed
+        heartBtn.classList.toggle('active');
+
+        showToast('Something went wrong', 'error');
+      }
+    });
+
+    // ==============================
+    // PAGINATION / FILTER / SEARCH
+    // ==============================
+    const filterLinks = document.querySelectorAll(
+      '#category-nav .nav-link, #category-filter .nav-link',
+    );
+
     const allProductItems = Array.from(document.querySelectorAll('.product-item'));
+
     const paginationContainer = document.getElementById('product-pagination');
+
     const searchInput = document.getElementById('search-input');
+
     const searchForm = document.getElementById('search-form');
+
     const searchIcon = document.querySelector('.search-icon');
 
+    // eslint-disable-next-line no-shadow
+    const productContainer = document.getElementById('dynamic-product-row');
+
     let filteredItems = [...allProductItems];
+
     let currentPage = 1;
+
     const itemsPerPage = 6;
+
     let currentCategory = 'all';
+
     let searchQuery = '';
 
+    // ==============================
+    // DISPLAY PRODUCTS
+    // ==============================
     function displayProducts(page) {
       const startIndex = (page - 1) * itemsPerPage;
+
       const endIndex = startIndex + itemsPerPage;
 
-      allProductItems.forEach((item) => (item.style.display = 'none'));
+      allProductItems.forEach((item) => {
+        item.style.display = 'none';
+      });
+
       for (let i = startIndex; i < endIndex && i < filteredItems.length; i++) {
         filteredItems[i].style.display = '';
       }
     }
 
+    // ==============================
+    // PAGINATION
+    // ==============================
     function setupPagination() {
       if (!paginationContainer) {
         return;
       }
+
       paginationContainer.innerHTML = '';
 
       const pageCount = Math.ceil(filteredItems.length / itemsPerPage);
+
       if (pageCount <= 1) {
         return;
       }
 
       const prevDisabled = currentPage === 1 ? 'disabled' : '';
-      paginationContainer.innerHTML += `<li class="page-item ${prevDisabled}"><a class="page-link text-dark" href="#" data-page="prev">&lt;</a></li>`;
+
+      paginationContainer.innerHTML += `
+      <li class="page-item ${prevDisabled}">
+        <a class="page-link text-dark" href="#" data-page="prev">
+          &lt;
+        </a>
+      </li>
+    `;
 
       for (let i = 1; i <= pageCount; i++) {
         const activeClass = currentPage === i ? 'active' : '';
-        paginationContainer.innerHTML += `<li class="page-item ${activeClass}"><a class="page-link text-dark" href="#" data-page="${i}">${i}</a></li>`;
+
+        paginationContainer.innerHTML += `
+        <li class="page-item ${activeClass}">
+          <a class="page-link text-dark" href="#" data-page="${i}">
+            ${i}
+          </a>
+        </li>
+      `;
       }
 
       const nextDisabled = currentPage === pageCount ? 'disabled' : '';
-      paginationContainer.innerHTML += `<li class="page-item ${nextDisabled}"><a class="page-link text-dark" href="#" data-page="next">&gt;</a></li>`;
+
+      paginationContainer.innerHTML += `
+      <li class="page-item ${nextDisabled}">
+        <a class="page-link text-dark" href="#" data-page="next">
+          &gt;
+        </a>
+      </li>
+    `;
 
       paginationContainer.querySelectorAll('.page-link').forEach((link) => {
         link.addEventListener('click', function (e) {
           e.preventDefault();
+
           if (this.parentElement.classList.contains('disabled')) {
             return;
           }
 
           const targetPage = this.getAttribute('data-page');
+
           if (targetPage === 'prev') {
             currentPage--;
           } else if (targetPage === 'next') {
@@ -524,75 +606,124 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           displayProducts(currentPage);
+
           setupPagination();
+
+          scrollToContainer();
         });
       });
     }
 
+    // ==============================
+    // APPLY FILTERS
+    // ==============================
     function applyFilters() {
       filteredItems = allProductItems.filter((item) => {
         const itemCategory = item.getAttribute('data-category');
-        const itemName = item.querySelector('.product-name').innerText.toLowerCase();
+
+        const productNameElement = item.querySelector('.product-name');
+
+        const itemName = productNameElement
+          ? productNameElement.innerText.toLowerCase().trim()
+          : '';
 
         const matchesCategory = currentCategory === 'all' || itemCategory === currentCategory;
+
         const matchesSearch = itemName.includes(searchQuery);
 
         return matchesCategory && matchesSearch;
       });
 
       currentPage = 1;
+
       displayProducts(currentPage);
+
       setupPagination();
     }
 
+    // ==============================
+    // CATEGORY FILTER
+    // ==============================
     if (filterLinks.length > 0) {
       filterLinks.forEach((link) => {
         link.addEventListener('click', function (e) {
           e.preventDefault();
-          filterLinks.forEach((el) => el.classList.remove('active'));
+
+          filterLinks.forEach((el) => {
+            el.classList.remove('active');
+          });
+
           this.classList.add('active');
 
           currentCategory = this.getAttribute('data-filter');
+
           applyFilters();
+
+          scrollToContainer();
         });
       });
     }
 
+    // ==============================
+    // SEARCH INPUT
+    // ==============================
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
         searchQuery = e.target.value.toLowerCase().trim();
+
         applyFilters();
       });
     }
 
-    const scrollToContainer = () => {
+    // ==============================
+    // SCROLL HELPER
+    // ==============================
+    function scrollToContainer() {
       if (productContainer) {
-        productContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        productContainer.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
       }
-    };
+    }
 
+    // ==============================
+    // SEARCH FORM
+    // ==============================
     if (searchForm) {
       searchForm.addEventListener('submit', (e) => {
         e.preventDefault();
+
         if (searchInput) {
           searchQuery = searchInput.value.toLowerCase().trim();
+
           applyFilters();
         }
+
         scrollToContainer();
       });
     }
 
+    // ==============================
+    // SEARCH ICON
+    // ==============================
     if (searchIcon) {
       searchIcon.style.cursor = 'pointer';
+
       searchIcon.addEventListener('click', () => {
         if (searchInput) {
           searchQuery = searchInput.value.toLowerCase().trim();
+
           applyFilters();
         }
+
         scrollToContainer();
       });
     }
 
+    // ==============================
+    // INITIAL LOAD
+    // ==============================
     if (allProductItems.length > 0) {
       applyFilters();
     }
