@@ -42,7 +42,7 @@ const formatPrice = (price) => {
 };
 
 // ==========================================
-// DOM LOADED
+// DOM READY
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
@@ -56,57 +56,76 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (authDropdownMenu && authDropdownToggle) {
     if (accessToken) {
-      authDropdownToggle.innerHTML = '<i class="fa fa-user user-icon me-2"></i> My Account';
+      authDropdownToggle.innerHTML = `
+        <i class="fa fa-user user-icon me-2"></i>
+        My Account
+      `;
 
       authDropdownMenu.innerHTML = `
-    <li>
-      <a class="dropdown-item" href="profile.html">
-        <i class="fa fa-user me-2"></i>
-        Profile
-      </a>
-    </li>
+        <li>
+          <a class="dropdown-item" href="./profile.html">
+            <i class="fa fa-user me-2"></i>
+            Profile
+          </a>
+        </li>
 
-    <li>
-      <a class="dropdown-item" href="favoriteProduct.html">
-        <i class="fa fa-heart me-2"></i>
-        Favorite Products
-      </a>
-    </li>
+        <li>
+          <a class="dropdown-item" href="./favoriteProduct.html">
+            <i class="fa fa-heart me-2"></i>
+            Favorite Products
+          </a>
+        </li>
 
-    <li>
-      <a class="dropdown-item" href="cart.html">
-        <i class="fa fa-shopping-cart me-2"></i>
-        Cart
-      </a>
-    </li>
+        <li>
+          <a class="dropdown-item" href="./cart.html">
+            <i class="fa fa-shopping-cart me-2"></i>
+            Cart
+          </a>
+        </li>
 
-    <li><hr class="dropdown-divider"></li>
+        <li><hr class="dropdown-divider"></li>
 
-    <li>
-      <a class="dropdown-item text-danger" href="#" id="signOutBtn">
-        <i class="fa fa-sign-out-alt me-2"></i>
-        Sign out
-      </a>
-    </li>
-  `;
+        <li>
+          <a class="dropdown-item text-danger" href="#" id="signOutBtn">
+            <i class="fa fa-sign-out-alt me-2"></i>
+            Sign out
+          </a>
+        </li>
+      `;
 
-      document.getElementById('signOutBtn').addEventListener('click', (e) => {
-        e.preventDefault();
+      const signOutBtn = document.getElementById('signOutBtn');
 
-        sessionStorage.removeItem('accessToken');
+      if (signOutBtn) {
+        signOutBtn.addEventListener('click', (e) => {
+          e.preventDefault();
 
-        window.location.reload();
-      });
+          sessionStorage.removeItem('accessToken');
+
+          window.location.href = './index.html';
+        });
+      }
 
       fetchCartCount();
 
       fetchFavoriteCount();
     } else {
-      authDropdownToggle.innerHTML = '<i class="fa fa-user user-icon me-2"></i> Hello';
+      authDropdownToggle.innerHTML = `
+        <i class="fa fa-user user-icon me-2"></i>
+        Hello
+      `;
 
       authDropdownMenu.innerHTML = `
-        <li><a class="dropdown-item" href="login.html">Sign in</a></li>
-        <li><a class="dropdown-item" href="register.html">Sign up</a></li>
+        <li>
+          <a class="dropdown-item" href="./login.html">
+            Sign in
+          </a>
+        </li>
+
+        <li>
+          <a class="dropdown-item" href="./register.html">
+            Sign up
+          </a>
+        </li>
       `;
     }
   }
@@ -119,8 +138,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (favoriteBtn) {
     favoriteBtn.style.cursor = 'pointer';
 
-    favoriteBtn.addEventListener('click', () => {
-      window.location.href = '../pages/favoriteProduct.html';
+    favoriteBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      e.stopPropagation();
+
+      window.location.href = './favoriteProduct.html';
     });
   }
 
@@ -129,8 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (cartBtn) {
     cartBtn.style.cursor = 'pointer';
 
-    cartBtn.addEventListener('click', () => {
-      window.location.href = '../pages/cart.html';
+    cartBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      e.stopPropagation();
+
+      window.location.href = './cart.html';
     });
   }
 
@@ -158,13 +185,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let totalItems = 0;
 
-      if (result.data && Array.isArray(result.data)) {
+      if (Array.isArray(result.data)) {
         totalItems = result.data.length;
-      } else if (result.data && Array.isArray(result.data.items)) {
+      } else if (result.data?.items) {
         totalItems = result.data.items.length;
       }
 
-      const bagBadge = document.querySelector('.bag-item .badge-count');
+      const bagBadge = document.querySelector('#cart-page-btn .badge-count');
 
       if (bagBadge) {
         bagBadge.innerText = totalItems;
@@ -198,11 +225,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       let totalFavorites = 0;
 
-      if (result.data && Array.isArray(result.data)) {
+      if (Array.isArray(result.data)) {
         totalFavorites = result.data.length;
       }
 
-      const heartBadge = document.querySelector('.heart-item .badge-count');
+      const heartBadge = document.querySelector('#favorite-page-btn .badge-count');
 
       if (heartBadge) {
         heartBadge.innerText = totalFavorites;
@@ -239,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadingInterval = setInterval(() => {
       dots = (dots % 3) + 1;
 
-      loadingText.innerText = 'Loading' + '.'.repeat(dots);
+      loadingText.innerText = `Loading${'.'.repeat(dots)}`;
     }, 400);
   }
 
@@ -302,11 +329,14 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Failed to fetch products');
       }
 
+      // FAVORITE PRODUCTS
       if (responses[1] && responses[1].ok) {
         const favoriteResult = await responses[1].json();
 
-        if (favoriteResult.data) {
-          favoriteIds = favoriteResult.data.map((item) => item._id || item.id);
+        if (Array.isArray(favoriteResult.data)) {
+          favoriteIds = favoriteResult.data.map((item) => {
+            return item._id || item.id || item.product_id;
+          });
         }
       }
 
@@ -378,7 +408,9 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
 
               <div class="col-md-5">
-                <h1 class="product-title">${product.name}</h1>
+                <h1 class="product-title">
+                  ${product.name}
+                </h1>
 
                 <p class="product-desc">
                   ${product.description || 'Premium quality shoes'}
@@ -387,6 +419,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button
                   class="btn btn-buy buy-now-btn"
                   data-id="${product._id}"
+                  type="button"
                 >
                   <i class="fa-solid fa-cart-shopping"></i>
                   Buy now
@@ -418,15 +451,13 @@ document.addEventListener('DOMContentLoaded', () => {
       .map((product) => {
         const imageUrl = product.images && product.images.length > 0 ? product.images[0].url : '';
 
-        const brandSlug = product.brand ? product.brand.slug : 'other';
+        const brandSlug = product.brand?.slug || 'other';
 
         const isLiked = favoriteIds.includes(product._id);
 
-        const heartClass = isLiked ? 'btn-heart active' : 'btn-heart';
-
         return `
           <div
-            class="col-md-4 mb-4 product-item"
+            class="col-lg-3 col-md-4 col-sm-6 mb-4 product-item"
             data-category="${brandSlug}"
           >
             <div class="product-card">
@@ -434,7 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="card-header-custom">
                 <button
                   type="button"
-                  class="${heartClass}"
+                  class="btn-heart ${isLiked ? 'active' : ''}"
                   data-id="${product._id}"
                 >
                   <i class="fa fa-heart heart-icon"></i>
@@ -466,6 +497,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   </span>
 
                   <button
+                    type="button"
                     class="buy-now-btn"
                     data-id="${product._id}"
                   >
@@ -488,7 +520,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // SHOP LOGIC
   // ==========================================
   function initializeShopLogic() {
+    // ==========================================
     // FANCYBOX
+    // ==========================================
     if (typeof Fancybox !== 'undefined') {
       Fancybox.bind('[data-fancybox="gallery"]', {
         infinite: true,
@@ -516,6 +550,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!token) {
           showToast('Please login first', 'error');
+
+          window.location.href = './login.html';
 
           return;
         }
@@ -547,12 +583,10 @@ document.addEventListener('DOMContentLoaded', () => {
           });
 
           if (!response.ok) {
-            throw new Error('Failed');
+            throw new Error('Add to cart failed');
           }
 
-          buyBtn.style.background = '#22c55e';
-
-          buyBtn.style.borderColor = '#22c55e';
+          buyBtn.classList.add('added');
 
           buyBtn.innerHTML = `
             <i class="fa-solid fa-check"></i>
@@ -564,7 +598,7 @@ document.addEventListener('DOMContentLoaded', () => {
           showToast('Added to cart', 'success');
 
           setTimeout(() => {
-            window.location.href = '../pages/cart.html';
+            window.location.href = './cart.html';
           }, 500);
         } catch (error) {
           console.error(error);
@@ -577,7 +611,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
-    // HEART
+    // FAVORITE
     // ==========================================
     if (!document.body.dataset.likeInitialized) {
       document.body.dataset.likeInitialized = 'true';
@@ -598,6 +632,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!token) {
           showToast('Please login first', 'error');
 
+          window.location.href = './login.html';
+
           return;
         }
 
@@ -605,6 +641,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const isCurrentlyLiked = heartBtn.classList.contains('active');
 
+        // UI CHANGE FIRST
         heartBtn.classList.toggle('active');
 
         try {
@@ -614,13 +651,12 @@ document.addEventListener('DOMContentLoaded', () => {
               : API_URLS.LIKE_PRODUCT(productId),
             {
               method: 'POST',
-
               headers: getAuthHeaders(),
             },
           );
 
           if (!response.ok) {
-            throw new Error('Like failed');
+            throw new Error('Favorite failed');
           }
 
           await fetchFavoriteCount();
@@ -629,12 +665,107 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
           console.error(error);
 
+          // REVERT UI
           heartBtn.classList.toggle('active');
 
-          showToast('Action failed', 'error');
+          showToast('Favorite action failed', 'error');
         }
       });
     }
+
+    // ==========================================
+    // GRID / LIST SWITCH
+    // ==========================================
+    const gridBtn = document.querySelector('.grid-view-btn');
+
+    const listBtn = document.querySelector('.list-view-btn');
+
+    const productRow = document.getElementById('dynamic-product-row');
+
+    if (gridBtn && listBtn && productRow) {
+      gridBtn.addEventListener('click', () => {
+        productRow.classList.remove('list-view');
+
+        gridBtn.classList.add('active');
+
+        listBtn.classList.remove('active');
+
+        document.querySelectorAll('.product-item').forEach((item) => {
+          item.classList.remove('col-12');
+
+          item.classList.add('col-lg-3', 'col-md-4', 'col-sm-6');
+        });
+      });
+
+      listBtn.addEventListener('click', () => {
+        productRow.classList.add('list-view');
+
+        listBtn.classList.add('active');
+
+        gridBtn.classList.remove('active');
+
+        document.querySelectorAll('.product-item').forEach((item) => {
+          item.classList.remove('col-lg-3', 'col-md-4', 'col-sm-6');
+
+          item.classList.add('col-12');
+        });
+      });
+    }
+
+    // ==========================================
+    // NAVBAR ACTIVE SYNC
+    // ==========================================
+    const topNavLinks = document.querySelectorAll('.navbar .nav-link');
+
+    const filterTabs = document.querySelectorAll('.nav-pills .nav-link');
+
+    function clearActive() {
+      topNavLinks.forEach((link) => {
+        link.classList.remove('active');
+      });
+
+      filterTabs.forEach((link) => {
+        link.classList.remove('active');
+      });
+    }
+
+    function setActiveByText(text) {
+      topNavLinks.forEach((link) => {
+        if (link.textContent.trim().toLowerCase() === text.toLowerCase()) {
+          link.classList.add('active');
+        }
+      });
+
+      filterTabs.forEach((link) => {
+        if (link.textContent.trim().toLowerCase() === text.toLowerCase()) {
+          link.classList.add('active');
+        }
+      });
+    }
+
+    [...topNavLinks, ...filterTabs].forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const category = link.textContent.trim();
+
+        clearActive();
+
+        setActiveByText(category);
+
+        const items = document.querySelectorAll('.product-item');
+
+        items.forEach((item) => {
+          if (category.toLowerCase() === 'home' || category.toLowerCase() === 'all products') {
+            item.style.display = 'block';
+          } else {
+            const itemCategory = item.dataset.category?.toLowerCase();
+
+            item.style.display = itemCategory === category.toLowerCase() ? 'block' : 'none';
+          }
+        });
+      });
+    });
   }
 
   // ==========================================
