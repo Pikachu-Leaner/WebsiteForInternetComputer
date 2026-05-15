@@ -20,7 +20,7 @@ const API_URLS = {
 };
 
 // ==========================================
-// AUTH HEADERS
+// AUTH HEADER
 // ==========================================
 const getAuthHeaders = () => {
   const token = sessionStorage.getItem('accessToken');
@@ -41,14 +41,18 @@ const formatPrice = (price) => {
   }).format(price);
 };
 
+// ==========================================
+// DOM LOADED
+// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-  const accessToken = sessionStorage.getItem('accessToken');
-
   // ==========================================
-  // AUTH UI
+  // AUTH
   // ==========================================
   const authDropdownMenu = document.getElementById('authDropdownMenu');
+
   const authDropdownToggle = document.getElementById('authDropdown');
+
+  const accessToken = sessionStorage.getItem('accessToken');
 
   if (authDropdownMenu && authDropdownToggle) {
     if (accessToken) {
@@ -56,8 +60,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       authDropdownMenu.innerHTML = `
         <li><a class="dropdown-item" href="#">Profile</a></li>
+
         <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item text-danger" href="#" id="signOutBtn">Sign out</a></li>
+
+        <li>
+          <a class="dropdown-item text-danger" href="#" id="signOutBtn">
+            Sign out
+          </a>
+        </li>
       `;
 
       document.getElementById('signOutBtn').addEventListener('click', (e) => {
@@ -69,6 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       fetchCartCount();
+
+      fetchFavoriteCount();
     } else {
       authDropdownToggle.innerHTML = '<i class="fa fa-user user-icon me-2"></i> Hello';
 
@@ -80,12 +92,114 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================
+  // TOP ICON NAVIGATION
+  // ==========================================
+  const favoriteBtn = document.getElementById('favorite-page-btn');
+
+  if (favoriteBtn) {
+    favoriteBtn.style.cursor = 'pointer';
+
+    favoriteBtn.addEventListener('click', () => {
+      window.location.href = '../pages/favoriteProduct.html';
+    });
+  }
+
+  const cartBtn = document.getElementById('cart-page-btn');
+
+  if (cartBtn) {
+    cartBtn.style.cursor = 'pointer';
+
+    cartBtn.addEventListener('click', () => {
+      window.location.href = '../pages/cart.html';
+    });
+  }
+
+  // ==========================================
+  // CART COUNT
+  // ==========================================
+  async function fetchCartCount() {
+    const token = sessionStorage.getItem('accessToken');
+
+    if (!token) {
+      return;
+    }
+
+    try {
+      const response = await fetch(API_URLS.GET_CART, {
+        method: 'GET',
+        headers: getAuthHeaders(),
+      });
+
+      if (!response.ok) {
+        return;
+      }
+
+      const result = await response.json();
+
+      let totalItems = 0;
+
+      if (result.data && Array.isArray(result.data)) {
+        totalItems = result.data.length;
+      } else if (result.data && Array.isArray(result.data.items)) {
+        totalItems = result.data.items.length;
+      }
+
+      const bagBadge = document.querySelector('.bag-item .badge-count');
+
+      if (bagBadge) {
+        bagBadge.innerText = totalItems;
+      }
+    } catch (error) {
+      console.error('Cart count error:', error);
+    }
+  }
+
+  // ==========================================
+  // FAVORITE COUNT
+  // ==========================================
+  async function fetchFavoriteCount() {
+    const token = sessionStorage.getItem('accessToken');
+
+    if (!token) {
+      return;
+    }
+
+    try {
+      const response = await fetch(API_URLS.GET_FAVORITES, {
+        method: 'GET',
+        headers: getAuthHeaders(),
+      });
+
+      if (!response.ok) {
+        return;
+      }
+
+      const result = await response.json();
+
+      let totalFavorites = 0;
+
+      if (result.data && Array.isArray(result.data)) {
+        totalFavorites = result.data.length;
+      }
+
+      const heartBadge = document.querySelector('.heart-item .badge-count');
+
+      if (heartBadge) {
+        heartBadge.innerText = totalFavorites;
+      }
+    } catch (error) {
+      console.error('Favorite count error:', error);
+    }
+  }
+
+  // ==========================================
   // LOADING
   // ==========================================
   let loadingInterval;
 
   function showLoading() {
     const overlay = document.getElementById('loading-overlay');
+
     const loadingText = document.getElementById('loading-text');
 
     if (!overlay || !loadingText) {
@@ -112,55 +226,23 @@ document.addEventListener('DOMContentLoaded', () => {
   function hideLoading() {
     const overlay = document.getElementById('loading-overlay');
 
-    if (!overlay) {
+    const loadingText = document.getElementById('loading-text');
+
+    if (!overlay || !loadingText) {
       return;
     }
 
     clearInterval(loadingInterval);
 
-    overlay.style.opacity = '0';
+    loadingText.innerText = 'Loading done';
 
     setTimeout(() => {
-      overlay.style.display = 'none';
-    }, 300);
-  }
+      overlay.style.opacity = '0';
 
-  // ==========================================
-  // FETCH CART COUNT
-  // ==========================================
-  async function fetchCartCount() {
-    const token = sessionStorage.getItem('accessToken');
-
-    if (!token) {
-      return;
-    }
-
-    try {
-      const response = await fetch(API_URLS.GET_CART, {
-        method: 'GET',
-        headers: getAuthHeaders(),
-      });
-
-      if (!response.ok) {
-        return;
-      }
-
-      const result = await response.json();
-
-      let totalItems = 0;
-
-      if (result.data && Array.isArray(result.data)) {
-        totalItems = result.data.length;
-      }
-
-      const bagBadge = document.querySelector('.bag-item .badge-count');
-
-      if (bagBadge) {
-        bagBadge.innerText = totalItems;
-      }
-    } catch (error) {
-      console.error(error);
-    }
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 300);
+    }, 500);
   }
 
   // ==========================================
@@ -197,14 +279,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const productResponse = responses[0];
 
       if (!productResponse.ok) {
-        throw new Error('Cannot fetch products');
+        throw new Error('Failed to fetch products');
       }
 
       if (responses[1] && responses[1].ok) {
-        const favResult = await responses[1].json();
+        const favoriteResult = await responses[1].json();
 
-        if (favResult.data) {
-          favoriteIds = favResult.data.map((item) => item._id || item.id);
+        if (favoriteResult.data) {
+          favoriteIds = favoriteResult.data.map((item) => item._id || item.id);
         }
       }
 
@@ -220,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (error) {
       console.error(error);
 
-      showToast(error.message, 'error');
+      showToast('Error fetching products', 'error');
     } finally {
       hideLoading();
     }
@@ -239,6 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let innerHTML = '';
+
     let indicatorsHTML = '';
 
     products.forEach((product, index) => {
@@ -261,11 +344,17 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="row align-items-center">
 
               <div class="col-md-7">
-                <img
-                  src="${imageUrl}"
-                  class="img-fluid d-block mx-auto"
-                  alt="${product.name}"
+                <a
+                  href="${imageUrl}"
+                  data-fancybox="gallery"
+                  data-caption="${product.name}"
                 >
+                  <img
+                    src="${imageUrl}"
+                    class="img-fluid d-block mx-auto"
+                    alt="${product.name}"
+                  >
+                </a>
               </div>
 
               <div class="col-md-5">
@@ -276,7 +365,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </p>
 
                 <button
-                  type="button"
                   class="btn btn-buy buy-now-btn"
                   data-id="${product._id}"
                 >
@@ -291,13 +379,13 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     });
 
-    carouselInner.innerHTML = innerHTML;
-
     carouselIndicators.innerHTML = indicatorsHTML;
+
+    carouselInner.innerHTML = innerHTML;
   }
 
   // ==========================================
-  // RENDER PRODUCTS
+  // RENDER PRODUCT CARDS
   // ==========================================
   function renderProductCards(products, favoriteIds = []) {
     const productRow = document.getElementById('dynamic-product-row');
@@ -310,60 +398,64 @@ document.addEventListener('DOMContentLoaded', () => {
       .map((product) => {
         const imageUrl = product.images && product.images.length > 0 ? product.images[0].url : '';
 
+        const brandSlug = product.brand ? product.brand.slug : 'other';
+
         const isLiked = favoriteIds.includes(product._id);
 
-        return `
-          <div class="col-md-4 mb-4 product-item">
+        const heartClass = isLiked ? 'btn-heart active' : 'btn-heart';
 
+        return `
+          <div
+            class="col-md-4 mb-4 product-item"
+            data-category="${brandSlug}"
+          >
             <div class="product-card">
 
               <div class="card-header-custom">
-
                 <button
                   type="button"
-                  class="btn-heart ${isLiked ? 'active' : ''}"
+                  class="${heartClass}"
                   data-id="${product._id}"
                 >
-                  <i class="fa fa-heart"></i>
+                  <i class="fa fa-heart heart-icon"></i>
                 </button>
-
               </div>
 
               <div class="product-img-container">
-                <img
-                  src="${imageUrl}"
-                  alt="${product.name}"
-                  class="product-img"
+                <a
+                  href="${imageUrl}"
+                  data-fancybox="gallery"
+                  data-caption="${product.name}"
                 >
+                  <img
+                    src="${imageUrl}"
+                    alt="${product.name}"
+                    class="product-img"
+                  >
+                </a>
               </div>
 
               <div class="card-body-custom">
-
                 <h5 class="product-name">
                   ${product.name}
                 </h5>
 
                 <div class="price-row">
-
                   <span class="price">
                     ${formatPrice(product.price)}
                   </span>
 
                   <button
-                    type="button"
                     class="buy-now-btn"
                     data-id="${product._id}"
                   >
                     <i class="fa-solid fa-cart-shopping"></i>
                     Buy now
                   </button>
-
                 </div>
-
               </div>
 
             </div>
-
           </div>
         `;
       })
@@ -376,6 +468,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // SHOP LOGIC
   // ==========================================
   function initializeShopLogic() {
+    // FANCYBOX
     if (typeof Fancybox !== 'undefined') {
       Fancybox.bind('[data-fancybox="gallery"]', {
         infinite: true,
@@ -385,160 +478,143 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // BUY NOW
     // ==========================================
-    document.body.addEventListener('click', async (e) => {
-      const buyBtn = e.target.closest('.buy-now-btn');
+    if (!document.body.dataset.buyInitialized) {
+      document.body.dataset.buyInitialized = 'true';
 
-      if (!buyBtn) {
-        return;
-      }
+      document.body.addEventListener('click', async (e) => {
+        const buyBtn = e.target.closest('.buy-now-btn');
 
-      e.preventDefault();
-      e.stopPropagation();
-
-      const token = sessionStorage.getItem('accessToken');
-
-      if (!token) {
-        showToast('Please login first', 'error');
-        return;
-      }
-
-      const productId = buyBtn.dataset.id;
-
-      try {
-        buyBtn.disabled = true;
-
-        buyBtn.innerHTML = `
-          <i class="fa-solid fa-spinner fa-spin"></i>
-          Loading
-        `;
-
-        const response = await fetch(API_URLS.ADD_TO_CART, {
-          method: 'POST',
-          headers: getAuthHeaders(),
-          body: JSON.stringify({
-            orders: [
-              {
-                product_id: productId,
-                size: '40',
-                amount: 1,
-              },
-            ],
-            address: 'Default address',
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Add to cart failed');
+        if (!buyBtn) {
+          return;
         }
 
-        buyBtn.innerHTML = `
-          <i class="fa-solid fa-check"></i>
-          Added
-        `;
+        e.preventDefault();
 
-        buyBtn.classList.add('btn-success');
+        e.stopPropagation();
 
-        fetchCartCount();
+        const token = sessionStorage.getItem('accessToken');
 
-        showToast('Added to cart', 'success');
+        if (!token) {
+          showToast('Please login first', 'error');
 
-        setTimeout(() => {
-          window.location.href = '../pages/cart.html';
-        }, 800);
-      } catch (error) {
-        console.error(error);
+          return;
+        }
 
-        buyBtn.disabled = false;
+        const productId = buyBtn.dataset.id;
 
-        buyBtn.innerHTML = `
-          <i class="fa-solid fa-cart-shopping"></i>
-          Buy now
-        `;
+        showLoading();
 
-        showToast('Cannot add to cart', 'error');
-      }
-    });
-
-    // ==========================================
-    // HEART LIKE
-    // ==========================================
-    document.body.addEventListener('click', async (e) => {
-      const heartBtn = e.target.closest('.btn-heart');
-
-      if (!heartBtn) {
-        return;
-      }
-
-      e.preventDefault();
-      e.stopPropagation();
-
-      const token = sessionStorage.getItem('accessToken');
-
-      if (!token) {
-        showToast('Please login first', 'error');
-        return;
-      }
-
-      const productId = heartBtn.dataset.id;
-
-      const isLiked = heartBtn.classList.contains('active');
-
-      // UI instantly
-      heartBtn.classList.toggle('active');
-
-      try {
-        const response = await fetch(
-          isLiked ? API_URLS.UNLIKE_PRODUCT(productId) : API_URLS.LIKE_PRODUCT(productId),
-          {
+        try {
+          const response = await fetch(API_URLS.ADD_TO_CART, {
             method: 'POST',
-            headers: getAuthHeaders(),
-          },
-        );
 
-        if (!response.ok) {
-          throw new Error('Like failed');
+            headers: {
+              ...getAuthHeaders(),
+              accept: 'application/json',
+            },
+
+            body: JSON.stringify({
+              orders: [
+                {
+                  product_id: productId,
+                  size: '40',
+                  amount: 1,
+                },
+              ],
+
+              address: 'Default Address',
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed');
+          }
+
+          buyBtn.style.background = '#22c55e';
+
+          buyBtn.style.borderColor = '#22c55e';
+
+          buyBtn.innerHTML = `
+            <i class="fa-solid fa-check"></i>
+            Added
+          `;
+
+          await fetchCartCount();
+
+          showToast('Added to cart', 'success');
+
+          setTimeout(() => {
+            window.location.href = '../pages/cart.html';
+          }, 500);
+        } catch (error) {
+          console.error(error);
+
+          showToast('Add to cart failed', 'error');
+        } finally {
+          hideLoading();
+        }
+      });
+    }
+
+    // ==========================================
+    // HEART
+    // ==========================================
+    if (!document.body.dataset.likeInitialized) {
+      document.body.dataset.likeInitialized = 'true';
+
+      document.body.addEventListener('click', async (e) => {
+        const heartBtn = e.target.closest('.btn-heart');
+
+        if (!heartBtn) {
+          return;
         }
 
-        // CHANGE HEART COLOR
-        const icon = heartBtn.querySelector('i');
+        e.preventDefault();
 
-        if (heartBtn.classList.contains('active')) {
-          icon.style.color = '#ff2e63';
-        } else {
-          icon.style.color = '#ffffff';
+        e.stopPropagation();
+
+        const token = sessionStorage.getItem('accessToken');
+
+        if (!token) {
+          showToast('Please login first', 'error');
+
+          return;
         }
 
-        showToast(isLiked ? 'Removed from favorites' : 'Added to favorites', 'success');
-      } catch (error) {
-        console.error(error);
+        const productId = heartBtn.dataset.id;
+
+        const isCurrentlyLiked = heartBtn.classList.contains('active');
 
         heartBtn.classList.toggle('active');
 
-        showToast('Something went wrong', 'error');
-      }
-    });
-  }
+        try {
+          const response = await fetch(
+            isCurrentlyLiked
+              ? API_URLS.UNLIKE_PRODUCT(productId)
+              : API_URLS.LIKE_PRODUCT(productId),
+            {
+              method: 'POST',
 
-  // ==========================================
-  // BACK TO TOP
-  // ==========================================
-  const backToTopBtn = document.getElementById('btn-back-to-top');
+              headers: getAuthHeaders(),
+            },
+          );
 
-  if (backToTopBtn) {
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        backToTopBtn.style.display = 'block';
-      } else {
-        backToTopBtn.style.display = 'none';
-      }
-    });
+          if (!response.ok) {
+            throw new Error('Like failed');
+          }
 
-    backToTopBtn.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
+          await fetchFavoriteCount();
+
+          showToast(isCurrentlyLiked ? 'Removed from favorites' : 'Added to favorites', 'success');
+        } catch (error) {
+          console.error(error);
+
+          heartBtn.classList.toggle('active');
+
+          showToast('Action failed', 'error');
+        }
       });
-    });
+    }
   }
 
   // ==========================================
