@@ -60,21 +60,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
       authDropdownMenu.innerHTML = `
     <li>
-      <a class="dropdown-item" href="../pages/profile.html">
+      <a class="dropdown-item" href="profile.html">
         <i class="fa fa-user me-2"></i>
         Profile
       </a>
     </li>
 
     <li>
-      <a class="dropdown-item" href="../pages/favoriteProduct.html">
+      <a class="dropdown-item" href="favoriteProduct.html">
         <i class="fa fa-heart me-2"></i>
         Favorite Products
       </a>
     </li>
 
     <li>
-      <a class="dropdown-item" href="../pages/cart.html">
+      <a class="dropdown-item" href="cart.html">
         <i class="fa fa-shopping-cart me-2"></i>
         Cart
       </a>
@@ -105,8 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
       authDropdownToggle.innerHTML = '<i class="fa fa-user user-icon me-2"></i> Hello';
 
       authDropdownMenu.innerHTML = `
-        <li><a class="dropdown-item" href="#">Sign in</a></li>
-        <li><a class="dropdown-item" href="#">Sign up</a></li>
+        <li><a class="dropdown-item" href="login.html">Sign in</a></li>
+        <li><a class="dropdown-item" href="register.html">Sign up</a></li>
       `;
     }
   }
