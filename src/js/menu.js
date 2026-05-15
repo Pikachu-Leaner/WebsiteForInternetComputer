@@ -117,6 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const favoriteBtn = document.getElementById('favorite-page-btn');
 
   if (favoriteBtn) {
+    favoriteBtn.style.cursor = 'pointer';
+
     favoriteBtn.addEventListener('click', () => {
       window.location.href = '../pages/favoriteProduct.html';
     });
@@ -125,6 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const cartBtn = document.getElementById('cart-page-btn');
 
   if (cartBtn) {
+    cartBtn.style.cursor = 'pointer';
+
     cartBtn.addEventListener('click', () => {
       window.location.href = '../pages/cart.html';
     });
