@@ -2161,4 +2161,20 @@ tbody tr td {
   background: transparent !important;
 }
 
+.heart-item,
+.bag-item {
+  position: relative;
+  cursor: pointer;
+  z-index: 9999;
+}
+
+.heart-item i,
+.bag-item i {
+  pointer-events: none;
+}
+
+.badge-count {
+  pointer-events: none;
+}
+
 /*# sourceMappingURL=style.css.map */
