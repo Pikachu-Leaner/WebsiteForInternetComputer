@@ -25,7 +25,7 @@ function toggleFormInput(isDisabled) {
   });
 }
 
-// Function to reset error messages after failed attempt
+//function to reset error messages after failed attempt
 function resetErrors() {
   const errorDivs = document.querySelectorAll('.validation-register');
   errorDivs.forEach((div) => {
@@ -35,9 +35,11 @@ function resetErrors() {
 }
 
 function handleServerErrors(data) {
+  // 1. Get the message string
   const message = data.message || 'An error occurred';
   const lowerMsg = message.toLowerCase();
 
+  // 2. Map message to specific fields based on keywords
   if (lowerMsg.includes('email')) {
     showError('email_error', message);
   } else if (lowerMsg.includes('password')) {
@@ -85,9 +87,9 @@ registerForm.addEventListener('submit', async (event) => {
   // Stop page reload
   event.preventDefault();
 
-  // Submit attempt limit check
+  // summit attempt limit check
   if (submitAttempts >= maxAttempts) {
-    toggleFormInput(true);
+    toggleFormInput(true); // Disable form
     showToast(`Too many attempts! Please wait ${cooldownTime / 1000} seconds.`, 'error');
 
     setTimeout(() => {
@@ -124,29 +126,28 @@ registerForm.addEventListener('submit', async (event) => {
     femaleChecked: femaleValue,
   };
 
-  // Run Client-Side Validation
+  // 5. Run Client-Side Validation
   const { isValid, errors, gender } = validateForm(formData);
 
   if (!isValid) {
-    // ✅ FIX: return early so the API call never runs on invalid form
+    // If validation fails, show errors and stop
     showClientErrors(errors);
-    return;
   }
 
-  // Only disable the form AFTER validation passes
   toggleFormInput(true);
 
-  // Prepare Data for API (Backend)
+  // 6. Prepare Data for API (Backend)
   const apiPayload = {
-    username: formData.name,
+    username: formData.name, // Currently using username as vietnamese not allow ( status 422 ) but without vietnamese will success ( status 201)
     email: formData.email,
     password: formData.password,
     confirm_password: formData.passwordConfirm,
     phone: formData.phone,
-    gender: gender, // True for Male, False for Female
+    gender: gender, // True for Male and False for Female
   };
-
-  // Call the Server
+  // For debugging purposes
+  // console.log('API Payload being sent:', apiPayload);
+  // 7. Call the Server
   try {
     const response = await fetch('https://shoes-mall.onrender.com/api/v1/users/register', {
       method: 'POST',
@@ -158,9 +159,8 @@ registerForm.addEventListener('submit', async (event) => {
 
     const serverData = await response.json();
 
-    // Handle Server Response
+    // 8. Handle Server Response
     if (!response.ok) {
-      // ✅ FIX: always re-enable form on server error
       toggleFormInput(false);
       handleServerErrors(serverData);
       showToast(`Error ${response.status}: ${serverData.message}`, 'error');
@@ -183,8 +183,9 @@ registerForm.addEventListener('submit', async (event) => {
         }
       }
 
-      // Redirect user to Home Page after 2 seconds
+      //Redirect user to Home Page after 2 seconds
       setTimeout(() => {
+        // Show the loading screen now
         if (loadingOverlay) {
           loadingOverlay.classList.remove('d-none');
         }
@@ -196,7 +197,6 @@ registerForm.addEventListener('submit', async (event) => {
       }, 2000);
     }
   } catch (error) {
-    // ✅ FIX: always re-enable form and hide loading on any network error
     if (loadingOverlay) {
       loadingOverlay.classList.add('d-none');
     }
@@ -205,13 +205,14 @@ registerForm.addEventListener('submit', async (event) => {
   }
 });
 
-// If the page is loaded from the cache (Back button)
-// Fixes the issue where inputs still show old data after pressing the back button
+// If the page is loaded from the cache (Back button) [Make to fix the issue when use the <- in the website, it still show some of the data in input fields]
 window.addEventListener('pageshow', () => {
+  // Wipe the form clean
   registerForm.reset();
   toggleFormInput(false);
   resetErrors();
   submitAttempts = 0;
+  // Hide loading overlay if visible
   if (loadingOverlay) {
     loadingOverlay.classList.add('d-none');
   }
