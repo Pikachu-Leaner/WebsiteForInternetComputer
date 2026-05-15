@@ -676,39 +676,35 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // GRID / LIST SWITCH
     // ==========================================
-    const gridBtn = document.querySelector('.grid-view-btn');
+    const btnGridView = document.getElementById('btn-grid-view');
 
-    const listBtn = document.querySelector('.list-view-btn');
+    const btnListView = document.getElementById('btn-list-view');
 
-    const productRow = document.getElementById('dynamic-product-row');
+    const productContainer = document.getElementById('product-container');
 
-    if (gridBtn && listBtn && productRow) {
-      gridBtn.addEventListener('click', () => {
-        productRow.classList.remove('list-view');
+    if (btnGridView && btnListView && productContainer) {
+      btnGridView.addEventListener('click', () => {
+        productContainer.classList.remove('list-view');
 
-        gridBtn.classList.add('active');
+        btnGridView.classList.remove('btn-outline-dark');
 
-        listBtn.classList.remove('active');
+        btnGridView.classList.add('btn-dark');
 
-        document.querySelectorAll('.product-item').forEach((item) => {
-          item.classList.remove('col-12');
+        btnListView.classList.remove('btn-dark');
 
-          item.classList.add('col-lg-3', 'col-md-4', 'col-sm-6');
-        });
+        btnListView.classList.add('btn-outline-dark');
       });
 
-      listBtn.addEventListener('click', () => {
-        productRow.classList.add('list-view');
+      btnListView.addEventListener('click', () => {
+        productContainer.classList.add('list-view');
 
-        listBtn.classList.add('active');
+        btnListView.classList.remove('btn-outline-dark');
 
-        gridBtn.classList.remove('active');
+        btnListView.classList.add('btn-dark');
 
-        document.querySelectorAll('.product-item').forEach((item) => {
-          item.classList.remove('col-lg-3', 'col-md-4', 'col-sm-6');
+        btnGridView.classList.remove('btn-dark');
 
-          item.classList.add('col-12');
-        });
+        btnGridView.classList.add('btn-outline-dark');
       });
     }
 
@@ -757,11 +753,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         items.forEach((item) => {
           if (category.toLowerCase() === 'home' || category.toLowerCase() === 'all products') {
-            item.style.display = 'block';
+            item.style.display = '';
           } else {
             const itemCategory = item.dataset.category?.toLowerCase();
 
-            item.style.display = itemCategory === category.toLowerCase() ? 'block' : 'none';
+            item.style.display = itemCategory === category.toLowerCase() ? '' : 'none';
           }
         });
       });
