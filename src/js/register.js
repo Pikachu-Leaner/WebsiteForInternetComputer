@@ -149,7 +149,7 @@ registerForm.addEventListener('submit', async (event) => {
   // console.log('API Payload being sent:', apiPayload);
   // 7. Call the Server
   try {
-    const response = await fetch('https://shoes-mall.onrender.com/api/v1/users/register', {
+    const response = await fetch('https://shoes-mall.onrender.com/docs/#/user/registerUser', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
