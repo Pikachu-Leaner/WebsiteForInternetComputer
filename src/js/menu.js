@@ -56,19 +56,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (authDropdownMenu && authDropdownToggle) {
     if (accessToken) {
-      authDropdownToggle.innerHTML = '<i class="fa fa-user user-icon me-2"></i> Favorite product';
+      authDropdownToggle.innerHTML = '<i class="fa fa-user user-icon me-2"></i> My Account';
 
       authDropdownMenu.innerHTML = `
-        <li><a class="dropdown-item" href="#">Profile</a></li>
+    <li>
+      <a class="dropdown-item" href="../pages/profile.html">
+        <i class="fa fa-user me-2"></i>
+        Profile
+      </a>
+    </li>
 
-        <li><hr class="dropdown-divider"></li>
+    <li>
+      <a class="dropdown-item" href="../pages/favoriteProduct.html">
+        <i class="fa fa-heart me-2"></i>
+        Favorite Products
+      </a>
+    </li>
 
-        <li>
-          <a class="dropdown-item text-danger" href="#" id="signOutBtn">
-            Sign out
-          </a>
-        </li>
-      `;
+    <li>
+      <a class="dropdown-item" href="../pages/cart.html">
+        <i class="fa fa-shopping-cart me-2"></i>
+        Cart
+      </a>
+    </li>
+
+    <li><hr class="dropdown-divider"></li>
+
+    <li>
+      <a class="dropdown-item text-danger" href="#" id="signOutBtn">
+        <i class="fa fa-sign-out-alt me-2"></i>
+        Sign out
+      </a>
+    </li>
+  `;
 
       document.getElementById('signOutBtn').addEventListener('click', (e) => {
         e.preventDefault();
